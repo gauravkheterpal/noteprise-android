@@ -57,8 +57,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
         Bundle args = getArguments();
         noteGuid = Utilities.getStringFromBundle(args, "noteGuid");
         
-       // noteContent = Utilities.getStringFromBundle(args, "noteContent");
-       // saveString = EvernoteUtils.stripEvernoteSuffixAndPrefix(noteContent);
+    
     }
     
     @Override
@@ -70,7 +69,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
     	 updateButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_update_button_layout, R.id.common_update_button);
     	 updateButton.setVisibility(View.VISIBLE);
     	 updateButton.setOnClickListener(this);
-    	//noteContentWebView = (WebView) contentView.findViewById(R.id.note_content_web_view);
+    	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
     
@@ -160,12 +159,11 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		if (TASK == GET_NOTE_DATA)
 		{
 			hideFullScreenProgresIndicator();			
-	    	//noteTitle = note.getTitle();
+	    	
 	    	noteContent = note.getContent();
 	    	NotepriseLogger.logMessage(noteContent);
 	    	saveString= noteContent.replace(Constants.NOTE_PREFIX, "");
 	    	saveString= noteContent.replace(Constants.NOTE_SUFFIX, "");
-	    	//saveString = EvernoteUtils.stripEvernoteSuffixAndPrefix(noteContent);//EvernoteUtils.stroteContent(note.getContent());
 	    	noteContenteditText.setText(Html.fromHtml(saveString));
 	    	
 		}

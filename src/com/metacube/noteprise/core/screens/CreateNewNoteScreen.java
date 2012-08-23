@@ -1,5 +1,6 @@
 package com.metacube.noteprise.core.screens;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +9,14 @@ import org.apache.thrift.transport.TTransportException;
 
 import android.app.Activity;
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -30,9 +33,11 @@ import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.CommonSpinnerAdapter;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.Utilities;
+import com.metacube.noteprise.util.richtexteditor.Html;
 
 public class CreateNewNoteScreen extends BaseFragment implements OnClickListener, OnItemSelectedListener
 {
+	
 	List<Notebook> notebookList;
 	Spinner notebookListSpinner;
 	String authToken;
@@ -43,6 +48,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	LinearLayout createNoteButton;
 	int GET_DATA = 0, SAVE_DATA = 1, CURRENT_TASK = 0;
 	Note createdNote, savedNote;
+	Button image;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -63,8 +69,8 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
     	View contentView = inflater.inflate(R.layout.create_new_note_layout, container);    	
     	notebookListSpinner = (Spinner) contentView.findViewById(R.id.create_note_notebook_list_spinner); 
     	noteTitleEditText = (EditText) contentView.findViewById(R.id.note_title_edit_text);
-    	noteContenteditText = (EditText) contentView.findViewById(R.id.note_content_edit_text);
-    	//createNoteButton = (Button) contentView.findViewById(R.id.create_new_note_button);
+    	noteContenteditText = (EditText) contentView.findViewById(R.id.content);
+
     	createNoteButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
     	createNoteButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
@@ -87,6 +93,8 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			{
 				showToastNotification("All fields are required");
 			}
+		}else if(view == image){
+			
 		}
 	}
 	
@@ -115,6 +123,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 		{
 			try 
 			{
+				
 				authToken = evernoteSession.getAuthToken();
 	        	client = evernoteSession.createNoteStore();
 	        	notebookList = client.listNotebooks(authToken);
@@ -149,12 +158,18 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 		{
 			try 
 			{
+
 				authToken = evernoteSession.getAuthToken();
 	        	client = evernoteSession.createNoteStore();
 	        	createdNote = new Note();
+	        	
 	        	createdNote.setNotebookGuid(notebookSpinnerAdapter.getSpinnerItemId(notebookListSpinner.getSelectedItemPosition()));
 	        	createdNote.setTitle(noteTitleEditText.getText().toString().trim());
-	        	createdNote.setContent(Constants.NOTE_PREFIX + noteContenteditText.getText().toString().trim() + Constants.NOTE_SUFFIX);
+
+	        	createdNote.setContent(Constants.NOTE_PREFIX +Html.toHtml(noteContenteditText.getText())+Constants.NOTE_SUFFIX);
+	        	createdNote.setContent(createdNote.getContent().replace("<br>", "<br />"));
+	        	createdNote.setContent(createdNote.getContent().replace("&#160;", ""));
+	        	
 	        	savedNote = client.createNote(authToken, createdNote);
 			} 
 			catch (TTransportException e) 
@@ -177,6 +192,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			{
 				e.printStackTrace();
 			}
+
 		}
 	}
 	
@@ -215,14 +231,14 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
-		// TODO Auto-generated method stub
+			long arg3) {	
 		
 	}
+	
+
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
 		
 	}	
 }
