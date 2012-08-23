@@ -24,16 +24,15 @@ import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.salesforce.SalesforceUtils;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.Utilities;
-import com.salesforce.androidsdk.rest.RestClient.AsyncRequestCallback;
-import com.salesforce.androidsdk.rest.RestRequest;
 import com.salesforce.androidsdk.rest.RestResponse;
 
-public class PublishToChatterRecordsListScreen extends BaseFragment implements AsyncRequestCallback, OnClickListener, OnItemClickListener
+public class PublishToChatterRecordsListScreen extends BaseFragment implements OnClickListener, OnItemClickListener
 {
-	String publishString;
-	RestResponse getFollowingDataResponse = null, publishResponse;
+	String publishString, publishTask, groupId;
+	RestResponse dataResponse = null, publishResponse;
 	Button publishToChatterButton;
-	Integer GET_FOLLOWING_DATA = 0, PUBLISH_TO_CHATTER_USER = 1, TASK = 0;
+	public static final int GET_FOLLOWING_DATA = 0, PUBLISH_TO_CHATTER_USER = 1, GET_GROUP_DATA = 2, PUBLISH_TO_CHATTER_GROUP = 3;
+	Integer TASK = -1, TASK_TYPE = -1;
 	ArrayList<CommonListItems> listItems;
 	CommonListAdapter listAdapter;
 	ListView listView;
@@ -50,7 +49,18 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);        
-        publishString = Utilities.getStringFromBundle(getArguments(), "publishString");        
+        publishString = Utilities.getStringFromBundle(getArguments(), "publishString");    
+        publishTask = Utilities.getStringFromBundle(getArguments(), "publishTask"); 
+        if (publishTask.equalsIgnoreCase("USER_FEED"))
+        {
+        	TASK_TYPE = GET_FOLLOWING_DATA;
+        	TASK = GET_FOLLOWING_DATA;
+        } 
+        else if (publishTask.equalsIgnoreCase("GROUP_FEED"))
+        {
+        	TASK_TYPE = GET_GROUP_DATA;
+        	TASK = GET_GROUP_DATA;
+        }
     }
     
     @Override
@@ -70,8 +80,6 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
 	public void onResume() 
 	{
 		super.onResume();
-		
-		TASK = GET_FOLLOWING_DATA;
 		showFullScreenProgresIndicator();
 		executeAsyncTask();
 	}
@@ -80,21 +88,32 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
 	public void doTaskInBackground() 
 	{
 		super.doTaskInBackground();
-		if (TASK == GET_FOLLOWING_DATA)
+		if (salesforceRestClient != null)
 		{
-			if (salesforceRestClient != null)
+			switch(TASK)
 			{
-				getFollowingDataResponse = SalesforceUtils.getUserFollowingData(salesforceRestClient, SF_API_VERSION);
+				case GET_FOLLOWING_DATA:
+				{
+					dataResponse = SalesforceUtils.getUserFollowingData(salesforceRestClient, SF_API_VERSION);
+					break;
+				}
+				case PUBLISH_TO_CHATTER_USER:
+				{
+					publishResponse = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds);
+					break;
+				}
+				case GET_GROUP_DATA:
+				{
+					dataResponse = SalesforceUtils.getUserGroupData(salesforceRestClient, SF_API_VERSION);
+					break;
+				}
+				case PUBLISH_TO_CHATTER_GROUP:
+				{
+					publishResponse = SalesforceUtils.publishNoteToUserGroup(salesforceRestClient, groupId, publishString, SF_API_VERSION);
+					break;
+				}
 			}
 		}
-		else if (TASK == PUBLISH_TO_CHATTER_USER)
-		{
-			if (salesforceRestClient != null)
-			{
-				publishResponse = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds);
-			}
-		}
-		
 	}
 	
 	public void publishNoteToChatterFeed()
@@ -102,12 +121,6 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
 		TASK = PUBLISH_TO_CHATTER_USER;
 		showFullScreenProgresIndicator();
 		executeAsyncTask();
-	}
-
-	@Override
-	public void onSuccess(RestRequest request, RestResponse response) 
-	{
-				
 	}
 	
 	@Override
@@ -117,29 +130,46 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
 		hideFullScreenProgresIndicator();	
 		if (TASK == GET_FOLLOWING_DATA)
 		{
-			if (getFollowingDataResponse != null)
+			if (dataResponse != null)
 			{
-				listItems = SalesforceUtils.getListItemsFromUserFollowingResponse(getFollowingDataResponse);
+				listItems = SalesforceUtils.getListItemsFromUserFollowingResponse(dataResponse);
 				if (listItems != null && listItems.size() > 0)
 				{
-					listAdapter = new CommonListAdapter(inflater, listItems);
+					listAdapter = new CommonListAdapter(this, inflater, listItems);
 					listView.setAdapter(listAdapter);
 					listView.setOnItemClickListener(this);
 					editRecordSelectionButton.setVisibility(View.VISIBLE);
 				}
 			}
 		}
-		else if (TASK == PUBLISH_TO_CHATTER_USER)
+		else if (TASK == GET_GROUP_DATA)
 		{
-			TASK = GET_FOLLOWING_DATA;
-			try 
+			if (dataResponse != null)
 			{
-				String response = publishResponse.asString();				
-				NotepriseLogger.logMessage(response);
-				if (publishResponse.getStatusCode() == 200)
+				listItems = SalesforceUtils.getListItemsFromUserGroupResponse(dataResponse);
+				if (listItems != null && listItems.size() > 0)
+				{
+					listAdapter = new CommonListAdapter(this, inflater, listItems);
+					listView.setAdapter(listAdapter);
+					listView.setOnItemClickListener(this);
+				}
+			}
+		}
+		else if (TASK == PUBLISH_TO_CHATTER_USER || TASK == PUBLISH_TO_CHATTER_GROUP)
+		{
+			TASK = -1;
+			try 
+			{			
+				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
 					showToastNotification("Note was successfully posted on feed.");
 					finishScreen();
+				}
+				else
+				{
+					showToastNotification("Some error ocurred. Please try again later.");
+					String response = publishResponse.asString();
+					NotepriseLogger.logMessage(response);
 				}
 			} 
 			catch (ParseException e) 
@@ -159,14 +189,6 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
 		super.onStop();
 		removeViewFromBaseHeaderLayout(editRecordSelectionButton);
 		removeViewFromBaseHeaderLayout(saveRecordSelectionButton);
-	}
-
-	@Override
-	public void onError(Exception exception) 
-	{
-		hideFullScreenProgresIndicator();
-		NotepriseLogger.logError("Exception publishing chatter feed.", NotepriseLogger.ERROR, exception);	
-		commonMessageDialog.showMessageDialog("Some error occurred.");
 	}
 
 	@Override
@@ -208,12 +230,22 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements A
 		}
 		else if (listItems != null)
 		{
-			String recordId = listItems.get(position).getId();
-			selectedIds = new ArrayList<String>();
-			selectedIds.add(recordId);
-			TASK = PUBLISH_TO_CHATTER_USER;
-			showFullScreenProgresIndicator();
-			executeAsyncTask();
+			if (TASK_TYPE == GET_FOLLOWING_DATA)
+			{
+				String recordId = listItems.get(position).getId();
+				selectedIds = new ArrayList<String>();
+				selectedIds.add(recordId);
+				TASK = PUBLISH_TO_CHATTER_USER;
+				showFullScreenProgresIndicator();
+				executeAsyncTask();
+			}
+			else if (TASK_TYPE == GET_GROUP_DATA)
+			{
+				groupId = listItems.get(position).getId();
+				TASK = PUBLISH_TO_CHATTER_GROUP;
+				showFullScreenProgresIndicator();
+				executeAsyncTask();
+			}			
 		}
 	}
 }

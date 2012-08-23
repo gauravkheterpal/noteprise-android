@@ -17,8 +17,8 @@ public class Constants
 	
 	
 	public static final String APP_DATA_PATH = "/Android/data/com.metacube.noteprise/data/";		
-	public static final String EVERNOTE_HOST = "sandbox.evernote.com";	
-	//public static final String EVERNOTE_HOST = "www.evernote.com";
+	//public static final String EVERNOTE_HOST = "sandbox.evernote.com";	
+	public static final String EVERNOTE_HOST = "www.evernote.com";
 		  
 	public static final String APP_NAME = "Noteprise";  
 	public static final String APP_VERSION = "1.0";
@@ -30,6 +30,9 @@ public class Constants
 	public static final String NOTE_SUFFIX = "</div></en-note>";
 	
 	public static final Integer MAX_NOTES = 100;
+	
+	public static final Integer USER_PAGE_BATCH_SIZE = 1000;
+	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;
 	
 	
 	public static final String ITEM_TYPE_LIST_SECTION = "LIST_SECTION";

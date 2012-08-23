@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.metacube.noteprise.common.CommonListItems;
+import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.rest.RestRequest.RestMethod;
@@ -73,7 +74,7 @@ public class SalesforceUtils
 		{
 			try 
 			{	
-				publishResponse = salesforceRestClient.sendSync(RestMethod.GET, "/services/data/" + SF_API_VERSION + "/chatter/users/me/following", null);
+				publishResponse = salesforceRestClient.sendSync(RestMethod.GET, "/services/data/" + SF_API_VERSION + "/chatter/users/me/following?pageSize=" + Constants.USER_PAGE_BATCH_SIZE, null);
 			} 
 			catch (UnsupportedEncodingException e) 
 			{
@@ -101,7 +102,7 @@ public class SalesforceUtils
 				CommonListItems item = new CommonListItems();				
 				item.setId(subject.optString("id"));
 				item.setLabel(subject.optString("name"));
-				item.setLeftImageURL(subject.getJSONObject("photo").optString("smallPhotoUrl"));
+				item.setLeftUserImageURL(subject.getJSONObject("photo").optString("smallPhotoUrl"));
 				responseList.add(item);
 			}
 		} 
@@ -179,5 +180,84 @@ public class SalesforceUtils
 			e.printStackTrace();
 		}
 		return bodyString;
+	}
+	
+	public static RestResponse getUserGroupData(RestClient salesforceRestClient, String SF_API_VERSION)
+	{
+		RestResponse publishResponse = null;
+		if (salesforceRestClient != null)
+		{
+			try 
+			{	
+				publishResponse = salesforceRestClient.sendSync(RestMethod.GET, "/services/data/" + SF_API_VERSION + "/chatter/users/me/groups?pageSize=" + Constants.GROUP_PAGE_BATCH_SIZE, null);
+			} 
+			catch (UnsupportedEncodingException e) 
+			{
+				NotepriseLogger.logError("UnsupportedEncodingException while getting group data.", NotepriseLogger.ERROR, e);
+			} 
+			catch (IOException e) 
+			{
+				NotepriseLogger.logError("IOException while getting group data.", NotepriseLogger.ERROR, e);
+			}		
+		}
+		return publishResponse;
+	}
+	
+	public static ArrayList<CommonListItems> getListItemsFromUserGroupResponse(RestResponse restResponse)
+	{
+		ArrayList<CommonListItems> responseList = new ArrayList<CommonListItems>();
+		try 
+		{
+			String response = restResponse.asString();
+			NotepriseLogger.logMessage(response);
+			JSONArray responseArray = new JSONObject(response).getJSONArray("groups");
+			for (int i = 0; i < responseArray.length(); i++)
+			{
+				JSONObject group = responseArray.getJSONObject(i);
+				CommonListItems item = new CommonListItems();				
+				item.setId(group.optString("id"));
+				item.setLabel(group.optString("name"));
+				item.setLeftUserImageURL(group.getJSONObject("photo").optString("smallPhotoUrl"));
+				responseList.add(item);
+			}
+		} 
+		catch (ParseException e) 
+		{				
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}				
+		return responseList;
+	}
+	
+	public static RestResponse publishNoteToUserGroup(RestClient salesforceRestClient, String groupId, String noteContent, String SF_API_VERSION)
+	{
+		RestResponse publishResponse = null;
+		if (salesforceRestClient != null)
+		{
+			try 
+			{				
+				StringEntity stringEntity = new StringEntity(generateJSONBodyForChatterFeed(noteContent, null));
+				stringEntity.setContentType("application/json");
+				String url = "/services/data/" + SF_API_VERSION + "/chatter/feeds/record/" + groupId + "/feed-items";
+				NotepriseLogger.logMessage(url);
+				publishResponse = salesforceRestClient.sendSync(RestMethod.POST, url, stringEntity);
+			} 
+			catch (UnsupportedEncodingException e) 
+			{
+				NotepriseLogger.logError("UnsupportedEncodingException while publishing chatter feed to group.", NotepriseLogger.ERROR, e);
+			} 
+			catch (IOException e) 
+			{
+				NotepriseLogger.logError("IOException while publishing chatter feed to group.", NotepriseLogger.ERROR, e);
+			}	
+		}
+		return publishResponse;
 	}
 }

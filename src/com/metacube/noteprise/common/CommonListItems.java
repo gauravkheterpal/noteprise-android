@@ -9,7 +9,7 @@ public class CommonListItems
 	private String tag = null;
 	private Boolean isChecked = Boolean.FALSE;
 	private Integer leftImage = null;
-	private String leftImageURL = null;
+	private String leftUserImageURL = null;
 	private String itemType = Constants.ITEM_TYPE_LIST_ITEM;
 	private Integer totalContent = null;
 	public String getId() {
@@ -33,8 +33,8 @@ public class CommonListItems
 	public Integer getLeftImage() {
 		return leftImage;
 	}
-	public String getLeftImageURL() {
-		return leftImageURL;
+	public String getLeftUserImageURL() {
+		return leftUserImageURL;
 	}
 	public String getItemType() {
 		return itemType;
@@ -63,13 +63,16 @@ public class CommonListItems
 	public void setLeftImage(Integer leftImage) {
 		this.leftImage = leftImage;
 	}
-	public void setLeftImageURL(String leftImageURL) {
-		this.leftImageURL = leftImageURL;
+	public void setLeftUserImageURL(String leftUserImageURL) {
+		this.leftUserImageURL = leftUserImageURL;
 	}
 	public void setItemType(String itemType) {
 		this.itemType = itemType;
 	}
 	public void setTotalContent(Integer totalContent) {
 		this.totalContent = totalContent;
-	}	
+	}
+	
+	
+	
 }

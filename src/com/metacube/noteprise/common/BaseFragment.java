@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.evernote.client.oauth.android.EvernoteSession;
@@ -15,6 +16,7 @@ import com.metacube.noteprise.util.AsyncTaskDataLoader;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.NoteprisePreferences;
 import com.metacube.noteprise.util.Utilities;
+import com.metacube.noteprise.util.imageloader.ImageLoader;
 import com.salesforce.androidsdk.rest.RestClient;
 
 public class BaseFragment extends Fragment 
@@ -43,6 +45,10 @@ public class BaseFragment extends Fragment
 		this.salesforceRestClient = baseActivity.salesforceRestClient;
 		this.SF_API_VERSION = baseActivity.getString(R.string.api_version);
 		this.baseHeaderLayout = baseActivity.baseHeaderLayout;
+		if (salesforceRestClient != null)
+		{
+			baseActivity.backgroundImageLoader = new ImageLoader(baseActivity, salesforceRestClient.getAuthToken());
+		}
 	}
 	
 	public void initFragment(String screenTitle)
@@ -170,6 +176,11 @@ public class BaseFragment extends Fragment
 	public void hideProgresIndicator()
 	{
 		baseActivity.hideProgresIndicator();
+	}
+	
+	public void loadImageOnView(String path, ImageView imageView, int compress)
+	{
+		baseActivity.loadImageOnView(path, imageView, compress);
 	}
 	
 	public View addViewToBaseHeaderLayout(LayoutInflater inflater, int viewLayout, int viewId)

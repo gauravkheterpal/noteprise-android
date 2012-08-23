@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.util.CommonListComparator;
+import com.metacube.noteprise.util.imageloader.ImageLoader;
 
 public class CommonListAdapter extends BaseAdapter 
 {
@@ -20,14 +21,23 @@ public class CommonListAdapter extends BaseAdapter
 	LayoutInflater inflater = null;
 	View listItemLayout = null;
 	TextView listItemMainTextView = null;
-	ImageView leftImageView = null;
+	ImageView leftImageView = null, leftUserImageView = null;
 	Boolean isCheckListMode = Boolean.FALSE;
+	BaseFragment baseFragment;
 
 	public CommonListAdapter(LayoutInflater inflater, ArrayList<CommonListItems> listItems) 
 	{
 		this.listItems = listItems;
 		this.count = listItems.size();
 		this.inflater = inflater;
+	}
+	
+	public CommonListAdapter(BaseFragment baseFragment, LayoutInflater inflater, ArrayList<CommonListItems> listItems) 
+	{
+		this.listItems = listItems;
+		this.count = listItems.size();
+		this.inflater = inflater;
+		this.baseFragment = baseFragment;
 	}
 	
 	@Override
@@ -50,6 +60,7 @@ public class CommonListAdapter extends BaseAdapter
 			listItemLayout = inflater.inflate(R.layout.common_list_item_layout, parent, false);
 			listItemMainTextView = (TextView) listItemLayout.findViewById(R.id.list_item_main_text);
 			leftImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_left_image);		
+			leftUserImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_user_image);
 			listItemMainTextView.setText(item.getLabel());
 			if (item.getLeftImage() != null && !isCheckListMode)
 			{
@@ -67,6 +78,14 @@ public class CommonListAdapter extends BaseAdapter
 					leftImageView.setImageResource(R.drawable.button_unchecked);
 				}			
 				leftImageView.setVisibility(View.VISIBLE);
+			}
+			if (item.getLeftUserImageURL() != null)
+			{
+				leftUserImageView.setVisibility(View.VISIBLE);
+				if (baseFragment != null)
+				{
+					baseFragment.loadImageOnView(item.getLeftUserImageURL(), leftUserImageView, ImageLoader.UNCOMPRESSED);
+				}
 			}
 		}
 		

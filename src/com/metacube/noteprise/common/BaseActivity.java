@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ import com.metacube.noteprise.salesforce.SalesforceLoginUtility;
 import com.metacube.noteprise.util.AsyncTaskDataLoader;
 import com.metacube.noteprise.util.NoteprisePreferences;
 import com.metacube.noteprise.util.Utilities;
+import com.metacube.noteprise.util.imageloader.ImageLoader;
 import com.salesforce.androidsdk.rest.RestClient;
 
 @SuppressLint("Registered")
@@ -32,6 +34,7 @@ public class BaseActivity extends FragmentActivity
 	
 	public NotepriseFragmentManager notepriseFragmentManager;
 	public AsyncTaskDataLoader backgroundDataLoader;
+	public ImageLoader backgroundImageLoader;
 	
 	public NoteprisePreferences noteprisePreferences;
 	public CommonMessageDialog commonMessageDialog;
@@ -189,6 +192,14 @@ public class BaseActivity extends FragmentActivity
 	public void finishScreen()
 	{
 		notepriseFragmentManager.onBackPressed();
+	}
+	
+	public void loadImageOnView(String path, ImageView imageView, int compress)
+	{
+		if (backgroundImageLoader != null)
+		{
+			backgroundImageLoader.DisplayImage(path, this, imageView, compress);
+		}
 	}
 	
 	public void executeAsyncTask()
