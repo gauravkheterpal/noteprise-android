@@ -70,4 +70,34 @@ public class NoteprisePreferences
 		prefsEditor.putString(Constants.EVERNOTE_WEBAPI_PREFIX, webApiPrefix);		
 		prefsEditor.commit();
 	}
+	
+	public String getUserSavedSalesforceObjectMapping() 
+	{
+		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_OBJECT_MAPPING, null);
+	}
+	
+	public String getUserSavedSalesforceFieldMapping() 
+	{
+		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_FIELD_MAPPING, null);
+	}
+	
+	public String getUserSavedSalesforceObjectLabel() 
+	{
+		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_OBJECT_LABEL, null);
+	}
+	
+	public String getUserSavedSalesforceFieldLabel() 
+	{
+		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, null);
+	}
+
+	public void saveUserSalesforceObjectFieldMapping(String userSavedSalesforceObjectMapping, String userSavedSalesforceObjectLabel, 
+			String userSavedSalesforceFieldMapping, String userSavedSalesforceFieldLabel) 
+	{
+		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_MAPPING, userSavedSalesforceObjectMapping);		
+		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_LABEL, userSavedSalesforceObjectLabel);
+		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_MAPPING, userSavedSalesforceFieldMapping);
+		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, userSavedSalesforceFieldLabel);
+		prefsEditor.commit();
+	}	
 }

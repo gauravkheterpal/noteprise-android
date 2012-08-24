@@ -68,6 +68,8 @@ public class BaseActivity extends FragmentActivity
 		commonProgressDialog = new ProgressDialog(this);
 		commonProgressDialog.setTitle(Messages.PROGRESS_DIALOG_TITLE);
 		commonProgressDialog.setMessage(Messages.PROGRESS_DIALOG_MESSAGE);
+		
+		getObjectFieldMappingsFromPreferences();
 	}	
 	
 	public void startEvernoteAuthentication() 
@@ -200,6 +202,14 @@ public class BaseActivity extends FragmentActivity
 		{
 			backgroundImageLoader.DisplayImage(path, this, imageView, compress);
 		}
+	}
+	
+	public void getObjectFieldMappingsFromPreferences()
+	{
+		SELECTED_OBJECT = noteprisePreferences.getUserSavedSalesforceObjectMapping();
+		SELECTED_OBJECT_LABEL = noteprisePreferences.getUserSavedSalesforceObjectLabel();
+		SELECTED_FIELD = noteprisePreferences.getUserSavedSalesforceFieldMapping();
+		SELECTED_FIELD_LABEL = noteprisePreferences.getUserSavedSalesforceFieldLabel();
 	}
 	
 	public void executeAsyncTask()

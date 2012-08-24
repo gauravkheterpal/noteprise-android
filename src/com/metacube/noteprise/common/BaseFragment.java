@@ -13,7 +13,6 @@ import com.evernote.client.oauth.android.EvernoteSession;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.util.AsyncTaskDataLoader;
-import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.NoteprisePreferences;
 import com.metacube.noteprise.util.Utilities;
 import com.metacube.noteprise.util.imageloader.ImageLoader;
@@ -150,7 +149,8 @@ public class BaseFragment extends Fragment
 		this.selectedFieldLabel = baseActivity.SELECTED_FIELD_LABEL;
 		this.selectedObject = baseActivity.SELECTED_OBJECT;
 		this.selectedObjectLabel = baseActivity.SELECTED_OBJECT_LABEL;
-		if (Utilities.verifyStringData(selectedFieldLabel) && Utilities.verifyStringData(selectedObjectLabel))
+		if (Utilities.verifyStringData(selectedFieldLabel) && Utilities.verifyStringData(selectedObjectLabel) 
+				&& Utilities.verifyStringData(selectedField) && Utilities.verifyStringData(selectedObject))
 		{
 			baseActivity.selectedObjectTextView.setText(selectedObjectLabel);
 			baseActivity.selectedFieldTextView.setText(selectedFieldLabel);

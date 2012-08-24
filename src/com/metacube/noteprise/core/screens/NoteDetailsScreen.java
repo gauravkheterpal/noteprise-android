@@ -99,6 +99,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			else
 			{
 				showToastNotification("Please select a object and field first.");
+				changeScreen(new NotepriseFragment("SalesforceObjectChooser", SalesforceObjectChooser.class));
 			}			
 		}
 		else if (view == baseActivity.deleteNoteButton)
