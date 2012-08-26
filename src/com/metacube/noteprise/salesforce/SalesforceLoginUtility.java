@@ -48,11 +48,6 @@ public class SalesforceLoginUtility implements RestClientCallback
 		this.salesforceRestClient = client;
 		baseActivity.loggedInSalesforce = Boolean.TRUE;
 		baseActivity.handleSalesforceLoginComplete();
-		// Show everything
-		//findViewById(R.id.root).setVisibility(View.VISIBLE);
-
-		// Show welcome
-		//((TextView) findViewById(R.id.welcome_text)).setText(getString(R.string.welcome, client.getClientInfo().username));
 	}
 	
 	public void onAppUserInteraction() 

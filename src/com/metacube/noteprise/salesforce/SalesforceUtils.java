@@ -130,7 +130,6 @@ public class SalesforceUtils
 			{				
 				StringEntity stringEntity = new StringEntity(generateJSONBodyForChatterFeed(noteContent, selectedIds));
 				stringEntity.setContentType("application/json");
-				//stringEntity.setContentEncoding("UTF-8");
 				String url = "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items";
 				NotepriseLogger.logMessage(url);
 				publishResponse = salesforceRestClient.sendSync(RestMethod.POST, url, stringEntity);

@@ -1,6 +1,5 @@
 package com.metacube.noteprise.core.screens;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +8,10 @@ import org.apache.thrift.transport.TTransportException;
 
 import android.app.Activity;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -35,7 +30,7 @@ import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.Utilities;
 import com.metacube.noteprise.util.richtexteditor.Html;
 
-public class CreateNewNoteScreen extends BaseFragment implements OnClickListener, OnItemSelectedListener
+public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 {
 	
 	List<Notebook> notebookList;
@@ -48,7 +43,6 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	LinearLayout createNoteButton;
 	int GET_DATA = 0, SAVE_DATA = 1, CURRENT_TASK = 0;
 	Note createdNote, savedNote;
-	Button image;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -91,10 +85,8 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			}
 			else
 			{
-				showToastNotification("All fields are required");
+				showToastNotification(getString(R.string.note_creation_all_fields_required_message));
 			}
-		}else if(view == image){
-			
 		}
 	}
 	
@@ -166,7 +158,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	        	createdNote.setNotebookGuid(notebookSpinnerAdapter.getSpinnerItemId(notebookListSpinner.getSelectedItemPosition()));
 	        	createdNote.setTitle(noteTitleEditText.getText().toString().trim());
 
-	        	createdNote.setContent(Constants.NOTE_PREFIX +Html.toHtml(noteContenteditText.getText())+Constants.NOTE_SUFFIX);
+				createdNote.setContent(Constants.NOTE_PREFIX + Html.toHtml(noteContenteditText.getText()) + Constants.NOTE_SUFFIX);
 	        	createdNote.setContent(createdNote.getContent().replace("<br>", "<br />"));
 	        	createdNote.setContent(createdNote.getContent().replace("&#160;", ""));
 	        	
@@ -208,7 +200,6 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 				createNoteButton.setVisibility(View.VISIBLE);
 				notebookSpinnerAdapter = new CommonSpinnerAdapter(inflater, spinnerItems);
 				notebookListSpinner.setAdapter(notebookSpinnerAdapter);
-				notebookListSpinner.setOnItemSelectedListener(this);
 	        }
 		}
 		else if (CURRENT_TASK == SAVE_DATA)
@@ -217,28 +208,15 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			hideFullScreenProgresIndicator();
 			if (savedNote != null && savedNote.getGuid() != null)
 			{
-				showToastNotification("Note successfully created");
+				showToastNotification(getString(R.string.note_created_success_message));
 				baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
+				baseActivity.previousScreenAction = Constants.CREATE_NOTE_ACTION;
 				finishScreen();
 			}
 			else
 			{
-				showToastNotification("Note creation failed");
+				showToastNotification(getString(R.string.note_creation_failed_message));
 			}			
-		}
-		
+		}		
 	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {	
-		
-	}
-	
-
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		
-	}	
 }

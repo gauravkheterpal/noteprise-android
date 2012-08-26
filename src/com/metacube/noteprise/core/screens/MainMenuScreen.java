@@ -81,7 +81,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 			String queryString = searchQueryEditText.getText().toString().trim();
 			if (!Utilities.verifyStringData(queryString))
 			{
-				showToastNotification("Please enter text first to search");
+				showToastNotification(getString(R.string.note_please_enter_text_for_search_message));
 				return;
 			}
 			showFullScreenProgresIndicator();
@@ -123,7 +123,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 		
 		if (isEvernoteAuthenticationComplete())
 		{
-			if (baseActivity.isDataSaved)
+			if (baseActivity.isDataSaved && checkPreviousScreenActionForNotRefresh())
 			{
 				loadPreviousState();
 			}
@@ -242,15 +242,21 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 		}
 		if (baseActivity.savedSelectedRadioButtonId != null)
 		{
-			isDataRestored = Boolean.TRUE;
+			if (baseActivity.savedSelectedRadioButtonId != R.id.search_all_radio_button)
+			{
+				isDataRestored = Boolean.TRUE;
+			}
+			else
+			{
+				isDataRestored = Boolean.FALSE;
+			}
 			selectedRadioButtonId = baseActivity.savedSelectedRadioButtonId;
 			searchCriteriaRadioGroup.check(selectedRadioButtonId);
 			if (selectedRadioButtonId == R.id.search_all_radio_button)
 			{
 				setSearchBarEnabled(Boolean.FALSE);
 			}
-		}
-		
+		}		
 		if (noteListAdapter == null)
 		{
 			getAllNotes();

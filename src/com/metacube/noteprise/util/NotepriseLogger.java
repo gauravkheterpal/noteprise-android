@@ -1,9 +1,8 @@
 package com.metacube.noteprise.util;
 
-import com.metacube.noteprise.common.Constants;
-import com.metacube.noteprise.common.Messages;
-
 import android.util.Log;
+
+import com.metacube.noteprise.common.Constants;
 
 public class NotepriseLogger 
 {
@@ -20,7 +19,7 @@ public class NotepriseLogger
 	{
 		if(LOGGING_ENABLED)
 		{
-			Log.v(Messages.LOG_TAG, message);
+			Log.v(Constants.LOG_TAG, message);
 		}		
 	}
 	
@@ -32,32 +31,32 @@ public class NotepriseLogger
 			{
 				case VERBOSE: 
 				{
-					Log.v(Messages.LOG_TAG, message);
+					Log.v(Constants.LOG_TAG, message);
 					break;
 				}
 				case ERROR: 
 				{
-					Log.e(Messages.LOG_TAG, message);
+					Log.e(Constants.LOG_TAG, message);
 					break;
 				}
 				case WARNING: 
 				{
-					Log.w(Messages.LOG_TAG, message);
+					Log.w(Constants.LOG_TAG, message);
 					break;
 				}
 				case DEBUG: 
 				{
-					Log.d(Messages.LOG_TAG, message);
+					Log.d(Constants.LOG_TAG, message);
 					break;
 				}
 				case INFO:
 				{
-					Log.i(Messages.LOG_TAG, message);
+					Log.i(Constants.LOG_TAG, message);
 					break;
 				}				
 				default:
 				{
-					Log.v(Messages.LOG_TAG, message);
+					Log.v(Constants.LOG_TAG, message);
 				}
 			}
 		}
@@ -71,32 +70,32 @@ public class NotepriseLogger
 			{
 				case VERBOSE: 
 				{
-					Log.v(Messages.LOG_TAG, message);
+					Log.v(Constants.LOG_TAG, message);
 					break;
 				}
 				case ERROR: 
 				{
-					Log.e(Messages.LOG_TAG, message);
+					Log.e(Constants.LOG_TAG, message);
 					break;
 				}
 				case WARNING: 
 				{
-					Log.w(Messages.LOG_TAG, message);
+					Log.w(Constants.LOG_TAG, message);
 					break;
 				}
 				case DEBUG: 
 				{
-					Log.d(Messages.LOG_TAG, message);
+					Log.d(Constants.LOG_TAG, message);
 					break;
 				}
 				case INFO:
 				{
-					Log.i(Messages.LOG_TAG, message);
+					Log.i(Constants.LOG_TAG, message);
 					break;
 				}				
 				default:
 				{
-					Log.v(Messages.LOG_TAG, message);
+					Log.v(Constants.LOG_TAG, message);
 				}
 			}
 			if (PRINT_STACK_TRACE) 
@@ -105,5 +104,4 @@ public class NotepriseLogger
 			}			
 		}
 	}
-
 }

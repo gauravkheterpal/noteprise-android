@@ -187,7 +187,7 @@ public class CommonListAdapter extends BaseAdapter
 	public void changeOrdering(String orderType)
 	{
 		// Sort By Name
-		if(orderType.equalsIgnoreCase(Messages.SORT_BY_NAME))
+		if(orderType.equalsIgnoreCase(Constants.SORT_BY_NAME))
 		{
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_NAME));
 		}
@@ -197,7 +197,7 @@ public class CommonListAdapter extends BaseAdapter
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_SORT_DATA));
 		}
 		// Sort By id
-		else if (orderType.equalsIgnoreCase(Messages.SORT_BY_ID))
+		else if (orderType.equalsIgnoreCase(Constants.SORT_BY_ID))
 		{
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_ID));
 		}

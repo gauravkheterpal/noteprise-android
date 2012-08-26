@@ -23,7 +23,7 @@ import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.CommonSpinnerAdapter;
-import com.metacube.noteprise.common.Messages;
+import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.salesforce.SalesforceUtils;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.salesforce.androidsdk.rest.RestClient.AsyncRequestCallback;
@@ -133,7 +133,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 					}					
 				}
 				objectsSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
-				objectsSpinnerAdapter.changeOrdering(Messages.SORT_BY_LABEL);
+				objectsSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
 				objectSpinner.setAdapter(objectsSpinnerAdapter);
 				objectSpinner.setOnItemSelectedListener(this);
 			} 
@@ -170,7 +170,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 					}
 				}
 				fieldsSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
-				fieldsSpinnerAdapter.changeOrdering(Messages.SORT_BY_LABEL);
+				fieldsSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
 				fieldSpinner.setAdapter(fieldsSpinnerAdapter);
 				doneButton.setEnabled(Boolean.TRUE);
 				doneButton.setVisibility(View.VISIBLE);

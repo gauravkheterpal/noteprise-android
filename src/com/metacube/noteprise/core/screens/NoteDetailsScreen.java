@@ -29,7 +29,7 @@ import com.evernote.edam.notestore.NoteStore.Client;
 import com.evernote.edam.type.Note;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
-import com.metacube.noteprise.common.PopupMenuAdapter;
+import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.evernote.EvernoteUtils;
 import com.metacube.noteprise.salesforce.SalesforceUtils;
@@ -49,7 +49,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	Note note;
 	RestResponse publishResponse;
 	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null;
-	PopupMenuAdapter chatterPopupMenuAdapter;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -91,14 +90,14 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if (baseActivity.SELECTED_OBJECT != null && baseActivity.SELECTED_FIELD != null)
 			{
 				Bundle args = new Bundle();
-				String saveString = EvernoteUtils.stripNoteContent(noteContent);
+				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 				NotepriseLogger.logMessage("Saving string==" + saveString);
 				args.putString("noteContent", saveString);
 				changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
 			}
 			else
 			{
-				showToastNotification("Please select a object and field first.");
+				showToastNotification(getString(R.string.salesforce_select_object_field_message));
 				changeScreen(new NotepriseFragment("SalesforceObjectChooser", SalesforceObjectChooser.class));
 			}			
 		}
@@ -152,7 +151,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
 		{
 			Bundle args = new Bundle();
-			String publishString = EvernoteUtils.stripNoteContent(noteContent);
+			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "USER_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
@@ -160,7 +159,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		else if (item.getItemId() == R.id.chatter_menu_post_group_feed)
 		{
 			Bundle args = new Bundle();
-			String publishString = EvernoteUtils.stripNoteContent(noteContent);
+			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "GROUP_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
@@ -230,7 +229,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if (TASK == PUBLISH_TO_MY_CHATTER_FEED)
 		{
-			String publishString = EvernoteUtils.stripNoteContent(noteContent);
+			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishString, SF_API_VERSION);
 		}
 	}
@@ -255,12 +254,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			hideFullScreenProgresIndicator();
 			if (deletionId != null)
 			{
-				showToastNotification("Note deleted successfully");
+				showToastNotification(getString(R.string.note_delete_success_message));
+				baseActivity.previousScreenAction = Constants.DELETE_NOTE_ACTION;
 				finishScreen();
 			}
 			else
 			{
-				showToastNotification("Note could not be deleted");
+				showToastNotification(getString(R.string.note_delete_failed_message));
 			}
 		}
 		else if (TASK == PUBLISH_TO_MY_CHATTER_FEED)
@@ -281,11 +281,11 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				{
 					e.printStackTrace();
 				}
-				showToastNotification("Your note has been succesfully posted on your chatter feed.");
+				showToastNotification(getString(R.string.salesforce_chatter_post_self_success_message));
 			}
 			else
 			{
-				showToastNotification("Some error ocurred. Please try again.");
+				showToastNotification(getString(R.string.some_error_ocurred_message));
 			}
 		}
 	}

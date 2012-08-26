@@ -155,19 +155,19 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 			}
 		}
-		else if (TASK == PUBLISH_TO_CHATTER_USER || TASK == PUBLISH_TO_CHATTER_GROUP)
+		else if (TASK == PUBLISH_TO_CHATTER_USER)
 		{
 			TASK = -1;
 			try 
 			{			
 				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
-					showToastNotification("Note was successfully posted on feed.");
+					showToastNotification(getString(R.string.salesforce_chatter_post_user_success_message));
 					finishScreen();
 				}
 				else
 				{
-					showToastNotification("Some error ocurred. Please try again later.");
+					showToastNotification(getString(R.string.some_error_ocurred_message));
 					String response = publishResponse.asString();
 					NotepriseLogger.logMessage(response);
 				}
@@ -180,7 +180,33 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			{
 				e.printStackTrace();
 			}
-		}		
+		}
+		else if (TASK == PUBLISH_TO_CHATTER_GROUP)
+		{
+			TASK = -1;
+			try 
+			{			
+				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
+				{
+					showToastNotification(getString(R.string.salesforce_chatter_post_group_success_message));
+					finishScreen();
+				}
+				else
+				{
+					showToastNotification(getString(R.string.some_error_ocurred_message));
+					String response = publishResponse.asString();
+					NotepriseLogger.logMessage(response);
+				}
+			} 
+			catch (ParseException e) 
+			{				
+				e.printStackTrace();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
@@ -216,7 +242,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			}
 			else
 			{
-				showToastNotification("No records selected");
+				showToastNotification(getString(R.string.salesforce_no_records_selected_message));
 			}
 		}
 	}

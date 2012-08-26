@@ -19,48 +19,23 @@ import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.NotepriseLogger;
 
 public class EvernoteUtils 
-{
-	
-	
-	public static String stripNoteContent(String noteContent)
+{	
+	public static String stripNoteHTMLContent(String noteContent)
 	{
 		NotepriseLogger.logMessage(noteContent);
-		/*int start = 0 , end = noteContent.length() - 1;
-    	start = noteContent.indexOf("<en-note><div>") + 14;
-    	if (start == -1)
-    	{
-    		start = noteContent.indexOf("<en-note>") + 9;
-    		end = noteContent.indexOf("</en-note>");
-    	}
-    	else
-    	{
-    		end = noteContent.indexOf("</div></en-note>");
-    	}    	
-    	try 
-    	{
-			noteContent = noteContent.substring(start, end);
-			noteContent.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM " +
-					"\"http://xml.evernote.com/pub/enml2.dtd\"><en-note>","");
-			noteContent.replace("</en-note>", "");
-			noteContent.replace("</div>", "");
-			noteContent.replace("</div>", "");
-			
-		} 
-    	catch (StringIndexOutOfBoundsException e) 
-    	{
-    		NotepriseLogger.logError("Exception while stripping note content.", NotepriseLogger.ERROR, e);
-		}*/
 		noteContent = noteContent.replaceAll("\\<.*?>","");
     	return noteContent;
 	}
 	
-	public static String stripEvernoteSuffixAndPrefix(String noteContent){
+	public static String stripEvernoteSuffixAndPrefix(String noteContent)
+	{
 		int start, end;
 		String content = null;
-		if(noteContent != null){				
-		start = noteContent.indexOf("<en-note>");
-		end = noteContent.indexOf("</en-note>");
-		content = noteContent.substring(start+9, end);
+		if (noteContent != null)
+		{				
+			start = noteContent.indexOf("<en-note>");
+			end = noteContent.indexOf("</en-note>");
+			content = noteContent.substring(start + 9, end);
 		}
 		return content;
 	}
@@ -348,8 +323,7 @@ public class EvernoteUtils
 	public static Note updateNote(String authToken, Client client,Note note){
 		try 
 		{			
-			System.out.println("++++++++++++++++Updating");
-			 return client.updateNote(authToken, note);
+			return client.updateNote(authToken, note);
 		} 
 		catch (EDAMUserException e) 
 		{

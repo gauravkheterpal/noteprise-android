@@ -67,7 +67,7 @@ public class CommonSpinnerAdapter extends BaseAdapter implements SpinnerAdapter
 	public void changeOrdering(String orderType)
 	{
 		// Sort By Name
-		if(orderType.equalsIgnoreCase(Messages.SORT_BY_NAME))
+		if(orderType.equalsIgnoreCase(Constants.SORT_BY_NAME))
 		{
 			Collections.sort(items, new CommonListComparator(CommonListComparator.COMPARE_BY_NAME));
 		}
@@ -77,7 +77,7 @@ public class CommonSpinnerAdapter extends BaseAdapter implements SpinnerAdapter
 			Collections.sort(items, new CommonListComparator(CommonListComparator.COMPARE_BY_SORT_DATA));
 		}
 		// Sort By id
-		else if (orderType.equalsIgnoreCase(Messages.SORT_BY_ID))
+		else if (orderType.equalsIgnoreCase(Constants.SORT_BY_ID))
 		{
 			Collections.sort(items, new CommonListComparator(CommonListComparator.COMPARE_BY_ID));
 		}

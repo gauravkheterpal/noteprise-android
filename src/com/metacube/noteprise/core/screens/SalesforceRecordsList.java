@@ -28,7 +28,6 @@ import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
 import com.metacube.noteprise.common.CommonListAdapter;
 import com.metacube.noteprise.common.CommonListItems;
-import com.metacube.noteprise.common.Messages;
 import com.metacube.noteprise.salesforce.CommonSOQL;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.Utilities;
@@ -183,16 +182,15 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				NotepriseLogger.logMessage(response.asString());
 				if (response.getStatusCode() == 204 && !response.asString().contains("errorCode"))
 				{
-					//commonMessageDialog.showMessageDialog("Record successfully updated");
 					if (totalRequests > 0)
 					{
 						hideFullScreenProgresIndicator();
-						showToastNotification(Messages.RECORD_UPDATED_MESSAGE);
+						showToastNotification(getString(R.string.salesforce_record_updated_success_message));
 						clearScreen();
 					}
 					else
 					{
-						showToastNotification(Messages.RECORD_UPDATED_MESSAGE);
+						showToastNotification(getString(R.string.salesforce_record_updated_success_message));
 						hideFullScreenProgresIndicator();
 						clearScreen();
 					}
@@ -201,7 +199,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				else if (response.asString().contains("errorCode"))
 				{
 					hideFullScreenProgresIndicator();
-					showToastNotification("Failed saving records.");
+					showToastNotification(getString(R.string.salesforce_record_saving_failed_message));
 				}
 			} 
 			catch (ParseException e) 
@@ -228,7 +226,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	{
 		hideFullScreenProgresIndicator();
 		NotepriseLogger.logError("Exception getting response for records list.", NotepriseLogger.ERROR, exception);	
-		commonMessageDialog.showMessageDialog("Some error occurred.");
+		commonMessageDialog.showMessageDialog(getString(R.string.some_error_ocurred_message));
 	}
 
 	@Override
@@ -254,7 +252,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			}
 			else
 			{
-				showToastNotification("No records selected");
+				showToastNotification(getString(R.string.salesforce_no_records_selected_message));
 			}
 		}
 	}

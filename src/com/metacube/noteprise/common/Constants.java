@@ -7,6 +7,7 @@ public class Constants
 	
 	public static final Boolean DEBUGGING_ENABLED = true;
 	public static final Boolean STACKTRACE_ENABLED = true;
+	public static String LOG_TAG = "Noteprise";
 	
 	public static final String NOTEPRISE_PREFS = "NoteprisePrefs";	
 	public static final String EVERNOTE_LOGGED_IN_PREF = "evernote_loggedin";
@@ -36,10 +37,18 @@ public class Constants
 	public static final Integer MAX_NOTES = 100;
 	
 	public static final Integer USER_PAGE_BATCH_SIZE = 1000;
-	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;
+	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;	
+	
+	public static String SORT_BY_LABEL = "SORT_BY_LABEL";
+	public static String SORT_BY_NAME = "SORT_BY_NAME";
+	public static String SORT_BY_ID = "SORT_BY_ID";
+	public static String SORT_BY_SORT_ORDER = "SORT_BY_SORT_ORDER";
 	
 	
 	public static final String ITEM_TYPE_LIST_SECTION = "LIST_SECTION";
 	public static final String ITEM_TYPE_LIST_ITEM = "LIST_ITEM";
+	
+	public static final String CREATE_NOTE_ACTION = "CREATE_NOTE_ACTION";
+	public static final String DELETE_NOTE_ACTION = "DELETE_NOTE_ACTION";
 	
 }

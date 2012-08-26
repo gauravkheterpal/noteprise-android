@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView.BufferType;
 
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
@@ -44,6 +43,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	Integer GET_NOTE_DATA = 0, UPDATE_NOTE = 1, TASK = 0, deletionId = null;
 	String saveString;
 	RichTextEditor richTexteditor;
+	
 	@Override
 	public void onAttach(Activity activity) 
 	{
@@ -55,29 +55,25 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
     {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        noteGuid = Utilities.getStringFromBundle(args, "noteGuid");
-        
-    
+        noteGuid = Utilities.getStringFromBundle(args, "noteGuid");    
     }
     
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
-    {
-    	 clearContainer(container);
-    	 View contentView = inflater.inflate(R.layout.note_edit_screen_layout, container);
-    	 noteContenteditText = (EditText) contentView.findViewById(R.id.content);
-    	 updateButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_update_button_layout, R.id.common_update_button);
-    	 updateButton.setVisibility(View.VISIBLE);
-    	 updateButton.setOnClickListener(this);
-    	
-    	return super.onCreateView(inflater, container, savedInstanceState);
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
+	{
+		clearContainer(container);
+		View contentView = inflater.inflate(R.layout.note_edit_screen_layout, container);
+		noteContenteditText = (EditText) contentView.findViewById(R.id.content);
+		updateButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_update_button_layout, R.id.common_update_button);
+		updateButton.setVisibility(View.VISIBLE);
+		updateButton.setOnClickListener(this);
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
     
     @Override
     public void onStart() 
     {
-    	super.onStart();
-    	
+    	super.onStart();    	
     }
 
 	@Override
@@ -87,8 +83,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		{ 
 			TASK = UPDATE_NOTE;
 			showFullScreenProgresIndicator();
-			executeAsyncTask();
-	
+			executeAsyncTask();	
 		}
 	}
 	
@@ -98,16 +93,14 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		super.onResume();
 		TASK = GET_NOTE_DATA;
         showFullScreenProgresIndicator();
-		executeAsyncTask();
-		
+		executeAsyncTask();		
 	}
 	
 	@Override
 	public void onStop() 
 	{
 		super.onStop();
-		removeViewFromBaseHeaderLayout(updateButton);
-		
+		removeViewFromBaseHeaderLayout(updateButton);		
 	}
 	
 	@Override
@@ -145,11 +138,11 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 					e.printStackTrace();
 				}
 		    }
-		}	else if (TASK == UPDATE_NOTE)
+		}	
+		else if (TASK == UPDATE_NOTE)
 		{
 			EvernoteUtils.updateNote(authToken, client, note);
-		}
-		
+		}		
 	}
 	
 	@Override
@@ -158,18 +151,15 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		super.onTaskFinished();
 		if (TASK == GET_NOTE_DATA)
 		{
-			hideFullScreenProgresIndicator();			
-	    	
+			hideFullScreenProgresIndicator();	    	
 	    	noteContent = note.getContent();
 	    	NotepriseLogger.logMessage(noteContent);
 	    	saveString= noteContent.replace(Constants.NOTE_PREFIX, "");
 	    	saveString= noteContent.replace(Constants.NOTE_SUFFIX, "");
-	    	noteContenteditText.setText(Html.fromHtml(saveString));
-	    	
+	    	noteContenteditText.setText(Html.fromHtml(saveString));	    	
 		}
 		else if (TASK == UPDATE_NOTE)
-		{
-			
+		{			
 			note.setContent(Constants.NOTE_PREFIX +Html.toHtml(noteContenteditText.getText())+Constants.NOTE_SUFFIX);			
 			note.setContent(note.getContent().replace("<br>", "<br />"));
 			note.setContent(note.getContent().replace("&#160;", ""));

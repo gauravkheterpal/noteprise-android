@@ -7,20 +7,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
 
 import com.evernote.edam.notestore.NoteStore.Client;
+import com.metacube.noteprise.R;
 
 public class CommonMessageDialog implements OnClickListener
 {
 	Builder alertDialogBuilder;
 	public AlertDialog messageDialog;
 	Context context;
+	Resources resources;
 	Handler dialogButtonHandler = null;
 	
 	public CommonMessageDialog(Context context) 
 	{
 		this.context = context;
+		resources = context.getResources();
 	}
 	
 	public Boolean isAlreadyShowing() 
@@ -44,7 +48,7 @@ public class CommonMessageDialog implements OnClickListener
 		alertDialogBuilder = new AlertDialog.Builder(context);
 		alertDialogBuilder.setMessage(message);
 		alertDialogBuilder.setCancelable(false);
-		alertDialogBuilder.setNeutralButton("Ok", this);
+		alertDialogBuilder.setNeutralButton(resources.getString(R.string.dialog_neutral_button_text), this);
 		messageDialog = alertDialogBuilder.create();
 		messageDialog.show();
 	}
@@ -72,7 +76,7 @@ public class CommonMessageDialog implements OnClickListener
 		alertDialogBuilder = new AlertDialog.Builder(context);
 		alertDialogBuilder.setMessage(message);
 		alertDialogBuilder.setCancelable(false);
-		alertDialogBuilder.setNeutralButton("Ok",
+		alertDialogBuilder.setNeutralButton(resources.getString(R.string.dialog_neutral_button_text),
 				new OnClickListener() 
 			{
 				@Override
@@ -101,7 +105,7 @@ public class CommonMessageDialog implements OnClickListener
 		alertDialogBuilder = new AlertDialog.Builder(context);
 		alertDialogBuilder.setMessage(message);
 		alertDialogBuilder.setCancelable(false);
-		alertDialogBuilder.setNeutralButton("Ok", 
+		alertDialogBuilder.setNeutralButton(resources.getString(R.string.dialog_neutral_button_text), 
 				new OnClickListener() 
 				{
 					@Override
@@ -122,10 +126,10 @@ public class CommonMessageDialog implements OnClickListener
 			return;
 		}
 		alertDialogBuilder = new AlertDialog.Builder(context);
-		alertDialogBuilder.setMessage("Are you sure you want to delete this note?");
+		alertDialogBuilder.setMessage(resources.getString(R.string.note_delete_confirm_message));
 		alertDialogBuilder.setCancelable(false);
-		alertDialogBuilder.setPositiveButton("Yes", listener);
-		alertDialogBuilder.setNegativeButton("No", listener);
+		alertDialogBuilder.setPositiveButton(resources.getString(R.string.dialog_positive_button_text), listener);
+		alertDialogBuilder.setNegativeButton(resources.getString(R.string.dialog_negative_button_text), listener);
 		messageDialog = alertDialogBuilder.create();
 		messageDialog.show();
 	}

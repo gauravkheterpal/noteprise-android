@@ -103,6 +103,20 @@ public class BaseFragment extends Fragment
 		}
 	}
 	
+	public Boolean checkPreviousScreenActionForNotRefresh()
+	{
+		Boolean status = Boolean.TRUE;
+		if (baseActivity.previousScreenAction != null)
+		{
+			if (baseActivity.previousScreenAction.equalsIgnoreCase(Constants.CREATE_NOTE_ACTION) || baseActivity.previousScreenAction.equalsIgnoreCase(Constants.DELETE_NOTE_ACTION))
+			{
+				status = Boolean.FALSE;
+				baseActivity.previousScreenAction = null;
+			}
+		}
+		return status;
+	}
+	
 	public void startEvernoteAuthentication()
 	{
 		baseActivity.startEvernoteAuthentication();

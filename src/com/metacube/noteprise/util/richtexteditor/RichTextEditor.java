@@ -1,19 +1,13 @@
 package com.metacube.noteprise.util.richtexteditor;
 
-import com.metacube.noteprise.R;
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.Editable;
-//import android.text.Html;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -23,6 +17,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView.BufferType;
 import android.widget.ToggleButton;
+
+import com.metacube.noteprise.R;
+//import android.text.Html;
 
 public class RichTextEditor extends LinearLayout implements ColorPickerDialog.OnColorChangedListener, TextSizeDialog.OnSizeChangedListener
 {

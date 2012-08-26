@@ -13,7 +13,7 @@ public class FileCache
         //Use External Storage If Avaliable otherwise internal storage.
 		/*if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) 
 		{
-			cacheDir = new File(android.os.Environment.getExternalStorageDirectory(), "Android/data/com.techmo.sportspass/fileCache/");
+			cacheDir = new File(android.os.Environment.getExternalStorageDirectory(), "Android/data/com.metacube.noteprise/fileCache/");
 		} 
 		else 
 		{*/

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.evernote.client.conn.ApplicationInfo;
 import com.evernote.client.oauth.android.AuthenticationResult;
 import com.evernote.client.oauth.android.EvernoteSession;
+import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.common.base.NotepriseFragmentManager;
 import com.metacube.noteprise.salesforce.SalesforceLoginUtility;
@@ -57,6 +58,8 @@ public class BaseActivity extends FragmentActivity
 	public Integer savedSelectedRadioButtonId = null;
 	public Boolean isDataSaved = Boolean.FALSE;
 	
+	public String previousScreenAction;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -66,8 +69,8 @@ public class BaseActivity extends FragmentActivity
 		commonMessageDialog = new CommonMessageDialog(this);
 		backgroundDataLoader = new AsyncTaskDataLoader(this);
 		commonProgressDialog = new ProgressDialog(this);
-		commonProgressDialog.setTitle(Messages.PROGRESS_DIALOG_TITLE);
-		commonProgressDialog.setMessage(Messages.PROGRESS_DIALOG_MESSAGE);
+		commonProgressDialog.setTitle(getResources().getString(R.string.progress_dialog_title));
+		commonProgressDialog.setMessage(getResources().getString(R.string.progress_dialog_message));
 		
 		getObjectFieldMappingsFromPreferences();
 	}	
