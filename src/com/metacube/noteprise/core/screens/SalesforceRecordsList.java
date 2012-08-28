@@ -84,7 +84,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			fieldList.add("name");
 			try 
 			{
-				showFullScreenProgresIndicator();
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_salesforce_record_list_message));
 				recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName));				
 			} 
 			catch (UnsupportedEncodingException e) 
@@ -104,7 +104,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		}
 		else
 		{
-			showFullScreenProgresIndicator();
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_salesforce_record_detail_message));
 			String recordId = recordsAdapter.getListItemId(position);
 			sendUpdateRequest(recordId);
 		}		
@@ -185,12 +185,12 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					if (totalRequests > 0)
 					{
 						hideFullScreenProgresIndicator();
-						showToastNotification(getString(R.string.salesforce_record_updated_success_message));
+						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						clearScreen();
 					}
 					else
 					{
-						showToastNotification(getString(R.string.salesforce_record_updated_success_message));
+						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						hideFullScreenProgresIndicator();
 						clearScreen();
 					}
@@ -243,7 +243,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			ArrayList<String> selectedRecords = recordsAdapter.getCheckedItemsList();
 			if (selectedRecords.size() > 0)
 			{
-				showFullScreenProgresIndicator();
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_save_record_message));
 				totalRequests = selectedRecords.size();
 				for (int i = 0; i < selectedRecords.size(); i++)
 				{
