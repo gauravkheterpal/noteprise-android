@@ -51,10 +51,8 @@
         <LinearLayout
             android:id="@+id/create_new_note_button_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/common_button_height"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/normal_margin_padding"
-            android:background="@drawable/common_button_selector"
+            android:layout_height="fill_parent"
+            android:background="@drawable/common_button_selector_squared"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/small_margin_padding" >
@@ -64,23 +62,15 @@
                 android:layout_height="@dimen/common_button_icon_width_height"
                 android:scaleType="fitXY"
                 android:src="@drawable/plus_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/small_margin_padding"
-                android:text="New note"
-                android:textColor="@color/text_color_for_dark_background"
-                android:textSize="@dimen/common_button_text_size" />
+            
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/delete_note_button_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/common_button_height"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/normal_margin_padding"
-            android:background="@drawable/common_button_selector"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@id/create_new_note_button_layout"
+            android:background="@drawable/common_button_selector_squared"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/small_margin_padding"
@@ -91,24 +81,20 @@
                 android:layout_height="@dimen/common_button_icon_width_height"
                 android:scaleType="fitXY"
                 android:src="@drawable/trash_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/small_margin_padding"
-                android:text="Delete"
-                android:textColor="@color/text_color_for_dark_background"
-                android:textSize="@dimen/common_button_text_size" />
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@id/delete_note_button_layout"
+            android:background="@color/translucent_black" />
 
         <LinearLayout
             android:id="@+id/object_mapping_button_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/common_button_height"
+            android:layout_height="fill_parent"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/normal_margin_padding"
-            android:background="@drawable/common_button_selector"
+            android:background="@drawable/common_button_selector_squared"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/small_margin_padding"
@@ -146,6 +132,12 @@
                     android:textSize="@dimen/common_small_text_size" />
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:layout_toLeftOf="@id/object_mapping_button_layout"
+            android:background="@color/translucent_black" />
     </RelativeLayout>
 
 </LinearLayout>

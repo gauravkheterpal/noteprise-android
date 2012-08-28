@@ -71,14 +71,14 @@ public class NoteprisePreferences
 		prefsEditor.commit();
 	}
 	
-	public String getUserSavedSalesforceObjectMapping() 
+	public String getUserSavedSalesforceObjectName() 
 	{
-		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_OBJECT_MAPPING, null);
+		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_OBJECT_NAME, null);
 	}
 	
-	public String getUserSavedSalesforceFieldMapping() 
+	public String getUserSavedSalesforceFieldName() 
 	{
-		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_FIELD_MAPPING, null);
+		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_FIELD_NAME, null);
 	}
 	
 	public String getUserSavedSalesforceObjectLabel() 
@@ -91,12 +91,12 @@ public class NoteprisePreferences
 		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, null);
 	}
 
-	public void saveUserSalesforceObjectFieldMapping(String userSavedSalesforceObjectMapping, String userSavedSalesforceObjectLabel, 
-			String userSavedSalesforceFieldMapping, String userSavedSalesforceFieldLabel) 
+	public void saveUserSalesforceObjectFieldMapping(String userSavedSalesforceObjectName, String userSavedSalesforceObjectLabel, 
+			String userSavedSalesforceFieldName, String userSavedSalesforceFieldLabel) 
 	{
-		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_MAPPING, userSavedSalesforceObjectMapping);		
+		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_NAME, userSavedSalesforceObjectName);		
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_LABEL, userSavedSalesforceObjectLabel);
-		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_MAPPING, userSavedSalesforceFieldMapping);
+		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_NAME, userSavedSalesforceFieldName);
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, userSavedSalesforceFieldLabel);
 		prefsEditor.commit();
 	}	

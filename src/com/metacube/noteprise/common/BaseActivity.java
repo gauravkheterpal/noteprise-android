@@ -48,8 +48,8 @@ public class BaseActivity extends FragmentActivity
 	public Boolean loggedInSalesforce = Boolean.FALSE;
 	public Boolean loggedInEvernote = Boolean.FALSE;
 	
-	public String SELECTED_OBJECT, SELECTED_OBJECT_LABEL;
-	public String SELECTED_FIELD, SELECTED_FIELD_LABEL;
+	public String SELECTED_OBJECT_NAME, SELECTED_OBJECT_LABEL;
+	public String SELECTED_FIELD_NAME, SELECTED_FIELD_LABEL;
 	
 	//Main menu save data..
 	public CommonListAdapter savedListAdapter = null;
@@ -209,9 +209,9 @@ public class BaseActivity extends FragmentActivity
 	
 	public void getObjectFieldMappingsFromPreferences()
 	{
-		SELECTED_OBJECT = noteprisePreferences.getUserSavedSalesforceObjectMapping();
+		SELECTED_OBJECT_NAME = noteprisePreferences.getUserSavedSalesforceObjectName();
 		SELECTED_OBJECT_LABEL = noteprisePreferences.getUserSavedSalesforceObjectLabel();
-		SELECTED_FIELD = noteprisePreferences.getUserSavedSalesforceFieldMapping();
+		SELECTED_FIELD_NAME = noteprisePreferences.getUserSavedSalesforceFieldName();
 		SELECTED_FIELD_LABEL = noteprisePreferences.getUserSavedSalesforceFieldLabel();
 	}
 	

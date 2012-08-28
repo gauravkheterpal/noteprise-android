@@ -13,8 +13,8 @@
         android:startColor="@android:color/transparent"
         android:type="linear" /> 
 
-    <stroke
+    <!-- <stroke
         android:width="0.5dp"        
-        android:color="#6E6E6E" />
+        android:color="#6E6E6E" /> -->
 
 </shape>

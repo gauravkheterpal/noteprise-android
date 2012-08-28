@@ -19,6 +19,6 @@
         android:text="@string/chatter_menu_header_view_text"
         android:textColor="@color/text_color_for_dark_background"
         android:textStyle="bold"
-        android:textSize="@dimen/common_large_text_size" />
+        android:textSize="@dimen/common_extra_large_text_size" />
 
 </LinearLayout>

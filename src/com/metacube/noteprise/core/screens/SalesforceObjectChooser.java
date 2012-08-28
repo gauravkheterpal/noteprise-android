@@ -72,9 +72,9 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 			String fieldName = ((CommonListItems) fieldSpinner.getSelectedItem()).getName();
 			String fieldLabel = ((CommonListItems) fieldSpinner.getSelectedItem()).getLabel();			
 			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName);			
-			baseActivity.SELECTED_OBJECT = objectName;
+			baseActivity.SELECTED_OBJECT_NAME = objectName;
 			baseActivity.SELECTED_OBJECT_LABEL = objectLabel;
-			baseActivity.SELECTED_FIELD = fieldName;
+			baseActivity.SELECTED_FIELD_NAME = fieldName;
 			baseActivity.SELECTED_FIELD_LABEL = fieldLabel;
 			baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 			finishScreen();

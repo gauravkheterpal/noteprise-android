@@ -85,7 +85,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			try 
 			{
 				showFullScreenProgresIndicator();
-				recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObject));				
+				recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName));				
 			} 
 			catch (UnsupportedEncodingException e) 
 			{
@@ -113,10 +113,10 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	public void sendUpdateRequest(String recordId)
 	{
 		Map<String, Object> fields = new LinkedHashMap<String, Object>();
-		fields.put(selectedField, noteContent);
+		fields.put(selectedFieldName, noteContent);
 		try 
 		{
-			updateRecordRequest = RestRequest.getRequestForUpdate(SF_API_VERSION, selectedObject, recordId, fields);
+			updateRecordRequest = RestRequest.getRequestForUpdate(SF_API_VERSION, selectedObjectName, recordId, fields);
 		} 
 		catch (UnsupportedEncodingException e) 
 		{

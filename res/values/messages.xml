@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_name">Noteprise</string>
+
     <!-- System/Generic Messages -->
     <string name="no_network_connection_error">No network connectivity!</string>
     <string name="progress_dialog_title">Loading..</string>
@@ -11,6 +13,7 @@
     <string name="some_error_ocurred_message">Some error occurred. Please try again.</string>
 
     <!-- Note realted Messages -->
+    <string name="choose_notebook_prompt">Select a Notebook</string>
     <string name="note_please_enter_text_for_search_message">Please enter text first to search</string>
     <string name="note_created_success_message">Note successfully created</string>
     <string name="note_creation_failed_message">Note creation failed</string>
@@ -20,12 +23,15 @@
     <string name="note_delete_failed_message">Note could not be deleted</string>
 
     <!-- Salesforce Related messages -->
+    <string name="choose_object_prompt">Choose a object</string>
+    <string name="choose_field_prompt">Choose a field</string>
     <string name="salesforce_no_records_selected_message">No records selected</string>
     <string name="salesforce_select_object_field_message">Please select a object and field first.</string>
     <string name="salesforce_record_saving_failed_message">Failed saving records.</string>
     <string name="salesforce_record_updated_success_message">Record updated successfully</string>
 
     <!-- Chatter Related messages -->
+    <string name="chatter_menu_header_view_text">Publish To Chatter</string>
     <string name="salesforce_chatter_post_self_success_message">Your note has been succesfully posted on your chatter feed.</string>
     <string name="salesforce_chatter_post_user_success_message">Your note has been succesfully posted on your chatter feed.</string>
     <string name="salesforce_chatter_post_group_success_message">Your note has been succesfully posted on your chatter feed.</string>

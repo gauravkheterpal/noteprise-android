@@ -28,7 +28,7 @@ public class BaseFragment extends Fragment
 	public CommonMessageDialog commonMessageDialog;
 	public RestClient salesforceRestClient;
 	public String SF_API_VERSION;
-	public String selectedObject, selectedField, selectedObjectLabel, selectedFieldLabel;
+	public String selectedObjectName, selectedFieldName, selectedObjectLabel, selectedFieldLabel;
 	public AsyncTaskDataLoader backgroundDataLoader;
 	public RelativeLayout baseHeaderLayout;
 	public String screenTitle;
@@ -159,12 +159,12 @@ public class BaseFragment extends Fragment
 	
 	public void updateData()
 	{
-		this.selectedField = baseActivity.SELECTED_FIELD;
+		this.selectedFieldName = baseActivity.SELECTED_FIELD_NAME;
 		this.selectedFieldLabel = baseActivity.SELECTED_FIELD_LABEL;
-		this.selectedObject = baseActivity.SELECTED_OBJECT;
+		this.selectedObjectName = baseActivity.SELECTED_OBJECT_NAME;
 		this.selectedObjectLabel = baseActivity.SELECTED_OBJECT_LABEL;
 		if (Utilities.verifyStringData(selectedFieldLabel) && Utilities.verifyStringData(selectedObjectLabel) 
-				&& Utilities.verifyStringData(selectedField) && Utilities.verifyStringData(selectedObject))
+				&& Utilities.verifyStringData(selectedFieldName) && Utilities.verifyStringData(selectedObjectName))
 		{
 			baseActivity.selectedObjectTextView.setText(selectedObjectLabel);
 			baseActivity.selectedFieldTextView.setText(selectedFieldLabel);

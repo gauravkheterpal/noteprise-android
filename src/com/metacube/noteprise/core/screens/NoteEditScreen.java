@@ -64,7 +64,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		clearContainer(container);
 		View contentView = inflater.inflate(R.layout.note_edit_screen_layout, container);
 		noteContenteditText = (EditText) contentView.findViewById(R.id.content);
-		updateButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_update_button_layout, R.id.common_update_button);
+		updateButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
 		updateButton.setVisibility(View.VISIBLE);
 		updateButton.setOnClickListener(this);
 		return super.onCreateView(inflater, container, savedInstanceState);

@@ -70,7 +70,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.note_detail_screen_layout, container);
     	noteContentWebView = (WebView) contentView.findViewById(R.id.note_content_web_view);
-    	topButtonBar = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.note_edit_screen_menu_bar_layout, R.id.button_menu_bar_layout);
+    	topButtonBar = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.note_details_screen_menu_bar_layout, R.id.button_menu_bar_layout);
     	saveButton = (RelativeLayout) topButtonBar.findViewById(R.id.common_save_image_button);
     	publishToChatterButton = (RelativeLayout) topButtonBar.findViewById(R.id.publish_to_chatter_image_button);
     	editButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_left_edit_button_layout, R.id.common_left_edit_button);
@@ -87,7 +87,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	{
 		if (view == saveButton)
 		{
-			if (baseActivity.SELECTED_OBJECT != null && baseActivity.SELECTED_FIELD != null)
+			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
 			{
 				Bundle args = new Bundle();
 				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);

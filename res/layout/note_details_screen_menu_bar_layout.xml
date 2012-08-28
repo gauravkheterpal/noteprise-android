@@ -6,11 +6,16 @@
     android:layout_alignParentRight="true"
     android:orientation="horizontal" >
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:background="@color/translucent_black" />
+
     <RelativeLayout
         android:id="@+id/publish_to_chatter_image_button"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:background="@drawable/common_button_selector_squared_left_sided_border"
+        android:background="@drawable/common_button_selector_squared"
         android:padding="@dimen/small_margin_padding" >
 
         <ImageView
@@ -21,16 +26,16 @@
             android:src="@drawable/chatter_icon" />
     </RelativeLayout>
 
-    <!-- <View
-        android:layout_width="@dimen/common_divider_width_height"
+    <View
+        android:layout_width="1dp"
         android:layout_height="fill_parent"
-        android:background="@color/text_color_for_dark_background" /> -->
+        android:background="@color/translucent_black" />
 
     <RelativeLayout
         android:id="@+id/common_save_image_button"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:background="@drawable/common_button_selector_squared_left_sided_border"
+        android:background="@drawable/common_button_selector_squared"
         android:padding="@dimen/small_margin_padding" >
 
         <ImageView

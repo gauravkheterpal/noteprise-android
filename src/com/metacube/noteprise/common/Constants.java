@@ -16,8 +16,8 @@ public class Constants
 	public static final String EVERNOTE_USER_ID = "evernote_user_id";
 	public static final String EVERNOTE_WEBAPI_PREFIX = "evernote_webapi_prefix";
 	
-	public static final String USER_SAVED_SALESFORCE_OBJECT_MAPPING = "user_saved_salesforce_object_mapping";
-	public static final String USER_SAVED_SALESFORCE_FIELD_MAPPING = "user_saved_salesforce_field_mapping";
+	public static final String USER_SAVED_SALESFORCE_OBJECT_NAME = "user_saved_salesforce_object_mapping";
+	public static final String USER_SAVED_SALESFORCE_FIELD_NAME = "user_saved_salesforce_field_mapping";
 	public static final String USER_SAVED_SALESFORCE_OBJECT_LABEL = "user_saved_salesforce_object_label";
 	public static final String USER_SAVED_SALESFORCE_FIELD_LABEL = "user_saved_salesforce_field_label";
 	
