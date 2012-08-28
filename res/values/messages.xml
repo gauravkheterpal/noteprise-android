@@ -23,10 +23,10 @@
     <string name="note_delete_failed_message">Note could not be deleted</string>
 
     <!-- Salesforce Related messages -->
-    <string name="choose_object_prompt">Choose a object</string>
+    <string name="choose_object_prompt">Choose an object</string>
     <string name="choose_field_prompt">Choose a field</string>
     <string name="salesforce_no_records_selected_message">No records selected</string>
-    <string name="salesforce_select_object_field_message">Please select a object and field first.</string>
+    <string name="salesforce_select_object_field_message">Please select an object and field first.</string>
     <string name="salesforce_record_saving_failed_message">Failed saving records.</string>
     <string name="salesforce_record_updated_success_message">Record updated successfully</string>
 

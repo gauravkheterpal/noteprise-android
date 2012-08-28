@@ -3,6 +3,7 @@ package com.metacube.noteprise.common.base;
 import java.util.ArrayList;
 
 import com.metacube.noteprise.R;
+import com.metacube.noteprise.util.NotepriseLogger;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -31,8 +32,9 @@ public class NotepriseFragmentManager
 		npFragment._fragment = Fragment.instantiate(fragmentActivity, npFragment._class.getName(), npFragment._args);
 		ft.add(ROOT_CONTAINER_ID, npFragment._fragment, npFragment._tag);
 		screenStack.add(npFragment);
-		//ft.addToBackStack(npFragment._tag); 
-		ft.commit();
+		//ft.addToBackStack(npFragment._tag);		
+		//ft.commit();
+		ft.commitAllowingStateLoss();		
 		fragmentActivity.getSupportFragmentManager().executePendingTransactions();
 	}
 	

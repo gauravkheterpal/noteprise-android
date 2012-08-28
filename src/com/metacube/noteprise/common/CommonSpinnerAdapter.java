@@ -54,13 +54,13 @@ public class CommonSpinnerAdapter extends BaseAdapter implements SpinnerAdapter
 		View layout = inflater.inflate(R.layout.common_spinner_item_layout, null);
 		CommonListItems item = items.get(position);
 		TextView title = (TextView) layout.findViewById(R.id.spinner_item_label_text);
-		TextView subText = (TextView) layout.findViewById(R.id.spinner_item_sub_text);
+		//TextView subText = (TextView) layout.findViewById(R.id.spinner_item_sub_text);
 		title.setText(item.getLabel());
-		if (item.getName() != null)
+		/*if (item.getName() != null)
 		{
 			subText.setText("(" + item.getName() + ")");
 			subText.setVisibility(View.VISIBLE);
-		}		
+		}*/		
 		return layout;
 	}
 	
