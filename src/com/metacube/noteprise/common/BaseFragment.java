@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
 import com.evernote.client.oauth.android.EvernoteSession;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.base.NotepriseFragment;
@@ -175,6 +174,11 @@ public class BaseFragment extends Fragment
 	public void showFullScreenProgresIndicator()
 	{
 		baseActivity.showFullScreenProgresIndicator();
+	}
+	
+	public void showFullScreenProgresIndicator(String title, String message)
+	{
+		baseActivity.showFullScreenProgresIndicator(title , message);
 	}
 	
 	public void hideFullScreenProgresIndicator()

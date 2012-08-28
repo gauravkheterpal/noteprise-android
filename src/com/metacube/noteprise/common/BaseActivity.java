@@ -156,6 +156,18 @@ public class BaseActivity extends FragmentActivity
 	{
 		if (commonProgressDialog != null && !commonProgressDialog.isShowing())
 		{
+			commonProgressDialog.setTitle(getResources().getString(R.string.progress_dialog_title));
+			commonProgressDialog.setMessage(getResources().getString(R.string.progress_dialog_message));
+			commonProgressDialog.show();			
+		}
+	}
+	
+	public void showFullScreenProgresIndicator(String title, String message)
+	{
+		if (commonProgressDialog != null && !commonProgressDialog.isShowing())
+		{
+			commonProgressDialog.setTitle(title);
+			commonProgressDialog.setMessage(message);
 			commonProgressDialog.show();			
 		}
 	}

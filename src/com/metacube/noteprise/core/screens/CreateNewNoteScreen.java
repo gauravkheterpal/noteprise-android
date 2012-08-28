@@ -80,7 +80,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			if (Utilities.verifyStringData(noteTitle) && Utilities.verifyStringData(noteContent))
 			{
 				CURRENT_TASK = SAVE_DATA;
-				showFullScreenProgresIndicator();
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_create_message));
 				executeAsyncTask();
 			}
 			else

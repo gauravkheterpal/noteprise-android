@@ -80,7 +80,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	public void onResume() 
 	{
 		super.onResume();
-		showFullScreenProgresIndicator();
+		showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_edit_mesage));
 		executeAsyncTask();
 	}
 	
@@ -119,7 +119,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	public void publishNoteToChatterFeed()
 	{
 		TASK = PUBLISH_TO_CHATTER_USER;
-		showFullScreenProgresIndicator();
+		showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_user_message));
 		executeAsyncTask();
 	}
 	
@@ -235,9 +235,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			selectedIds = listAdapter.getCheckedItemsList();
 			if (selectedIds.size() > 0)
 			{
-				showFullScreenProgresIndicator();
 				TASK = PUBLISH_TO_CHATTER_USER;
-				showFullScreenProgresIndicator();
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_user_save_message));
 				executeAsyncTask();
 			}
 			else
@@ -262,14 +261,14 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				selectedIds = new ArrayList<String>();
 				selectedIds.add(recordId);
 				TASK = PUBLISH_TO_CHATTER_USER;
-				showFullScreenProgresIndicator();
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_following_data_message));
 				executeAsyncTask();
 			}
 			else if (TASK_TYPE == GET_GROUP_DATA)
 			{
 				groupId = listItems.get(position).getId();
 				TASK = PUBLISH_TO_CHATTER_GROUP;
-				showFullScreenProgresIndicator();
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_group_data_message));
 				executeAsyncTask();
 			}			
 		}

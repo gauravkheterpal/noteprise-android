@@ -145,7 +145,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		if (item.getItemId() == R.id.chatter_menu_post_my_feed)
 		{
 			TASK = PUBLISH_TO_MY_CHATTER_FEED;
-			showFullScreenProgresIndicator();
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_message));
 			executeAsyncTask();
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
@@ -296,7 +296,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		if (which == -1) // For Positive Button
 		{
 			TASK = DELETE_NOTE;
-			showFullScreenProgresIndicator();
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_delete_message));
 			executeAsyncTask();
 		}
 		else

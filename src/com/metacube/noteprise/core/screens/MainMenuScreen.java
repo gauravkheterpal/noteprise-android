@@ -84,7 +84,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 				showToastNotification(getString(R.string.note_please_enter_text_for_search_message));
 				return;
 			}
-			showFullScreenProgresIndicator();
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_search_message));
 			listView.setAdapter(null);
 			switch(searchCriteriaRadioGroup.getCheckedRadioButtonId())
 			{
@@ -202,7 +202,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 		if (evernoteSession != null)
 	    {
 			setSearchBarEnabled(Boolean.FALSE);
-			showFullScreenProgresIndicator();
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_all_message));
 			executeAsyncTask();
 	    }
 	}
