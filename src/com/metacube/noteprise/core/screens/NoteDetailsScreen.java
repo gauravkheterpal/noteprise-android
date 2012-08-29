@@ -1,6 +1,12 @@
 package com.metacube.noteprise.core.screens;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.http.ParseException;
 import org.apache.thrift.TException;
@@ -8,7 +14,11 @@ import org.apache.thrift.transport.TTransportException;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -27,6 +37,7 @@ import com.evernote.edam.error.EDAMSystemException;
 import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteStore.Client;
 import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Resource;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
 import com.metacube.noteprise.common.Constants;
@@ -45,11 +56,12 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	LinearLayout editButton;
 	LinearLayout topButtonBar;
 	RelativeLayout saveButton, publishToChatterButton;
-	String noteTitle, noteContent, noteGuid;
+	String noteTitle, noteContent, noteGuid,mediaString;
 	Note note;
+	Bitmap bitmap;
 	RestResponse publishResponse;
 	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null;
-	
+	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
 	@Override
 	public void onAttach(Activity activity) 
 	{
@@ -244,7 +256,24 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	    	noteTitle = note.getTitle();
 	    	noteContent = note.getContent();//EvernoteUtils.stripNoteContent(note.getContent());
 	    	setHeaderTitle(noteTitle);
-	    	noteContentWebView.loadData(noteContent, "text/html", "utf-8");
+	    	
+	    	List<Resource> res =note.getResources();
+	    	mediaString=noteContent;
+	    	if(res !=null)
+	    	{
+            for(Iterator<Resource> iterator= res.iterator(); iterator.hasNext();) {
+            Resource resource = iterator.next();
+            NotepriseLogger.logMessage("File Name"+ resource.getAttributes().getFileName()); 
+            bitmap= BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);
+            saveImageToExternalStorage(bitmap,resource.getAttributes().getFileName(),noteTitle);
+            mediaString = EvernoteUtils.getMediaStringFromNote(noteContent);
+	        final String fileName = "file://"+SD_CARD+Constants.IMAGE_PATH+ noteTitle+"_"+resource.getAttributes().getFileName();
+	        final String html = "<img src=\""+fileName+"\">";
+	        noteContent = noteContent.replace(mediaString, html);
+	        NotepriseLogger.logMessage("HTML"+noteContent);
+            }
+	    	}
+	    	noteContentWebView.loadDataWithBaseURL(SD_CARD+Constants.IMAGE_PATH+ Constants.APP_PATH_SD_CARD,noteContent, "text/html", "utf-8","");
 	    	topButtonBar.setVisibility(View.VISIBLE);
 	    	editButton.setVisibility(View.VISIBLE);
 		}
@@ -290,6 +319,42 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 	}
 
+	public  boolean saveImageToExternalStorage(Bitmap image, String imageName,String noteTitle) {
+
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 40, bytes);
+		try {
+		File dir = new File(SD_CARD+Constants.IMAGE_PATH);
+		if (!dir.exists()) {
+		dir.mkdirs();
+		}
+
+		OutputStream fOut = null;
+		File file = new File(SD_CARD+Constants.IMAGE_PATH,noteTitle+"_"+imageName);
+		if(file.exists()){
+			file.delete();
+			NotepriseLogger.logMessage("Deleting file"+file.delete()+ "filename"+file.getName());
+		}
+		
+		file.createNewFile();
+		
+		fOut = new FileOutputStream(file);
+
+		// 100 means no compression, the lower you go, the stronger the compression
+		image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+		fOut.flush();
+		fOut.close();
+
+		MediaStore.Images.Media.insertImage(baseActivity.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+
+		return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		return false;
+		}
+		}
+	
 	@Override
 	public void onClick(DialogInterface dialog, int which) 
 	{
