@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/large_margin_padding"
-        android:text="No results found"
+        android:text="@string/no_results_found_message"
         android:textColor="@color/common_text_color"
         android:textSize="@dimen/common_large_text_size"
         android:visibility="gone" />

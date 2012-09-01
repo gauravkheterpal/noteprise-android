@@ -26,7 +26,7 @@
         android:layout_below="@id/create_note_notebook_list_spinner"
         android:layout_marginTop="@dimen/normal_margin_padding"
         android:background="@drawable/common_edit_text_selector"
-        android:hint="Note Title"
+        android:hint="@string/note_title_hint_edit_text"
         android:padding="@dimen/small_margin_padding" />
 
     <com.metacube.noteprise.util.richtexteditor.RichTextEditor 

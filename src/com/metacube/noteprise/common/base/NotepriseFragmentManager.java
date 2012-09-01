@@ -2,12 +2,11 @@ package com.metacube.noteprise.common.base;
 
 import java.util.ArrayList;
 
-import com.metacube.noteprise.R;
-import com.metacube.noteprise.util.NotepriseLogger;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+
+import com.metacube.noteprise.R;
 
 
 public class NotepriseFragmentManager

@@ -84,25 +84,28 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 				showToastNotification(getString(R.string.note_please_enter_text_for_search_message));
 				return;
 			}
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_search_message));
+			Integer searchMessage = R.string.progress_dialog_note_search_message;
 			listView.setAdapter(null);
 			switch(searchCriteriaRadioGroup.getCheckedRadioButtonId())
 			{
 				case R.id.search_notebook_radio_button:
 				{
 					TASK = SEARCH_NOTEBOOK;
+					searchMessage = R.string.progress_dialog_notebook_search_message;
 					executeAsyncTask();
 					break;
 				}
 				case R.id.search_tag_radio_button:
 				{
 					TASK = SEARCH_TAG;
+					searchMessage = R.string.progress_dialog_tag_search_message;
 					executeAsyncTask();
 					break;
 				}
 				case R.id.search_keyword_radio_button:
 				{
 					TASK = SEARCH_KEYWORD;
+					searchMessage = R.string.progress_dialog_keyword_search_message;
 					executeAsyncTask();
 					break;
 				}
@@ -111,6 +114,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 					TASK = GET_ALL_NOTEBOOKS;
 				}
 			}
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(searchMessage));
 		}
 	}
 	
@@ -202,7 +206,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 		if (evernoteSession != null)
 	    {
 			setSearchBarEnabled(Boolean.FALSE);
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_all_message));
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_getting_all_notes_message));
 			executeAsyncTask();
 	    }
 	}

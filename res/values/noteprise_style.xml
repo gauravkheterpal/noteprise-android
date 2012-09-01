@@ -18,21 +18,21 @@
     <dimen name="normal_margin_padding">10dp</dimen>
     <dimen name="small_margin_padding">5dp</dimen>
     <dimen name="large_margin_padding">15dp</dimen>
-    <dimen name="common_button_text_size">11dp</dimen>
+    <!-- <dimen name="common_button_text_size">11dp</dimen> -->
     <dimen name="common_button_icon_width_height">20dp</dimen>
     <dimen name="common_non_text_button_icon_width_height">30dp</dimen>
-    <dimen name="common_button_height">35dp</dimen>
+    <!-- <dimen name="common_button_height">35dp</dimen> -->
     <dimen name="common_list_item_layout_height">45dp</dimen>
     <dimen name="common_list_item_left_image_width_height">30dp</dimen>
     <dimen name="common_text_size">14dp</dimen>
     <dimen name="common_small_text_size">12dp</dimen>
     <dimen name="common_large_text_size">18dp</dimen>
-    <dimen name="common_huge_text_size">20dp</dimen>
+    <!-- <dimen name="common_huge_text_size">20dp</dimen> -->
     <dimen name="common_extra_large_text_size">24dp</dimen>
     <dimen name="common_form_element_height">40dp</dimen>
     <dimen name="common_spinner_height">55dp</dimen>
 
-    <integer name="common_text_area_no_of_lines">10</integer>
+    <!-- <integer name="common_text_area_no_of_lines">10</integer> -->
 
     <dimen name="home_search_bar_height">50dp</dimen>
     <dimen name="common_divider_width_height">1dp</dimen>

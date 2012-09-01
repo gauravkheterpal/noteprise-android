@@ -71,7 +71,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 			String objectLabel = ((CommonListItems) objectSpinner.getSelectedItem()).getLabel();
 			String fieldName = ((CommonListItems) fieldSpinner.getSelectedItem()).getName();
 			String fieldLabel = ((CommonListItems) fieldSpinner.getSelectedItem()).getLabel();		
-			int length = ((CommonListItems) fieldSpinner.getSelectedItem()).getLength();
+			int length = ((CommonListItems) fieldSpinner.getSelectedItem()).getFieldLength();
 			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName,length);			
 			baseActivity.SELECTED_OBJECT_NAME = objectName;
 			baseActivity.SELECTED_OBJECT_LABEL = objectLabel;
@@ -130,8 +130,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 					if (SalesforceUtils.checkObjectItem(object))
 					{
 						item.setLabel(object.optString("label"));
-						item.setName(object.optString("name"));
-						
+						item.setName(object.optString("name"));						
 						items.add(item);
 					}					
 				}
@@ -169,7 +168,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 					{
 						item.setLabel(field.optString("label"));
 						item.setName(field.optString("name"));
-						item.setLength(field.optInt("length"));
+						item.setFieldLength(field.optInt("length"));
 						items.add(item);
 					}
 				}
@@ -192,8 +191,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 			{
 				e.printStackTrace();
 			}
-		}
-		
+		}		
 	}
 
 	@Override

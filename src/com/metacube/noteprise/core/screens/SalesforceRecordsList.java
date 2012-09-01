@@ -84,7 +84,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			fieldList.add("name");
 			try 
 			{
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_salesforce_record_list_message));
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
 				recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName));				
 			} 
 			catch (UnsupportedEncodingException e) 
@@ -104,7 +104,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		}
 		else
 		{
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_salesforce_record_detail_message));
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_record_updating_message));
 			String recordId = recordsAdapter.getListItemId(position);
 			sendUpdateRequest(recordId);
 		}		
@@ -243,7 +243,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			ArrayList<String> selectedRecords = recordsAdapter.getCheckedItemsList();
 			if (selectedRecords.size() > 0)
 			{
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_save_record_message));
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_salesforce_record_updating_message));
 				totalRequests = selectedRecords.size();
 				for (int i = 0; i < selectedRecords.size(); i++)
 				{

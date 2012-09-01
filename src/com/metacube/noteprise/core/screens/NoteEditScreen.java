@@ -92,7 +92,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	{
 		super.onResume();
 		TASK = GET_NOTE_DATA;
-        showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_edit_mesage));
+        showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_getting_note_details_mesage));
 		executeAsyncTask();		
 	}
 	

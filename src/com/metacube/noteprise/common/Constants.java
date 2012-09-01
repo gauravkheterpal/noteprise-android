@@ -39,7 +39,9 @@ public class Constants
 	public static final Integer MAX_NOTES = 100;
 	
 	public static final Integer USER_PAGE_BATCH_SIZE = 1000;
-	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;	
+	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;
+	public static final Integer USER_MENTION_LIMIT = 25;
+	public static final Integer CHATTER_POST_LIMIT = 1000;
 	
 	public static String SORT_BY_LABEL = "SORT_BY_LABEL";
 	public static String SORT_BY_NAME = "SORT_BY_NAME";
@@ -49,7 +51,7 @@ public class Constants
 	
 	public static final String ITEM_TYPE_LIST_SECTION = "LIST_SECTION";
 	public static final String ITEM_TYPE_LIST_ITEM = "LIST_ITEM";
-	public static String IMAGE_PATH =APP_DATA_PATH +APP_PATH_SD_CARD;
+	public static final String IMAGE_PATH =APP_DATA_PATH +APP_PATH_SD_CARD;
 	public static final String CREATE_NOTE_ACTION = "CREATE_NOTE_ACTION";
 	public static final String DELETE_NOTE_ACTION = "DELETE_NOTE_ACTION";
 	

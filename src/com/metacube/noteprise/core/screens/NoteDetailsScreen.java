@@ -19,7 +19,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -141,11 +140,10 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		    args.putString("noteGuid", noteGuid);
 			changeScreen(new NotepriseFragment("NoteEditScreen", NoteEditScreen.class,args));
 		}
-		else if (view == publishToChatterButton)
-			
+		else if (view == publishToChatterButton)			
 		{
-			NotepriseLogger.logMessage("Length"+Html.fromHtml(noteContent).length());
-			if(Html.fromHtml(publishString).length()>1000)
+			NotepriseLogger.logMessage("Length" + Html.fromHtml(noteContent).length());
+			if (Html.fromHtml(publishString).length() > 1000)
 			{
 				TASK = TRUNCATE_NOTE;
 				commonMessageDialog.showContentTruncateDialog(this);
@@ -171,16 +169,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public boolean onContextItemSelected(MenuItem item) 
 	{
 		if (item.getItemId() == R.id.chatter_menu_post_my_feed)
-		{
-			
+		{			
 			TASK = PUBLISH_TO_MY_CHATTER_FEED;
-			
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_message));
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
 			executeAsyncTask();
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
-		{
-			
+		{			
 			Bundle args = new Bundle();			
 		    args.putString("publishString", publishString);
 		    NotepriseLogger.logMessage("publishStringafterchangescreeh"+publishString);
@@ -188,8 +183,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_group_feed)
-		{
-			
+		{			
 			Bundle args = new Bundle();
 			NotepriseLogger.logMessage("publishStringfromnotedetailscreenwithouttruncate"+publishString);
 		    args.putString("publishString", publishString);
@@ -262,9 +256,16 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if (TASK == PUBLISH_TO_MY_CHATTER_FEED)
 		{
-			String publishStringForWall = publishString.substring(0, 999);
-			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION);
-			NotepriseLogger.logMessage("Response"+publishResponse+"Content"+publishStringForWall);
+			publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			String publishStringForWall = publishString;
+			if (publishString.length() > 1000)
+			{
+				publishStringForWall = publishString.substring(0, 999);
+			}			
+			NotepriseLogger.logMessage("Response" + publishResponse + "Content" + publishStringForWall);			
+			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, null, null, null);			
+			//File file = new File("/mnt/sdcard/image.png");
+			//publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, file, "image", "Chatter!");
 		}
 	}
 	
@@ -275,35 +276,40 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		if (TASK == GET_NOTE_DATA)
 		{
 			hideProgresIndicator();
-	    	noteTitle = note.getTitle();
-	    	noteContent = note.getContent();//EvernoteUtils.stripNoteContent(note.getContent());
-	    	setHeaderTitle(noteTitle);
-	    	NotepriseLogger.logMessage("Note Content" + noteContent);
-	    	List<Resource> res = new ArrayList<Resource>();
-	    	res= note.getResources();
-	    	mediaString=noteContent;
-	    	if(res != null && noteContent.indexOf("<en-media>")!= -1)
-	    	{
-            for(Iterator<Resource> iterator= res.iterator(); iterator.hasNext();) {
-            Resource resource = iterator.next();
-            NotepriseLogger.logMessage("File Name"+ resource.getData().getBody()); 
-            bitmap= BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);
-            saveImageToExternalStorage(bitmap,resource.getAttributes().getFileName(),noteTitle);
-            mediaString = EvernoteUtils.getMediaStringFromNote(noteContent);
-	        final String fileName = "file://"+SD_CARD+Constants.IMAGE_PATH+ noteTitle+"_"+resource.getAttributes().getFileName();
-	        final String html = "<img src=\""+fileName+"\">";
-	        noteContent = noteContent.replace(mediaString, html);
-	        NotepriseLogger.logMessage("HTML"+noteContent);
-            }
-	    	}
-	    	if(res != null && noteContent.indexOf("<en-media>")!= -1)
-	    	noteContentWebView.loadDataWithBaseURL(SD_CARD+Constants.IMAGE_PATH+ Constants.APP_PATH_SD_CARD,noteContent, "text/html", "utf-8","");
-	    	else 
-	    		noteContentWebView.loadData(noteContent,"text/html", "utf-8");		    	
-	    	topButtonBar.setVisibility(View.VISIBLE);
-	    	editButton.setVisibility(View.VISIBLE);
-	    	publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-	    	NotepriseLogger.logMessage("PublishString"+publishString);
+			noteTitle = note.getTitle();
+			noteContent = note.getContent();
+			setHeaderTitle(noteTitle);
+			NotepriseLogger.logMessage("Note Content" + noteContent);
+			List<Resource> res = new ArrayList<Resource>();
+			res = note.getResources();
+			mediaString = noteContent;
+			if (res != null && noteContent.indexOf("<en-media>") != -1) 
+			{
+				for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
+				{
+					Resource resource = iterator.next();
+					NotepriseLogger.logMessage("File Name" + resource.getData().getBody());
+					bitmap = BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);
+					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle);
+					mediaString = EvernoteUtils.getMediaStringFromNote(noteContent);
+					final String fileName = "file://" + SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" + resource.getAttributes().getFileName();
+					final String html = "<img src=\"" + fileName + "\">";
+					noteContent = noteContent.replace(mediaString, html);
+					NotepriseLogger.logMessage("HTML" + noteContent);
+				}
+			}
+			if (res != null && noteContent.indexOf("<en-media>") != -1)
+			{
+				noteContentWebView.loadDataWithBaseURL(SD_CARD + Constants.IMAGE_PATH + Constants.APP_PATH_SD_CARD, noteContent, "text/html", "utf-8", "");
+			}				
+			else
+			{
+				noteContentWebView.loadData(noteContent, "text/html", "utf-8");
+			}				
+			topButtonBar.setVisibility(View.VISIBLE);
+			editButton.setVisibility(View.VISIBLE);
+			publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			NotepriseLogger.logMessage("PublishString" + publishString);
 		}
 		else if(TASK == DELETE_NOTE)
 		{
@@ -347,48 +353,44 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 	}
 
-	public  boolean saveImageToExternalStorage(Bitmap image, String imageName,String noteTitle) {
-
+	public boolean saveImageToExternalStorage(Bitmap image, String imageName, String noteTitle) 
+	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 40, bytes);
-		try {
-		File dir = new File(SD_CARD+Constants.IMAGE_PATH);
-		if (!dir.exists()) {
-		dir.mkdirs();
+		bitmap.compress(Bitmap.CompressFormat.PNG, 40, bytes);
+		try 
+		{
+			File dir = new File(SD_CARD + Constants.IMAGE_PATH);
+			if (!dir.exists()) 
+			{
+				dir.mkdirs();
+			}
+			OutputStream fOut = null;
+			File file = new File(SD_CARD + Constants.IMAGE_PATH, noteTitle + "_" + imageName);
+			if (file.exists()) 
+			{
+				file.delete();
+				NotepriseLogger.logMessage("Deleting file" + file.delete() + "filename" + file.getName());
+			}
+			file.createNewFile();
+			fOut = new FileOutputStream(file);
+			image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+			fOut.flush();
+			fOut.close();
+			//MediaStore.Images.Media.insertImage(baseActivity.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+			return true;
 		}
-
-		OutputStream fOut = null;
-		File file = new File(SD_CARD+Constants.IMAGE_PATH,noteTitle+"_"+imageName);
-		if(file.exists()){
-			file.delete();
-			NotepriseLogger.logMessage("Deleting file"+file.delete()+ "filename"+file.getName());
-		}
-		
-		file.createNewFile();
-		
-		fOut = new FileOutputStream(file);
-
-		
-		image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-		fOut.flush();
-		fOut.close();
-
-		MediaStore.Images.Media.insertImage(baseActivity.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-
-		return true;
-
-		} catch (Exception e) {
+		catch (Exception e) 
+		{
 			e.printStackTrace();
-		return false;
+			return false;
 		}
-		}
+	}
 	
 	@Override
 	public void onClick(DialogInterface dialog, int which) 
 	{
 		if(TASK == TRUNCATE_NOTE && which == -1)
-		{
-						
+		{						
 			NotepriseLogger.logMessage("publisgStringafterchatterbutonclick"+publishString);
 			publishToChatterButton.showContextMenu();
 		}
