@@ -1,5 +1,6 @@
 package com.metacube.noteprise.core.screens;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.http.ParseException;
@@ -145,7 +146,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		if (item.getItemId() == R.id.chatter_menu_post_my_feed)
 		{
 			TASK = PUBLISH_TO_MY_CHATTER_FEED;
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_message));
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publishing_to_self_feed_message));
 			executeAsyncTask();
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
@@ -230,7 +231,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		else if (TASK == PUBLISH_TO_MY_CHATTER_FEED)
 		{
 			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishString, SF_API_VERSION);
+			//publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishString, SF_API_VERSION, null, null, null);			
+			File file = new File("/mnt/sdcard/image.png");
+			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishString, SF_API_VERSION, file, "image", "Chatter!");
 		}
 	}
 	
@@ -242,7 +245,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		{
 			hideProgresIndicator();
 	    	noteTitle = note.getTitle();
-	    	noteContent = note.getContent();//EvernoteUtils.stripNoteContent(note.getContent());
+	    	noteContent = note.getContent();
 	    	setHeaderTitle(noteTitle);
 	    	noteContentWebView.loadData(noteContent, "text/html", "utf-8");
 	    	topButtonBar.setVisibility(View.VISIBLE);

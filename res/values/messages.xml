@@ -9,45 +9,52 @@
     <string name="dialog_positive_button_text">Yes</string>
     <string name="dialog_neutral_button_text">OK</string>
     <string name="dialog_negative_button_text">No</string>
-    <string name="some_error_ocurred_message">Some error occurred. Please try again.</string>
+    <string name="some_error_ocurred_message">An error occurred. Please try again.</string>
 
     <!-- Note related Messages -->
-    <string name ="choose_notebook_prompt">Select a Notebook</string>
-    <string name ="note_please_enter_text_for_search_message">Please enter text first to search</string>
-    <string name ="note_created_success_message">Note successfully created</string>
-    <string name ="note_creation_failed_message">Note creation failed</string>
-    <string name ="note_creation_all_fields_required_message">All fields are required</string>
-    <string name ="note_delete_confirm_message">Are you sure you want to delete this note?</string>
-    <string name ="note_delete_success_message">Note deleted successfully</string>
-    <string name ="note_delete_failed_message">Note could not be deleted</string>
-    <string name ="progress_dialog_note_create_message"> Showing Note creation screen</string>    
-    <string name ="progress_dialog_note_search_message">Searching note</string>    
-    <string name ="progress_dialog_note_all_message">Getting all notes</string>    
-    <string name ="progress_dialog_note_delete_message">Deleting Note</string>    
-    <string name ="progress_dialog_note_publish_to_chatter_message">Publishing to chatter</string>  
-    <string name ="progress_dialog_note_update_message">Updating Note</string>   
-    <string name ="progress_dialog_note_edit_mesage">Showing Editor to edit Note</string>  
-    <string name ="progress_dialog_note_publish_to_chatter_user_message">Publishing to chatter user</string>  
-    <string name ="progress_dialog_note_following_data_message">Getting followers data</string>   
-    <string name ="progress_dialog_note_group_data_message">Getting group data</string>  
-    <string name ="progress_dialog_note_publish_to_chatter_user_save_message">Saving chatter </string>
-    <string name ="progress_dialog_note_save_record_message">Saving record</string>
-    <string name ="progress_dialog_salesforce_record_list_message">Getting salesforce user Record list</string>    
-    <string name ="progress_dialog_salesforce_record_detail_message">Getting record detail</string>
-    <string name="progress_dialog_salesforce_record_updated_success_message">Record updated successfully</string>
+    <string name="choose_notebook_prompt">Please select a Notebook</string>
+    <string name="note_please_enter_text_for_search_message">Please enter the text to be searched</string>
+    <string name="note_created_success_message">Note successfully created</string>
+    <string name="note_creation_failed_message">Note creation failed!</string>
+    <string name="note_creation_all_fields_required_message">All fields are required.</string>
+    <string name="note_delete_confirm_message">Are you sure you want to delete this note?</string>
+    <string name="note_delete_success_message">Note deleted successfully.</string>
+    <string name="note_delete_failed_message">Note could not be deleted!</string>
+    <string name="progress_dialog_note_create_message">Saving your note..</string>
+    <string name="progress_dialog_note_search_message">Searching note..</string>
+    <string name="progress_dialog_notebook_search_message">Searching notebook..</string>
+    <string name="progress_dialog_tag_search_message">Searching tag in notes..</string>
+    <string name="progress_dialog_keyword_search_message">Searching keyword in notes..</string>
+    <string name="progress_dialog_getting_all_notes_message">Getting all notes..</string>
+    <string name="progress_dialog_note_delete_message">Deleting Note..</string>
+    <string name="progress_dialog_note_update_message">Updating Note..</string>
+    <string name="progress_dialog_getting_note_details_mesage">Getting note details..</string>
 
     <!-- Salesforce Related messages -->
     <string name="choose_object_prompt">Choose an object</string>
     <string name="choose_field_prompt">Choose a field</string>
-    <string name="salesforce_no_records_selected_message">No records selected</string>
+    <string name="salesforce_no_records_selected_message">No record(s) selected!</string>
     <string name="salesforce_select_object_field_message">Please select an object and field first.</string>
-    <string name="salesforce_record_saving_failed_message">Failed saving records.</string>
-    
-
+    <string name="salesforce_record_saving_failed_message">Failed to save record(s).</string>
+    <string name="progress_dialog_salesforce_getting_record_list_message">Getting records list..</string>
+    <string name="progress_dialog_salesforce_record_updating_message">Updating selected record(s)..</string>
+    <string name="progress_dialog_salesforce_record_updated_success_message">Record(s) updated successfully.</string>
+   
     <!-- Chatter Related messages -->
     <string name="chatter_menu_header_view_text">Publish To Chatter</string>
-    <string name="salesforce_chatter_post_self_success_message">Your note has been succesfully posted on your chatter feed.</string>
-    <string name="salesforce_chatter_post_user_success_message">Your note has been succesfully posted on your chatter feed.</string>
-    <string name="salesforce_chatter_post_group_success_message">Your note has been succesfully posted on your chatter feed.</string>
+    <string name="progress_dialog_chatter_publishing_to_self_feed_message">Publishing to your feed..</string>
+    <string name="salesforce_chatter_post_self_success_message">The selected note has been succesfully posted to your Chatter feed.</string>
+    <string name="salesforce_chatter_post_user_with_mentions_success_message">The selected note has been succesfully posted to the chosen Chatter user feeds.</string>
+    <string name="salesforce_chatter_post_group_success_message">The selected note has been succesfully posted to the chosen Chatter group feed.</string>
+    <string name="progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message">Publishing to your Chatter feed..</string>
+    <string name="progress_dialog_chatter_getting_following_data_message">Getting list of Chatter users..</string>
+    <string name="progress_dialog_chatter_getting_group_data_message">Getting list of Chatter groups..</string>
+    <string name="progress_dialog_chatter_publish_to_user_self_feed_message">Publishing to your Chatter feed..</string>
+    <string name="progress_dialog_chatter_publish_to_group_feed_message">Publishing to Chatter group feed..</string>
+    
+<!--     >#define POSTING_NOTE_FAILED_TO_CHATTER_WALL_MSG @"Failed to publish the selected note to your Chatter feed"
+>#define ERROR_LISTING_CHATTER_USERS_MSG @"Error in getting list of Chatter Users"
+>#define POSTING_NOTE_FAILED_TO_CHATTER_USER_MSG @"Failed to publish the selected note to chosen Chatter users"
+>#define ERROR_LISTING_CHATTER_GROUPS_MSG @"Failed to publish the selected note to chosen Chatter groups" -->
 
 </resources>

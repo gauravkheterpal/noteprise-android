@@ -31,7 +31,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	String publishString, publishTask, groupId;
 	RestResponse dataResponse = null, publishResponse;
 	Button publishToChatterButton;
-	public static final int GET_FOLLOWING_DATA = 0, PUBLISH_TO_CHATTER_USER = 1, GET_GROUP_DATA = 2, PUBLISH_TO_CHATTER_GROUP = 3;
+	public static final int GET_FOLLOWING_USER_LIST = 0, PUBLISH_TO_CHATTER_USER_WITH_MENTIONS = 1, GET_GROUPS_LIST = 2, PUBLISH_TO_CHATTER_GROUP = 3;
 	Integer TASK = -1, TASK_TYPE = -1;
 	ArrayList<CommonListItems> listItems;
 	CommonListAdapter listAdapter;
@@ -53,13 +53,13 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
         publishTask = Utilities.getStringFromBundle(getArguments(), "publishTask"); 
         if (publishTask.equalsIgnoreCase("USER_FEED"))
         {
-        	TASK_TYPE = GET_FOLLOWING_DATA;
-        	TASK = GET_FOLLOWING_DATA;
+        	TASK_TYPE = GET_FOLLOWING_USER_LIST;
+        	TASK = GET_FOLLOWING_USER_LIST;
         } 
         else if (publishTask.equalsIgnoreCase("GROUP_FEED"))
         {
-        	TASK_TYPE = GET_GROUP_DATA;
-        	TASK = GET_GROUP_DATA;
+        	TASK_TYPE = GET_GROUPS_LIST;
+        	TASK = GET_GROUPS_LIST;
         }
     }
     
@@ -80,7 +80,14 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	public void onResume() 
 	{
 		super.onResume();
-		showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_edit_mesage));
+		if (TASK_TYPE == GET_FOLLOWING_USER_LIST)
+		{
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_getting_following_data_message));
+		}
+		else if (TASK_TYPE == GET_GROUPS_LIST)
+		{
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_getting_group_data_message));
+		}
 		executeAsyncTask();
 	}
 	
@@ -92,17 +99,17 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		{
 			switch(TASK)
 			{
-				case GET_FOLLOWING_DATA:
+				case GET_FOLLOWING_USER_LIST:
 				{
 					dataResponse = SalesforceUtils.getUserFollowingData(salesforceRestClient, SF_API_VERSION);
 					break;
 				}
-				case PUBLISH_TO_CHATTER_USER:
+				case PUBLISH_TO_CHATTER_USER_WITH_MENTIONS:
 				{
-					publishResponse = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds);
+					publishResponse = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds, null, null, null);
 					break;
 				}
-				case GET_GROUP_DATA:
+				case GET_GROUPS_LIST:
 				{
 					dataResponse = SalesforceUtils.getUserGroupData(salesforceRestClient, SF_API_VERSION);
 					break;
@@ -118,8 +125,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	
 	public void publishNoteToChatterFeed()
 	{
-		TASK = PUBLISH_TO_CHATTER_USER;
-		showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_user_message));
+		TASK = PUBLISH_TO_CHATTER_USER_WITH_MENTIONS;
+		showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
 		executeAsyncTask();
 	}
 	
@@ -128,7 +135,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	{
 		super.onTaskFinished();
 		hideFullScreenProgresIndicator();	
-		if (TASK == GET_FOLLOWING_DATA)
+		if (TASK == GET_FOLLOWING_USER_LIST)
 		{
 			if (dataResponse != null)
 			{
@@ -142,7 +149,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 			}
 		}
-		else if (TASK == GET_GROUP_DATA)
+		else if (TASK == GET_GROUPS_LIST)
 		{
 			if (dataResponse != null)
 			{
@@ -155,14 +162,14 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 			}
 		}
-		else if (TASK == PUBLISH_TO_CHATTER_USER)
+		else if (TASK == PUBLISH_TO_CHATTER_USER_WITH_MENTIONS)
 		{
 			TASK = -1;
 			try 
 			{			
 				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
-					showToastNotification(getString(R.string.salesforce_chatter_post_user_success_message));
+					showToastNotification(getString(R.string.salesforce_chatter_post_user_with_mentions_success_message));
 					finishScreen();
 				}
 				else
@@ -235,8 +242,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			selectedIds = listAdapter.getCheckedItemsList();
 			if (selectedIds.size() > 0)
 			{
-				TASK = PUBLISH_TO_CHATTER_USER;
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_user_save_message));
+				TASK = PUBLISH_TO_CHATTER_USER_WITH_MENTIONS;
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
 				executeAsyncTask();
 			}
 			else
@@ -255,20 +262,20 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		}
 		else if (listItems != null)
 		{
-			if (TASK_TYPE == GET_FOLLOWING_DATA)
+			if (TASK_TYPE == GET_FOLLOWING_USER_LIST)
 			{
 				String recordId = listItems.get(position).getId();
 				selectedIds = new ArrayList<String>();
 				selectedIds.add(recordId);
-				TASK = PUBLISH_TO_CHATTER_USER;
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_following_data_message));
+				TASK = PUBLISH_TO_CHATTER_USER_WITH_MENTIONS;
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
 				executeAsyncTask();
 			}
-			else if (TASK_TYPE == GET_GROUP_DATA)
+			else if (TASK_TYPE == GET_GROUPS_LIST)
 			{
 				groupId = listItems.get(position).getId();
 				TASK = PUBLISH_TO_CHATTER_GROUP;
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_group_data_message));
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
 				executeAsyncTask();
 			}			
 		}
