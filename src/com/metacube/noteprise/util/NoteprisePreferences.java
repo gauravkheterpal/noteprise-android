@@ -92,12 +92,13 @@ public class NoteprisePreferences
 	}
 
 	public void saveUserSalesforceObjectFieldMapping(String userSavedSalesforceObjectName, String userSavedSalesforceObjectLabel, 
-			String userSavedSalesforceFieldName, String userSavedSalesforceFieldLabel) 
+			String userSavedSalesforceFieldName, String userSavedSalesforceFieldLabel, int fieldLength) 
 	{
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_NAME, userSavedSalesforceObjectName);		
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_LABEL, userSavedSalesforceObjectLabel);
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_NAME, userSavedSalesforceFieldName);
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, userSavedSalesforceFieldLabel);
+		prefsEditor.putInt(Constants.USER_SAVED_SALESFORCE_FIELD_LENGTH, fieldLength);
 		prefsEditor.commit();
 	}	
 }

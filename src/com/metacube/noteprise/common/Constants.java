@@ -20,6 +20,8 @@ public class Constants
 	public static final String USER_SAVED_SALESFORCE_FIELD_NAME = "user_saved_salesforce_field_mapping";
 	public static final String USER_SAVED_SALESFORCE_OBJECT_LABEL = "user_saved_salesforce_object_label";
 	public static final String USER_SAVED_SALESFORCE_FIELD_LABEL = "user_saved_salesforce_field_label";
+	public static final String USER_SAVED_SALESFORCE_FIELD_LENGTH = "user_saved_salesforce_field_length";
+	
 	
 	public static final String APP_DATA_PATH = "/Android/data/com.metacube.noteprise/data/";		
 	//public static final String EVERNOTE_HOST = "sandbox.evernote.com";	

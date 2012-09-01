@@ -74,7 +74,7 @@ public class SalesforceUtils
 		{
 			try 
 			{	
-				publishResponse = salesforceRestClient.sendSync(RestMethod.GET, "/services/data/" + SF_API_VERSION + "/chatter/users/me/following?pageSize=" + Constants.USER_PAGE_BATCH_SIZE, null);
+				publishResponse = salesforceRestClient.sendSync(RestMethod.GET, "/services/data/" + SF_API_VERSION + "/chatter/users/me/following?filterType=005&pageSize=" + Constants.USER_PAGE_BATCH_SIZE, null);
 			} 
 			catch (UnsupportedEncodingException e) 
 			{
@@ -164,6 +164,7 @@ public class SalesforceUtils
 			}
 			if (content != null)
 			{
+				//content = URLEncoder.encode(content, "UTF-8");
 				JSONObject text = new JSONObject();
 				text.put("type", "text");
 				text.put("text", " " + content);
@@ -177,7 +178,7 @@ public class SalesforceUtils
 		catch (JSONException e) 
 		{
 			e.printStackTrace();
-		}
+		} 
 		return bodyString;
 	}
 	
@@ -259,4 +260,6 @@ public class SalesforceUtils
 		}
 		return publishResponse;
 	}
+	
+	
 }

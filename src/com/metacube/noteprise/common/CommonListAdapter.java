@@ -179,9 +179,24 @@ public class CommonListAdapter extends BaseAdapter
 			if(listItems.get(i).getIsChecked())
 			{
 				checkedList.add(listItems.get(i).getId());
+				
 			}
 		}
 		return checkedList;
+	}
+	
+	public int getCheckedItemsUserNameLength()
+	{
+		int length=0;
+		for (int i = 0; i < listItems.size(); i++)
+		{
+			if(listItems.get(i).getIsChecked())
+			{
+				
+				length+=listItems.get(i).getLabel().length()+1;
+			}
+		}
+		return length;
 	}
 	
 	public void changeOrdering(String orderType)

@@ -12,6 +12,14 @@ public class CommonListItems
 	private String leftUserImageURL = null;
 	private String itemType = Constants.ITEM_TYPE_LIST_ITEM;
 	private Integer totalContent = null;
+	private int length=0;
+	
+	public int getLength() {
+		return length;
+	}
+	public void setLength(int length) {
+		this.length = length;
+	}
 	public String getId() {
 		return id;
 	}

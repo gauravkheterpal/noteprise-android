@@ -50,6 +50,7 @@ public class BaseActivity extends FragmentActivity
 	
 	public String SELECTED_OBJECT_NAME, SELECTED_OBJECT_LABEL;
 	public String SELECTED_FIELD_NAME, SELECTED_FIELD_LABEL;
+	public int SELECTED_FIELD_LENGTH;
 	
 	//Main menu save data..
 	public CommonListAdapter savedListAdapter = null;

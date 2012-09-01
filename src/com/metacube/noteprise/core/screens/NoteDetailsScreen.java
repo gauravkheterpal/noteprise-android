@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,6 +47,7 @@ import com.metacube.noteprise.evernote.EvernoteUtils;
 import com.metacube.noteprise.salesforce.SalesforceUtils;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.Utilities;
+import com.metacube.noteprise.util.richtexteditor.Html;
 import com.salesforce.androidsdk.rest.RestResponse;
 
 public class NoteDetailsScreen extends BaseFragment implements OnClickListener, android.content.DialogInterface.OnClickListener, OnDismissListener
@@ -56,11 +58,11 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	LinearLayout editButton;
 	LinearLayout topButtonBar;
 	RelativeLayout saveButton, publishToChatterButton;
-	String noteTitle, noteContent, noteGuid,mediaString;
+	String noteTitle, noteContent, noteGuid,mediaString,publishString;
 	Note note;
 	Bitmap bitmap;
 	RestResponse publishResponse;
-	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null;
+	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null,TRUNCATE_NOTE=3;
 	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
 	@Override
 	public void onAttach(Activity activity) 
@@ -101,11 +103,18 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		{
 			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
 			{
+				if(baseActivity.SELECTED_FIELD_LENGTH >= Html.fromHtml(noteContent).length())
+				{
 				Bundle args = new Bundle();
 				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 				NotepriseLogger.logMessage("Saving string==" + saveString);
 				args.putString("noteContent", saveString);
 				changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+				}
+				else
+				{
+					showToastNotification(getString(R.string.salesforce_select_object_field_length_message));	
+				}
 			}
 			else
 			{
@@ -133,8 +142,15 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			changeScreen(new NotepriseFragment("NoteEditScreen", NoteEditScreen.class,args));
 		}
 		else if (view == publishToChatterButton)
-		{
 			
+		{
+			NotepriseLogger.logMessage("Length"+Html.fromHtml(noteContent).length());
+			if(Html.fromHtml(publishString).length()>1000)
+			{
+				TASK = TRUNCATE_NOTE;
+				commonMessageDialog.showContentTruncateDialog(this);
+			}
+			else 
 			publishToChatterButton.showContextMenu();
 		}
 	}
@@ -156,22 +172,26 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	{
 		if (item.getItemId() == R.id.chatter_menu_post_my_feed)
 		{
+			
 			TASK = PUBLISH_TO_MY_CHATTER_FEED;
+			
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_message));
 			executeAsyncTask();
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
 		{
-			Bundle args = new Bundle();
-			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			
+			Bundle args = new Bundle();			
 		    args.putString("publishString", publishString);
+		    NotepriseLogger.logMessage("publishStringafterchangescreeh"+publishString);
 		    args.putString("publishTask", "USER_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_group_feed)
 		{
+			
 			Bundle args = new Bundle();
-			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			NotepriseLogger.logMessage("publishStringfromnotedetailscreenwithouttruncate"+publishString);
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "GROUP_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
@@ -185,6 +205,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		super.onResume();
 		baseActivity.createNewNoteButton.setVisibility(View.GONE);
 		baseActivity.deleteNoteButton.setVisibility(View.VISIBLE);
+		TASK = GET_NOTE_DATA;
 		showProgresIndicator();
 		executeAsyncTask();			
 	}
@@ -211,7 +232,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				{
 					authToken = evernoteSession.getAuthToken();
 		        	client = evernoteSession.createNoteStore();
-		        	note = client.getNote(authToken, noteGuid, true, false, false, false);
+		        	note = client.getNote(authToken, noteGuid, true, true, true, true);
 				} 
 				catch (TTransportException e) 
 				{
@@ -241,8 +262,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if (TASK == PUBLISH_TO_MY_CHATTER_FEED)
 		{
-			String publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishString, SF_API_VERSION);
+			String publishStringForWall = publishString.substring(0, 999);
+			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION);
+			NotepriseLogger.logMessage("Response"+publishResponse+"Content"+publishStringForWall);
 		}
 	}
 	
@@ -256,14 +278,15 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	    	noteTitle = note.getTitle();
 	    	noteContent = note.getContent();//EvernoteUtils.stripNoteContent(note.getContent());
 	    	setHeaderTitle(noteTitle);
-	    	
-	    	List<Resource> res =note.getResources();
+	    	NotepriseLogger.logMessage("Note Content" + noteContent);
+	    	List<Resource> res = new ArrayList<Resource>();
+	    	res= note.getResources();
 	    	mediaString=noteContent;
-	    	if(res !=null)
+	    	if(res != null && noteContent.indexOf("<en-media>")!= -1)
 	    	{
             for(Iterator<Resource> iterator= res.iterator(); iterator.hasNext();) {
             Resource resource = iterator.next();
-            NotepriseLogger.logMessage("File Name"+ resource.getAttributes().getFileName()); 
+            NotepriseLogger.logMessage("File Name"+ resource.getData().getBody()); 
             bitmap= BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);
             saveImageToExternalStorage(bitmap,resource.getAttributes().getFileName(),noteTitle);
             mediaString = EvernoteUtils.getMediaStringFromNote(noteContent);
@@ -273,9 +296,14 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	        NotepriseLogger.logMessage("HTML"+noteContent);
             }
 	    	}
+	    	if(res != null && noteContent.indexOf("<en-media>")!= -1)
 	    	noteContentWebView.loadDataWithBaseURL(SD_CARD+Constants.IMAGE_PATH+ Constants.APP_PATH_SD_CARD,noteContent, "text/html", "utf-8","");
+	    	else 
+	    		noteContentWebView.loadData(noteContent,"text/html", "utf-8");		    	
 	    	topButtonBar.setVisibility(View.VISIBLE);
 	    	editButton.setVisibility(View.VISIBLE);
+	    	publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+	    	NotepriseLogger.logMessage("PublishString"+publishString);
 		}
 		else if(TASK == DELETE_NOTE)
 		{
@@ -340,7 +368,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		
 		fOut = new FileOutputStream(file);
 
-		// 100 means no compression, the lower you go, the stronger the compression
+		
 		image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
 		fOut.flush();
 		fOut.close();
@@ -358,7 +386,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	@Override
 	public void onClick(DialogInterface dialog, int which) 
 	{
-		if (which == -1) // For Positive Button
+		if(TASK == TRUNCATE_NOTE && which == -1)
+		{
+						
+			NotepriseLogger.logMessage("publisgStringafterchatterbutonclick"+publishString);
+			publishToChatterButton.showContextMenu();
+		}
+		else if (which == -1) // For Positive Button
 		{
 			TASK = DELETE_NOTE;
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_delete_message));

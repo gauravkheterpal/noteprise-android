@@ -28,11 +28,13 @@ import com.salesforce.androidsdk.rest.RestResponse;
 
 public class PublishToChatterRecordsListScreen extends BaseFragment implements OnClickListener, OnItemClickListener
 {
-	String publishString, publishTask, groupId;
+	String publishString, publishTask, groupId,contentdata;
 	RestResponse dataResponse = null, publishResponse;
 	Button publishToChatterButton;
+	public static boolean MULTIPLE_ON = false;
 	public static final int GET_FOLLOWING_DATA = 0, PUBLISH_TO_CHATTER_USER = 1, GET_GROUP_DATA = 2, PUBLISH_TO_CHATTER_GROUP = 3;
 	Integer TASK = -1, TASK_TYPE = -1;
+	int count =0,numberOfResponse=0;
 	ArrayList<CommonListItems> listItems;
 	CommonListAdapter listAdapter;
 	ListView listView;
@@ -60,6 +62,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
         {
         	TASK_TYPE = GET_GROUP_DATA;
         	TASK = GET_GROUP_DATA;
+        	contentdata=publishString;
         }
     }
     
@@ -81,6 +84,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	{
 		super.onResume();
 		showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_edit_mesage));
+		NotepriseLogger.logMessage("Task in chatterrecord"+TASK);
+		NotepriseLogger.logMessage("Multiple in resume"+MULTIPLE_ON);
 		executeAsyncTask();
 	}
 	
@@ -88,6 +93,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	public void doTaskInBackground() 
 	{
 		super.doTaskInBackground();
+		
 		if (salesforceRestClient != null)
 		{
 			switch(TASK)
@@ -99,16 +105,23 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 				case PUBLISH_TO_CHATTER_USER:
 				{
+					
+					
+					
+					NotepriseLogger.logMessage("lengthbeforeposting"+publishString.length());
 					publishResponse = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds);
+					NotepriseLogger.logMessage("Response for user"+publishResponse);
 					break;
 				}
 				case GET_GROUP_DATA:
 				{
+					NotepriseLogger.logMessage("Number of thread in group data");
 					dataResponse = SalesforceUtils.getUserGroupData(salesforceRestClient, SF_API_VERSION);
 					break;
 				}
 				case PUBLISH_TO_CHATTER_GROUP:
-				{
+				{	NotepriseLogger.logMessage("Number of thread");
+					//publishString = publishString.replace("%0A","");
 					publishResponse = SalesforceUtils.publishNoteToUserGroup(salesforceRestClient, groupId, publishString, SF_API_VERSION);
 					break;
 				}
@@ -127,12 +140,16 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	public void onTaskFinished() 
 	{
 		super.onTaskFinished();
+		NotepriseLogger.logMessage("Multiple"+MULTIPLE_ON);
+		if(MULTIPLE_ON == false){
 		hideFullScreenProgresIndicator();	
+		}
 		if (TASK == GET_FOLLOWING_DATA)
 		{
 			if (dataResponse != null)
 			{
 				listItems = SalesforceUtils.getListItemsFromUserFollowingResponse(dataResponse);
+				NotepriseLogger.logMessage("ListItem"+listItems);
 				if (listItems != null && listItems.size() > 0)
 				{
 					listAdapter = new CommonListAdapter(this, inflater, listItems);
@@ -147,11 +164,13 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			if (dataResponse != null)
 			{
 				listItems = SalesforceUtils.getListItemsFromUserGroupResponse(dataResponse);
+				NotepriseLogger.logMessage("ListItem"+listItems);
 				if (listItems != null && listItems.size() > 0)
 				{
 					listAdapter = new CommonListAdapter(this, inflater, listItems);
 					listView.setAdapter(listAdapter);
 					listView.setOnItemClickListener(this);
+					editRecordSelectionButton.setVisibility(View.VISIBLE);
 				}
 			}
 		}
@@ -159,7 +178,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		{
 			TASK = -1;
 			try 
-			{			
+			{	
 				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
 					showToastNotification(getString(R.string.salesforce_chatter_post_user_success_message));
@@ -183,9 +202,29 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		}
 		else if (TASK == PUBLISH_TO_CHATTER_GROUP)
 		{
-			TASK = -1;
+			NotepriseLogger.logMessage("Task"+TASK);
 			try 
-			{			
+			{	
+				numberOfResponse++;		
+			
+				NotepriseLogger.logMessage("response"+publishResponse.getStatusCode());
+				if(MULTIPLE_ON){
+					if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
+					{				
+						count++;
+					}
+					if(numberOfResponse == selectedIds.size())
+					{
+						hideFullScreenProgresIndicator();
+						showToastNotification("Successfull Post"+count);
+						MULTIPLE_ON=false;
+						finishScreen();
+						
+					}
+				}
+				else {
+					
+					TASK = -1;
 				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
 					showToastNotification(getString(R.string.salesforce_chatter_post_group_success_message));
@@ -196,6 +235,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					showToastNotification(getString(R.string.some_error_ocurred_message));
 					String response = publishResponse.asString();
 					NotepriseLogger.logMessage(response);
+				}
 				}
 			} 
 			catch (ParseException e) 
@@ -232,23 +272,55 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		}
 		else if (view == saveRecordSelectionButton)
 		{
+			
 			selectedIds = listAdapter.getCheckedItemsList();
+			if(TASK_TYPE == GET_FOLLOWING_DATA)
+			{
 			if (selectedIds.size() > 0)
 			{
+				if(selectedIds.size()>25){
+					showToastNotification(getString(R.string.salesforce_selected_user_exceed_message));	
+				}
+				else {
+					
+				publishString = publishString.substring(0,1000-listAdapter.getCheckedItemsUserNameLength()-8-selectedIds.size()*12);					
 				TASK = PUBLISH_TO_CHATTER_USER;
 				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_user_save_message));
 				executeAsyncTask();
+				}
+			}
+			else
+			{
+				showToastNotification(getString(R.string.salesforce_no_records_selected_message));
+			}
+			}else if (TASK_TYPE == GET_GROUP_DATA)
+			{
+				MULTIPLE_ON = true;
+				if (selectedIds.size() > 0)
+				{										
+					publishString = contentdata.substring(0,999);
+					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_publish_to_chatter_user_save_message));
+					for(int i=0; i<selectedIds.size();i++){	
+						groupId = selectedIds.get(i);
+						TASK = PUBLISH_TO_CHATTER_GROUP;					
+					executeAsyncTask();
+					}
+					
+					
 			}
 			else
 			{
 				showToastNotification(getString(R.string.salesforce_no_records_selected_message));
 			}
 		}
+		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
 	{
+		publishString = publishString.substring(0, 950);
+		MULTIPLE_ON = false;
 		if (listAdapter.isCheckListMode())
 		{
 			listAdapter.setChecedkCurrentItem(position);
