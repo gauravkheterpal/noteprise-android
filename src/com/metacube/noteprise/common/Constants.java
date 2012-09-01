@@ -20,6 +20,8 @@ public class Constants
 	public static final String USER_SAVED_SALESFORCE_FIELD_NAME = "user_saved_salesforce_field_mapping";
 	public static final String USER_SAVED_SALESFORCE_OBJECT_LABEL = "user_saved_salesforce_object_label";
 	public static final String USER_SAVED_SALESFORCE_FIELD_LABEL = "user_saved_salesforce_field_label";
+	public static final String USER_SAVED_SALESFORCE_FIELD_LENGTH = "user_saved_salesforce_field_length";
+	
 	
 	public static final String APP_DATA_PATH = "/Android/data/com.metacube.noteprise/data/";		
 	//public static final String EVERNOTE_HOST = "sandbox.evernote.com";	
@@ -27,7 +29,7 @@ public class Constants
 		  
 	public static final String APP_NAME = "Noteprise";  
 	public static final String APP_VERSION = "1.0";
-	
+	public final static String APP_PATH_SD_CARD = "/Note/";
 	public static final String NOTE_PREFIX = 
 		    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 		    "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">" +
@@ -47,7 +49,7 @@ public class Constants
 	
 	public static final String ITEM_TYPE_LIST_SECTION = "LIST_SECTION";
 	public static final String ITEM_TYPE_LIST_ITEM = "LIST_ITEM";
-	
+	public static String IMAGE_PATH =APP_DATA_PATH +APP_PATH_SD_CARD;
 	public static final String CREATE_NOTE_ACTION = "CREATE_NOTE_ACTION";
 	public static final String DELETE_NOTE_ACTION = "DELETE_NOTE_ACTION";
 	

@@ -70,12 +70,14 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 			String objectName = ((CommonListItems) objectSpinner.getSelectedItem()).getName();
 			String objectLabel = ((CommonListItems) objectSpinner.getSelectedItem()).getLabel();
 			String fieldName = ((CommonListItems) fieldSpinner.getSelectedItem()).getName();
-			String fieldLabel = ((CommonListItems) fieldSpinner.getSelectedItem()).getLabel();			
-			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName);			
+			String fieldLabel = ((CommonListItems) fieldSpinner.getSelectedItem()).getLabel();		
+			int length = ((CommonListItems) fieldSpinner.getSelectedItem()).getLength();
+			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName,length);			
 			baseActivity.SELECTED_OBJECT_NAME = objectName;
 			baseActivity.SELECTED_OBJECT_LABEL = objectLabel;
 			baseActivity.SELECTED_FIELD_NAME = fieldName;
 			baseActivity.SELECTED_FIELD_LABEL = fieldLabel;
+			baseActivity.SELECTED_FIELD_LENGTH = length;
 			baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 			finishScreen();
 		}
@@ -129,6 +131,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 					{
 						item.setLabel(object.optString("label"));
 						item.setName(object.optString("name"));
+						
 						items.add(item);
 					}					
 				}
@@ -155,7 +158,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 			try 
 			{
 				responseObject = response.asJSONObject();
-				NotepriseLogger.logMessage(responseObject.toString());
+				NotepriseLogger.logMessage("fields"+responseObject.toString());
 				ArrayList<CommonListItems> items = new ArrayList<CommonListItems>();
 				JSONArray fields = responseObject.getJSONArray("fields");
 				for (int i=0; i < fields.length(); i++)
@@ -166,6 +169,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 					{
 						item.setLabel(field.optString("label"));
 						item.setName(field.optString("name"));
+						item.setLength(field.optInt("length"));
 						items.add(item);
 					}
 				}

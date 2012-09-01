@@ -49,5 +49,8 @@
     <string name="salesforce_chatter_post_self_success_message">Your note has been succesfully posted on your chatter feed.</string>
     <string name="salesforce_chatter_post_user_success_message">Your note has been succesfully posted on your chatter feed.</string>
     <string name="salesforce_chatter_post_group_success_message">Your note has been succesfully posted on your chatter feed.</string>
+    <string name="salesforce_chatter_content_exceed_message">Note content length is more than the limit.</string>
+    <string name ="salesforce_select_object_field_length_message"> Note content exceed the field max length</string>
+    <string name ="salesforce_selected_user_exceed_message">You have selected more than 25 users.</string>
 
 </resources>

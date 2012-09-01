@@ -133,4 +133,19 @@ public class CommonMessageDialog implements OnClickListener
 		messageDialog = alertDialogBuilder.create();
 		messageDialog.show();
 	}
+	
+	public void showContentTruncateDialog(OnClickListener listener)
+	{
+		if (isAlreadyShowing())
+		{
+			return;
+		}
+		alertDialogBuilder = new AlertDialog.Builder(context);
+		alertDialogBuilder.setMessage(resources.getString(R.string.salesforce_chatter_content_exceed_message));
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setPositiveButton(resources.getString(R.string.dialog_positive_button_text), listener);
+		alertDialogBuilder.setNegativeButton(resources.getString(R.string.dialog_negative_button_text), listener);
+		messageDialog = alertDialogBuilder.create();
+		messageDialog.show();
+	}
 }

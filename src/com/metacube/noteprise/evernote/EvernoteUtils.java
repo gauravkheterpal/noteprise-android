@@ -158,6 +158,25 @@ public class EvernoteUtils
 		return listItems;
 	}
 	
+	public static String getMediaStringFromNote(String noteContent)
+	{
+		int start, end;
+		String content = null;
+		if (noteContent != null)
+		{				
+			start = noteContent.indexOf("<en-media");
+			end = noteContent.indexOf("</en-media>");
+			if(end == -1)
+			{
+				end = noteContent.indexOf("image/png");
+				content = noteContent.substring(start, end+12);
+			}
+			else
+			content = noteContent.substring(start, end+11);
+		}
+		return content;
+	} 
+	
 	public static ArrayList<CommonListItems> getAllNotes(String authToken, Client client)
 	{
 		List<Notebook> notebooks = getAllNotebooks(authToken, client);
