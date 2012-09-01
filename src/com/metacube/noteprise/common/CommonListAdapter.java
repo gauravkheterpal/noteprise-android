@@ -187,13 +187,12 @@ public class CommonListAdapter extends BaseAdapter
 	
 	public int getCheckedItemsUserNameLength()
 	{
-		int length=0;
+		int length = 0;
 		for (int i = 0; i < listItems.size(); i++)
 		{
 			if(listItems.get(i).getIsChecked())
-			{
-				
-				length+=listItems.get(i).getLabel().length()+1;
+			{				
+				length += listItems.get(i).getLabel().length() + 1;
 			}
 		}
 		return length;

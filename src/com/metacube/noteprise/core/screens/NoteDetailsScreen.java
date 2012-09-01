@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -57,12 +58,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	LinearLayout editButton;
 	LinearLayout topButtonBar;
 	RelativeLayout saveButton, publishToChatterButton;
-	String noteTitle, noteContent, noteGuid,mediaString,publishString;
+	String noteTitle, noteContent, noteGuid, mediaString, publishString;
 	Note note;
 	Bitmap bitmap;
 	RestResponse publishResponse;
-	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null,TRUNCATE_NOTE=3;
+	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null, TRUNCATE_NOTE = 3;
 	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
+	
 	@Override
 	public void onAttach(Activity activity) 
 	{
@@ -104,11 +106,11 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				if(baseActivity.SELECTED_FIELD_LENGTH >= Html.fromHtml(noteContent).length())
 				{
-				Bundle args = new Bundle();
-				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-				NotepriseLogger.logMessage("Saving string==" + saveString);
-				args.putString("noteContent", saveString);
-				changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+					Bundle args = new Bundle();
+					String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+					NotepriseLogger.logMessage("Saving string==" + saveString);
+					args.putString("noteContent", saveString);
+					changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
 				}
 				else
 				{
@@ -178,14 +180,12 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		{			
 			Bundle args = new Bundle();			
 		    args.putString("publishString", publishString);
-		    NotepriseLogger.logMessage("publishStringafterchangescreeh"+publishString);
 		    args.putString("publishTask", "USER_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_group_feed)
 		{			
 			Bundle args = new Bundle();
-			NotepriseLogger.logMessage("publishStringfromnotedetailscreenwithouttruncate"+publishString);
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "GROUP_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
@@ -376,7 +376,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
 			fOut.flush();
 			fOut.close();
-			//MediaStore.Images.Media.insertImage(baseActivity.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+			MediaStore.Images.Media.insertImage(baseActivity.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
 			return true;
 		}
 		catch (Exception e) 

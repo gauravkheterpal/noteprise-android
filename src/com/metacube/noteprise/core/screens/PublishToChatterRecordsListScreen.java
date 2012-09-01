@@ -26,7 +26,7 @@ import com.salesforce.androidsdk.rest.RestResponse;
 
 public class PublishToChatterRecordsListScreen extends BaseFragment implements OnClickListener, OnItemClickListener
 {
-	String publishString, publishTask, groupId,contentdata;
+	String publishString, publishTask, groupId;
 	RestResponse dataResponse = null, publishResponse;
 	Button publishToChatterButton;
 	public static final int GET_FOLLOWING_USER_LIST = 0, PUBLISH_TO_CHATTER_USER_WITH_MENTIONS = 1, GET_GROUPS_LIST = 2, PUBLISH_TO_CHATTER_GROUP = 3;
@@ -57,7 +57,6 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
         } 
         else if (publishTask.equalsIgnoreCase("GROUP_FEED"))
         {
-			contentdata = publishString;
         	TASK_TYPE = GET_GROUPS_LIST;
         	TASK = GET_GROUPS_LIST;
         }
@@ -286,7 +285,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				{
 					if (publishString.length() > 1000)
 					{
-						publishString = contentdata.substring(0, 999);
+						publishString = publishString.substring(0, 999);
 					}					
 					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
 					TASK = PUBLISH_TO_CHATTER_GROUP;
