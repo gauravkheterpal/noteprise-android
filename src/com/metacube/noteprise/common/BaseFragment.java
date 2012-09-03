@@ -162,13 +162,6 @@ public class BaseFragment extends Fragment
 		this.selectedFieldLabel = baseActivity.SELECTED_FIELD_LABEL;
 		this.selectedObjectName = baseActivity.SELECTED_OBJECT_NAME;
 		this.selectedObjectLabel = baseActivity.SELECTED_OBJECT_LABEL;
-		if (Utilities.verifyStringData(selectedFieldLabel) && Utilities.verifyStringData(selectedObjectLabel) 
-				&& Utilities.verifyStringData(selectedFieldName) && Utilities.verifyStringData(selectedObjectName))
-		{
-			baseActivity.selectedObjectTextView.setText(selectedObjectLabel);
-			baseActivity.selectedFieldTextView.setText(selectedFieldLabel);
-			baseActivity.mappingValuesContainer.setVisibility(View.VISIBLE);
-		}
 	}
 	
 	public void showFullScreenProgresIndicator()

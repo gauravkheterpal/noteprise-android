@@ -16,7 +16,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.metacube.noteprise.R;
@@ -35,7 +34,6 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 	Spinner objectSpinner, fieldSpinner;
 	RestRequest sobjectsRequest, fieldsRequest;
 	CommonSpinnerAdapter objectsSpinnerAdapter, fieldsSpinnerAdapter;
-	LinearLayout doneButton;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -56,28 +54,26 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
     	View contentView = inflater.inflate(R.layout.salesforce_object_chooser_layout, container);
     	objectSpinner = (Spinner) contentView.findViewById(R.id.object_list_spinner);
         fieldSpinner = (Spinner) contentView.findViewById(R.id.field_list_spinner);
-        doneButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
-    	doneButton.setOnClickListener(this);
-    	doneButton.setEnabled(Boolean.FALSE);
+        baseActivity.saveButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == doneButton)
+		if (view == baseActivity.saveButton)
 		{
 			String objectName = ((CommonListItems) objectSpinner.getSelectedItem()).getName();
 			String objectLabel = ((CommonListItems) objectSpinner.getSelectedItem()).getLabel();
 			String fieldName = ((CommonListItems) fieldSpinner.getSelectedItem()).getName();
 			String fieldLabel = ((CommonListItems) fieldSpinner.getSelectedItem()).getLabel();		
-			int length = ((CommonListItems) fieldSpinner.getSelectedItem()).getFieldLength();
-			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName,length);			
+			Integer fieldLength = ((CommonListItems) fieldSpinner.getSelectedItem()).getFieldLength();
+			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName, fieldLength);			
 			baseActivity.SELECTED_OBJECT_NAME = objectName;
 			baseActivity.SELECTED_OBJECT_LABEL = objectLabel;
 			baseActivity.SELECTED_FIELD_NAME = fieldName;
 			baseActivity.SELECTED_FIELD_LABEL = fieldLabel;
-			baseActivity.SELECTED_FIELD_LENGTH = length;
+			baseActivity.SELECTED_FIELD_LENGTH = fieldLength;
 			baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 			finishScreen();
 		}
@@ -101,7 +97,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 	{
 		super.onStop();
 		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
-		removeViewFromBaseHeaderLayout(doneButton);
+		baseActivity.saveButton.setVisibility(View.GONE);
 	}
 	
 	@Override
@@ -175,8 +171,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 				fieldsSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
 				fieldsSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
 				fieldSpinner.setAdapter(fieldsSpinnerAdapter);
-				doneButton.setEnabled(Boolean.TRUE);
-				doneButton.setVisibility(View.VISIBLE);
+				baseActivity.saveButton.setVisibility(View.VISIBLE);
 				hideProgresIndicator();
 			} 
 			catch (ParseException e) 
@@ -207,7 +202,7 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 		if (salesforceRestClient != null)
 		{
 			showProgresIndicator();
-			doneButton.setVisibility(View.GONE);
+			baseActivity.saveButton.setVisibility(View.GONE);
 			fieldsRequest = RestRequest.getRequestForDescribe(SF_API_VERSION, item.getName());
 			salesforceRestClient.sendAsync(fieldsRequest, this);			
 		}
@@ -215,8 +210,6 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) 
-	{
-		
-		
+	{		
 	}	
 }

@@ -14,7 +14,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
@@ -35,7 +34,6 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	String authToken;
 	Client client;
 	WebView noteContentWebView;
-	LinearLayout updateButton;
 	String noteTitle, noteContent, noteGuid;
 	Note note;
 	EditText noteTitleEditText, noteContenteditText;
@@ -64,9 +62,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		clearContainer(container);
 		View contentView = inflater.inflate(R.layout.note_edit_screen_layout, container);
 		noteContenteditText = (EditText) contentView.findViewById(R.id.content);
-		updateButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
-		updateButton.setVisibility(View.VISIBLE);
-		updateButton.setOnClickListener(this);
+		baseActivity.saveButton.setOnClickListener(this);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
     
@@ -79,7 +75,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	@Override
 	public void onClick(View view) 
 	{
-		if(view == updateButton)
+		if(view == baseActivity.saveButton)
 		{ 
 			TASK = UPDATE_NOTE;
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_update_message));
@@ -100,7 +96,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	public void onStop() 
 	{
 		super.onStop();
-		removeViewFromBaseHeaderLayout(updateButton);		
+		baseActivity.saveButton.setVisibility(View.GONE);	
 	}
 	
 	@Override
@@ -156,7 +152,8 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	    	NotepriseLogger.logMessage(noteContent);
 	    	saveString= noteContent.replace(Constants.NOTE_PREFIX, "");
 	    	saveString= noteContent.replace(Constants.NOTE_SUFFIX, "");
-	    	noteContenteditText.setText(Html.fromHtml(saveString));	    	
+	    	noteContenteditText.setText(Html.fromHtml(saveString));	  
+	    	baseActivity.saveButton.setVisibility(View.VISIBLE);
 		}
 		else if (TASK == UPDATE_NOTE)
 		{			

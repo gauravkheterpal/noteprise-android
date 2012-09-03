@@ -4,23 +4,23 @@
     android:layout_height="@dimen/common_list_item_layout_height" >
 
     <ImageView
+        android:id="@+id/list_item_checkbox_image"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/normal_margin_padding"
+        android:background="@drawable/button_unchecked"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
+
+    <ImageView
         android:id="@+id/list_item_left_image"
         android:layout_width="@dimen/common_list_item_left_image_width_height"
         android:layout_height="@dimen/common_list_item_left_image_width_height"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/normal_margin_padding"
-        android:background="@drawable/settings_gray"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/list_item_user_image"
-        android:layout_width="@dimen/common_list_item_left_image_width_height"
-        android:layout_height="@dimen/common_list_item_left_image_width_height"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/normal_margin_padding"
-        android:layout_toRightOf="@id/list_item_left_image"
-        android:background="@drawable/user_profile_icon"
-        android:scaleType="fitXY"
+        android:layout_toRightOf="@id/list_item_checkbox_image"
+        android:scaleType="fitCenter"
         android:visibility="gone" />
 
     <TextView
@@ -29,8 +29,20 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/normal_margin_padding"
-        android:layout_toRightOf="@id/list_item_user_image"
+        android:layout_marginRight="@dimen/large_margin_padding"
+        android:layout_toRightOf="@id/list_item_left_image"
+        android:text="@string/list_item_default_text"
         android:textColor="@color/common_text_color"
         android:textSize="@dimen/common_text_size" />
+
+    <ImageView
+        android:id="@+id/list_item_arrow_image"
+        android:layout_width="@dimen/common_list_item_left_image_width_height"
+        android:layout_height="@dimen/common_list_item_left_image_width_height"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/list_arrow"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
 
 </RelativeLayout>

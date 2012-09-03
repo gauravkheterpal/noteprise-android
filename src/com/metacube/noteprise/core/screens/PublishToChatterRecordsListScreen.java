@@ -11,8 +11,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.metacube.noteprise.R;
@@ -28,7 +26,6 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 {
 	String publishString, publishTask, groupId;
 	RestResponse dataResponse = null, publishResponse;
-	Button publishToChatterButton;
 	public static final int GET_FOLLOWING_USER_LIST = 0, PUBLISH_TO_CHATTER_USER_WITH_MENTIONS = 1, GET_GROUPS_LIST = 2, PUBLISH_TO_CHATTER_GROUP = 3;
 	Integer TASK = -1, TASK_TYPE = -1;
 	int count = 0, numberOfResponse = 0;
@@ -36,7 +33,6 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	CommonListAdapter listAdapter;
 	ListView listView;
 	ArrayList<String> selectedIds = null;
-	LinearLayout editRecordSelectionButton, saveRecordSelectionButton;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -68,10 +64,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.common_list_layout, container);
     	listView = (ListView) contentView.findViewById(R.id.common_list_view);
-    	editRecordSelectionButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_edit_button_layout, R.id.common_edit_button);
-    	saveRecordSelectionButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
-    	editRecordSelectionButton.setOnClickListener(this);
-    	saveRecordSelectionButton.setOnClickListener(this);
+    	baseActivity.editButton.setOnClickListener(this);
+    	baseActivity.saveButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 	
@@ -167,7 +161,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					listAdapter = new CommonListAdapter(this, inflater, listItems);
 					listView.setAdapter(listAdapter);
 					listView.setOnItemClickListener(this);
-					editRecordSelectionButton.setVisibility(View.VISIBLE);
+					baseActivity.editButton.setVisibility(View.VISIBLE);
 				}
 			}
 		}
@@ -181,7 +175,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					listAdapter = new CommonListAdapter(this, inflater, listItems);
 					listView.setAdapter(listAdapter);
 					listView.setOnItemClickListener(this);
-					editRecordSelectionButton.setVisibility(View.VISIBLE);
+					baseActivity.editButton.setVisibility(View.VISIBLE);
 				}
 			}
 		}
@@ -234,24 +228,20 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	public void onStop() 
 	{
 		super.onStop();
-		removeViewFromBaseHeaderLayout(editRecordSelectionButton);
-		removeViewFromBaseHeaderLayout(saveRecordSelectionButton);
+		baseActivity.editButton.setVisibility(View.GONE);
+		baseActivity.saveButton.setVisibility(View.GONE);
 	}
 
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == publishToChatterButton)
+		if (view == baseActivity.editButton)
 		{
-			publishNoteToChatterFeed();
-		}
-		else if (view == editRecordSelectionButton)
-		{
-			editRecordSelectionButton.setVisibility(View.GONE);
-			saveRecordSelectionButton.setVisibility(View.VISIBLE);
+			baseActivity.editButton.setVisibility(View.GONE);
+			baseActivity.saveButton.setVisibility(View.VISIBLE);
 			listAdapter.showCheckList();
 		}
-		else if (view == saveRecordSelectionButton)
+		else if (view == baseActivity.saveButton)
 		{			
 			selectedIds = listAdapter.getCheckedItemsList();
 			if (TASK_TYPE == GET_FOLLOWING_USER_LIST)
@@ -287,7 +277,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					{
 						publishString = publishString.substring(0, 999);
 					}					
-					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
+					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
 					TASK = PUBLISH_TO_CHATTER_GROUP;
 					executeAsyncTask();
 				}

@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:antialias="true"
+    android:dither="true"
+    android:filter="true"
+    android:src="@drawable/segment_control_selected"
+    android:tileMode="disabled" >
 
-    <corners
-        android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="0dp"
-        android:topLeftRadius="0dp"
-        android:topRightRadius="0dp" />
-
-    <gradient
-        android:angle="90"
-        android:endColor="#85BAE4"
-        android:startColor="#5393C5"
-        android:type="linear" />
-
-</shape>
+</bitmap>

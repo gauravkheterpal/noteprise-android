@@ -21,7 +21,7 @@ public class CommonListAdapter extends BaseAdapter
 	LayoutInflater inflater = null;
 	View listItemLayout = null;
 	TextView listItemMainTextView = null;
-	ImageView leftImageView = null, leftUserImageView = null;
+	ImageView leftImageView = null, listArrowImageView = null, listItemCheckBox = null;
 	Boolean isCheckListMode = Boolean.FALSE;
 	BaseFragment baseFragment;
 
@@ -59,36 +59,40 @@ public class CommonListAdapter extends BaseAdapter
 		{
 			listItemLayout = inflater.inflate(R.layout.common_list_item_layout, parent, false);
 			listItemMainTextView = (TextView) listItemLayout.findViewById(R.id.list_item_main_text);
-			leftImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_left_image);		
-			leftUserImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_user_image);
-			listItemMainTextView.setText(item.getLabel());
-			if (item.getLeftImage() != null && !isCheckListMode)
+			leftImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_left_image);
+			listItemCheckBox = (ImageView) listItemLayout.findViewById(R.id.list_item_checkbox_image);
+			listArrowImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_arrow_image);
+			listItemMainTextView.setText(item.getLabel());			
+			if (isCheckListMode)
+			{
+				if (item.getIsChecked())
+				{
+					listItemCheckBox.setImageResource(R.drawable.button_checked);
+				}
+				else
+				{
+					listItemCheckBox.setImageResource(R.drawable.button_unchecked);
+				}			
+				listItemCheckBox.setVisibility(View.VISIBLE);
+			}
+			if (item.getLeftUserImageURL() != null)
+			{
+				leftImageView.setVisibility(View.VISIBLE);
+				if (baseFragment != null)
+				{
+					baseFragment.loadImageOnView(item.getLeftUserImageURL(), leftImageView, ImageLoader.UNCOMPRESSED);
+				}
+			}
+			else if (item.getLeftImage() != null)
 			{
 				leftImageView.setImageResource(item.getLeftImage());
 				leftImageView.setVisibility(View.VISIBLE);
 			}
-			else if (isCheckListMode)
+			if (item.getShowListArrow() && !isCheckListMode)
 			{
-				if (item.getIsChecked())
-				{
-					leftImageView.setImageResource(R.drawable.button_checked);
-				}
-				else
-				{
-					leftImageView.setImageResource(R.drawable.button_unchecked);
-				}			
-				leftImageView.setVisibility(View.VISIBLE);
+				listArrowImageView.setVisibility(View.VISIBLE);
 			}
-			if (item.getLeftUserImageURL() != null)
-			{
-				leftUserImageView.setVisibility(View.VISIBLE);
-				if (baseFragment != null)
-				{
-					baseFragment.loadImageOnView(item.getLeftUserImageURL(), leftUserImageView, ImageLoader.UNCOMPRESSED);
-				}
-			}
-		}
-		
+		}		
 		return listItemLayout;
 	}
 
@@ -155,12 +159,10 @@ public class CommonListAdapter extends BaseAdapter
 	{
 		if (isItemChecked(position))
 		{
-			listItems.get(position).setLeftImage(R.drawable.button_unchecked);
 			listItems.get(position).setIsChecked(Boolean.FALSE);
 		}
 		else
 		{
-			listItems.get(position).setLeftImage(R.drawable.button_checked);
 			listItems.get(position).setIsChecked(Boolean.TRUE);
 		}		
 		notifyDataSetChanged();

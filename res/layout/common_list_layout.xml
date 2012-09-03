@@ -8,10 +8,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:cacheColorHint="@android:color/transparent"
-        android:divider="@color/translucent_black"
+        android:divider="@drawable/segment_control_horizontal_border"
         android:dividerHeight="@dimen/common_divider_width_height"
-        android:listSelector="@drawable/common_view_selector"
-        android:padding="@dimen/normal_margin_padding" >
+        android:listSelector="@drawable/common_list_selector" >
     </ListView>
 
     <TextView

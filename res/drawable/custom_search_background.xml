@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:antialias="true"
+    android:dither="true"
+    android:filter="true"
+    android:src="@drawable/search_bar_background"
+    android:tileMode="disabled" >
 
-    <corners android:radius="7dp" />
-
-    <gradient
-        android:angle="90"
-        android:endColor="#555555"
-        android:startColor="#333333"
-        android:type="linear" />
-
-    <stroke
-        android:width="1dp"
-        android:color="@color/translucent_black" />
-
-</shape>
+</bitmap>

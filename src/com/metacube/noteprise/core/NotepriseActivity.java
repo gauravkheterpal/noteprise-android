@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -113,6 +113,10 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		{
 			changeScreen(new NotepriseFragment("CreateNewNote", CreateNewNoteScreen.class));
 		}
+		else if (view == logoutButton)
+		{
+			signOutFromEvernote();
+		}
 	}
 	
 	@Override
@@ -128,15 +132,22 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		baseHeaderLayout = (RelativeLayout) findViewById(R.id.base_header_layout);
 		baseHeaderTitleTextView = (TextView) findViewById(R.id.base_header_title_text_view);
 		headerProgressBar = (ProgressBar) findViewById(R.id.header_progress_bar);
-		salesforceObjectsButton = (LinearLayout) findViewById(R.id.object_mapping_button_layout);
+		salesforceObjectsButton = (ImageView) findViewById(R.id.object_mapping_settings_button);
     	salesforceObjectsButton.setOnClickListener(this);
-    	mappingValuesContainer = (LinearLayout) findViewById(R.id.mapping_values_container);
-    	createNewNoteButton = (LinearLayout) findViewById(R.id.create_new_note_button_layout);
+    	createNewNoteButton = (ImageView) findViewById(R.id.create_new_note_button);
     	createNewNoteButton.setOnClickListener(this);
-    	deleteNoteButton = (LinearLayout) findViewById(R.id.delete_note_button_layout);
+    	deleteNoteButton = (ImageView) findViewById(R.id.delete_note_button);
     	deleteNoteButton.setOnClickListener(this);
-    	selectedObjectTextView = (TextView) findViewById(R.id.selected_object_text_view);
-    	selectedFieldTextView = (TextView) findViewById(R.id.selected_field_text_view);
+    	saveToSFButton = (ImageView) findViewById(R.id.save_to_sf_button);
+    	saveToSFButton.setOnClickListener(this);
+    	publishToChatterButton = (ImageView) findViewById(R.id.chatter_button);
+    	publishToChatterButton.setOnClickListener(this);
+    	editButton = (ImageView) findViewById(R.id.edit_button);
+    	editButton.setOnClickListener(this);
+    	saveButton = (ImageView) findViewById(R.id.save_button);
+    	saveButton.setOnClickListener(this);
+    	logoutButton = (ImageView) findViewById(R.id.logout_button);
+    	logoutButton.setOnClickListener(this);
 		notepriseFragmentManager = new NotepriseFragmentManager(this);
         notepriseFragmentManager.changeScreen(new NotepriseFragment("MainMenu", MainMenuScreen.class));
 	}

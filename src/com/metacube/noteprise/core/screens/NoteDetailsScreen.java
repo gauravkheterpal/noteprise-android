@@ -29,9 +29,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow.OnDismissListener;
-import android.widget.RelativeLayout;
 
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
@@ -55,9 +53,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	String authToken;
 	Client client;
 	WebView noteContentWebView;
-	LinearLayout editButton;
-	LinearLayout topButtonBar;
-	RelativeLayout saveButton, publishToChatterButton;
 	String noteTitle, noteContent, noteGuid, mediaString, publishString;
 	Note note;
 	Bitmap bitmap;
@@ -85,22 +80,16 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.note_detail_screen_layout, container);
     	noteContentWebView = (WebView) contentView.findViewById(R.id.note_content_web_view);
-    	topButtonBar = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.note_details_screen_menu_bar_layout, R.id.button_menu_bar_layout);
-    	saveButton = (RelativeLayout) topButtonBar.findViewById(R.id.common_save_image_button);
-    	publishToChatterButton = (RelativeLayout) topButtonBar.findViewById(R.id.publish_to_chatter_image_button);
-    	editButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_left_edit_button_layout, R.id.common_left_edit_button);
-    	baseActivity.deleteNoteButton.setOnClickListener(this);
-    	saveButton.setOnClickListener(this);
-    	publishToChatterButton.setOnClickListener(this);
-    	registerForContextMenu(publishToChatterButton);
-    	editButton.setOnClickListener(this); 	
+    	baseActivity.saveToSFButton.setOnClickListener(this);
+    	baseActivity.editButton.setOnClickListener(this);
+    	registerForContextMenu(baseActivity.publishToChatterButton);	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == saveButton)
+		if (view == baseActivity.saveToSFButton)
 		{
 			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
 			{
@@ -136,13 +125,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}
 			commonMessageDialog.showDeleteNoteDialog(authToken, client, this);
 		}
-		else if (view == editButton)
+		else if (view == baseActivity.editButton)
 		{
 		    Bundle args = new Bundle();
 		    args.putString("noteGuid", noteGuid);
 			changeScreen(new NotepriseFragment("NoteEditScreen", NoteEditScreen.class,args));
 		}
-		else if (view == publishToChatterButton)			
+		else if (view == baseActivity.publishToChatterButton)			
 		{
 			NotepriseLogger.logMessage("Length" + Html.fromHtml(noteContent).length());
 			if (Html.fromHtml(publishString).length() > 1000)
@@ -151,14 +140,14 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				commonMessageDialog.showContentTruncateDialog(this);
 			}
 			else 
-			publishToChatterButton.showContextMenu();
+			baseActivity.publishToChatterButton.showContextMenu();
 		}
 	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) 
 	{
-		if (view == publishToChatterButton)
+		if (view == baseActivity.publishToChatterButton)
 		{
 			MenuInflater inflater = baseActivity.getMenuInflater();
 		    inflater.inflate(R.menu.chatter_context_menu, menu);
@@ -208,8 +197,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public void onStop() 
 	{
 		super.onStop();
-		removeViewFromBaseHeaderLayout(topButtonBar);
-		removeViewFromBaseHeaderLayout(editButton);
+		baseActivity.saveToSFButton.setVisibility(View.GONE);
+		baseActivity.editButton.setVisibility(View.GONE);
+		baseActivity.publishToChatterButton.setVisibility(View.GONE);
 		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
 		baseActivity.deleteNoteButton.setVisibility(View.GONE);
 	}
@@ -306,8 +296,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				noteContentWebView.loadData(noteContent, "text/html", "utf-8");
 			}				
-			topButtonBar.setVisibility(View.VISIBLE);
-			editButton.setVisibility(View.VISIBLE);
+			baseActivity.editButton.setVisibility(View.VISIBLE);
+			baseActivity.saveToSFButton.setVisibility(View.VISIBLE);
+			baseActivity.publishToChatterButton.setVisibility(View.VISIBLE);
 			publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 			NotepriseLogger.logMessage("PublishString" + publishString);
 		}
@@ -390,9 +381,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public void onClick(DialogInterface dialog, int which) 
 	{
 		if(TASK == TRUNCATE_NOTE && which == -1)
-		{						
-			NotepriseLogger.logMessage("publisgStringafterchatterbutonclick"+publishString);
-			publishToChatterButton.showContextMenu();
+		{
+			baseActivity.publishToChatterButton.showContextMenu();
 		}
 		else if (which == -1) // For Positive Button
 		{

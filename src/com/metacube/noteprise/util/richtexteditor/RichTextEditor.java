@@ -50,7 +50,7 @@ public class RichTextEditor extends LinearLayout implements ColorPickerDialog.On
 		String infService = Context.LAYOUT_INFLATER_SERVICE;
 		LayoutInflater li;
 		li = (LayoutInflater)getContext().getSystemService(infService);
-		li.inflate(R.layout.richtexteditor, this, true);
+		li.inflate(R.layout.rich_text_editor_layout, this, true);
 		
 		//Get references to the child controls
 		content = (EditText)findViewById(R.id.content);

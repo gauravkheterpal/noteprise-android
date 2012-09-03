@@ -13,6 +13,7 @@ public class CommonListItems
 	private String itemType = Constants.ITEM_TYPE_LIST_ITEM;
 	private Integer totalContent = null;
 	private Integer fieldLength = null;
+	private Boolean showListArrow = Boolean.TRUE;
 	public String getId() {
 		return id;
 	}
@@ -46,6 +47,9 @@ public class CommonListItems
 	public Integer getFieldLength() {
 		return fieldLength;
 	}
+	public Boolean getShowListArrow() {
+		return showListArrow;
+	}
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -78,5 +82,8 @@ public class CommonListItems
 	}
 	public void setFieldLength(Integer fieldLength) {
 		this.fieldLength = fieldLength;
+	}
+	public void setShowListArrow(Boolean showListArrow) {
+		this.showListArrow = showListArrow;
 	}	
 }

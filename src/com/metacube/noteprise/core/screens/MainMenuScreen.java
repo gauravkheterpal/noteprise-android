@@ -122,9 +122,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 	public void onResume() 
 	{
 		super.onResume();
-		
-		
-		
+		baseActivity.logoutButton.setVisibility(View.VISIBLE);		
 		if (isEvernoteAuthenticationComplete())
 		{
 			if (baseActivity.isDataSaved && checkPreviousScreenActionForNotRefresh())
@@ -216,6 +214,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 	{
 		super.onStop();
 		saveCurrentState();
+		baseActivity.logoutButton.setVisibility(View.GONE);
 	}
 	
 	public void saveCurrentState()

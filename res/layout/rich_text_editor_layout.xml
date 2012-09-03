@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/common_edit_text_selector"
+    android:orientation="vertical"
+    android:padding="5dip" >
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dip" >
+
+        <ToggleButton
+            android:id="@+id/bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_toggle"
+            android:textColor="#464646"
+            android:textOff="B"
+            android:textOn="B"
+            android:textSize="10dip" />
+
+        <ToggleButton
+            android:id="@+id/italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_toggle"
+            android:textColor="#464646"
+            android:textOff="I"
+            android:textOn="I"
+            android:textSize="10dip" />
+
+        <ToggleButton
+            android:id="@+id/underline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_toggle"
+            android:textColor="#464646"
+            android:textOff="U"
+            android:textOn="U"
+            android:textSize="10dip" />
+
+        <ToggleButton
+            android:id="@+id/html"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_toggle"
+            android:textColor="#464646"
+            android:textOff=" HTML "
+            android:textOn=" HTML "
+            android:textSize="10dip" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="@dimen/normal_margin_padding"
+        android:background="@drawable/common_edit_text_selector"
+        android:gravity="top"
+        android:hint="@string/note_content_hint_edit_text"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/small_margin_padding" />
+
+</LinearLayout>

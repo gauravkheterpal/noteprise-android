@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,8 +40,9 @@ public class BaseActivity extends FragmentActivity
 	public CommonMessageDialog commonMessageDialog;
 	public ProgressBar headerProgressBar;
 	public ProgressDialog commonProgressDialog;
-	public LinearLayout createNewNoteButton, deleteNoteButton, salesforceObjectsButton, mappingValuesContainer;
-	public TextView selectedObjectTextView, selectedFieldTextView, baseHeaderTitleTextView;
+	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton,
+						saveToSFButton, publishToChatterButton, editButton, saveButton;
+	public TextView baseHeaderTitleTextView;
 	public RelativeLayout baseHeaderLayout;
 	
 	public Boolean loggedInSalesforce = Boolean.FALSE;

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/main_background"
+    android:background="@drawable/base_background"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -10,8 +10,19 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/header_footer_bar_layout_height"
         android:layout_weight="0"
-        android:background="@drawable/top_black_background"
+        android:background="@drawable/main_nav_bar_background"
         android:visibility="visible" >
+
+        <ImageView
+            android:id="@+id/logout_button"
+            android:layout_width="@dimen/common_button_icon_width_height"
+            android:layout_height="@dimen/common_button_icon_width_height"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/normal_margin_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logout_button_selector"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/base_header_title_text_view"
@@ -21,17 +32,55 @@
             android:text="@string/app_name"
             android:textColor="@color/text_color_for_dark_background"
             android:textSize="@dimen/header_bar_title_text_size"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
-        <ProgressBar
-            android:id="@+id/header_progress_bar"
-            android:layout_width="@dimen/header_progress_bar_width_height"
-            android:layout_height="@dimen/header_progress_bar_width_height"
+        <ImageView
+            android:id="@+id/base_header_title_image_view"
+            android:layout_width="@dimen/header_app_icon_image_view_width"
+            android:layout_height="@dimen/header_app_icon_image_view_height"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/noteprise_logo"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/normal_margin_padding"
-            android:visibility="gone" />
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/edit_button"
+                android:layout_width="@dimen/common_button_icon_width_height"
+                android:layout_height="@dimen/common_button_icon_width_height"
+                android:layout_marginRight="@dimen/normal_margin_padding"
+                android:src="@drawable/edit_button_selector"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/save_button"
+                android:layout_width="@dimen/common_button_icon_width_height"
+                android:layout_height="@dimen/common_button_icon_width_height"
+                android:layout_marginRight="@dimen/normal_margin_padding"
+                android:src="@drawable/save_button_selector"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/header_progress_bar"
+                android:layout_width="@dimen/header_progress_bar_width_height"
+                android:layout_height="@dimen/header_progress_bar_width_height"
+                android:layout_marginRight="@dimen/normal_margin_padding"
+                android:visibility="gone" />
+        </LinearLayout>
     </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_weight="0"
+        android:background="@drawable/segment_control_border" />
 
     <FrameLayout
         android:id="@+id/fragment_view_frame_layout"
@@ -40,104 +89,69 @@
         android:layout_weight="1" >
     </FrameLayout>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_weight="0"
+        android:background="@drawable/segment_control_border" />
+
     <RelativeLayout
         android:id="@+id/base_footer_layout"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/header_footer_bar_layout_height"
         android:layout_weight="0"
-        android:background="@drawable/bottom_black_background"
+        android:background="@drawable/main_nav_bar_background"
         android:visibility="visible" >
 
-        <LinearLayout
-            android:id="@+id/create_new_note_button_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:background="@drawable/common_button_selector_squared"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/small_margin_padding" >
+        <ImageView
+            android:id="@+id/create_new_note_button"
+            android:layout_width="@dimen/common_button_icon_width_height"
+            android:layout_height="@dimen/common_button_icon_width_height"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/normal_margin_padding"
+            android:src="@drawable/create_new_note_button_selector" />
 
-            <ImageView
-                android:layout_width="@dimen/common_button_icon_width_height"
-                android:layout_height="@dimen/common_button_icon_width_height"
-                android:scaleType="fitXY"
-                android:src="@drawable/plus_icon" />
-            
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/delete_note_button"
+            android:layout_width="@dimen/common_button_icon_width_height"
+            android:layout_height="@dimen/common_button_icon_width_height"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/normal_margin_padding"
+            android:layout_toRightOf="@id/create_new_note_button"
+            android:src="@drawable/create_new_note_button_selector"
+            android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/delete_note_button_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_toRightOf="@id/create_new_note_button_layout"
-            android:background="@drawable/common_button_selector_squared"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/small_margin_padding"
-            android:visibility="gone" >
-
-            <ImageView
-                android:layout_width="@dimen/common_button_icon_width_height"
-                android:layout_height="@dimen/common_button_icon_width_height"
-                android:scaleType="fitXY"
-                android:src="@drawable/trash_icon" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:layout_toRightOf="@id/delete_note_button_layout"
-            android:background="@color/translucent_black" />
-
-        <LinearLayout
-            android:id="@+id/object_mapping_button_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+        <ImageView
+            android:id="@+id/object_mapping_settings_button"
+            android:layout_width="@dimen/common_button_icon_width_height"
+            android:layout_height="@dimen/common_button_icon_width_height"
             android:layout_alignParentRight="true"
-            android:background="@drawable/common_button_selector_squared"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/small_margin_padding"
-            android:paddingRight="@dimen/small_margin_padding"
-            android:visibility="visible" >
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/normal_margin_padding"
+            android:background="@drawable/settings_button_selector"
+            android:visibility="visible" />
 
-            <ImageView
-                android:layout_width="@dimen/common_button_icon_width_height"
-                android:layout_height="@dimen/common_button_icon_width_height"
-                android:scaleType="fitXY"
-                android:src="@drawable/settings_gray" />
+        <ImageView
+            android:id="@+id/save_to_sf_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/common_button_icon_width_height"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/normal_margin_padding"
+            android:layout_toLeftOf="@id/object_mapping_settings_button"
+            android:scaleType="fitCenter"
+            android:src="@drawable/save_to_sf_button_selector"
+            android:visibility="gone" />
 
-            <LinearLayout
-                android:id="@+id/mapping_values_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/normal_margin_padding"
-                android:layout_marginRight="@dimen/normal_margin_padding"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:visibility="gone" >
-
-                <TextView
-                    android:id="@+id/selected_object_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color_for_dark_background"
-                    android:textSize="@dimen/common_small_text_size" />
-
-                <TextView
-                    android:id="@+id/selected_field_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color_for_dark_background"
-                    android:textSize="@dimen/common_small_text_size" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="fill_parent"
-            android:layout_toLeftOf="@id/object_mapping_button_layout"
-            android:background="@color/translucent_black" />
+        <ImageView
+            android:id="@+id/chatter_button"
+            android:layout_width="@dimen/common_button_icon_width_height"
+            android:layout_height="@dimen/common_button_icon_width_height"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/normal_margin_padding"
+            android:layout_toLeftOf="@id/save_to_sf_button"
+            android:scaleType="fitCenter"
+            android:src="@drawable/chatter_button_selector"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -31,8 +30,7 @@ import com.metacube.noteprise.util.Utilities;
 import com.metacube.noteprise.util.richtexteditor.Html;
 
 public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
-{
-	
+{	
 	List<Notebook> notebookList;
 	Spinner notebookListSpinner;
 	String authToken;
@@ -40,7 +38,6 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	ArrayList<CommonListItems> spinnerItems;
 	CommonSpinnerAdapter notebookSpinnerAdapter;
 	EditText noteTitleEditText, noteContenteditText;
-	LinearLayout createNoteButton;
 	int GET_DATA = 0, SAVE_DATA = 1, CURRENT_TASK = 0;
 	Note createdNote, savedNote;
 	
@@ -64,16 +61,14 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
     	notebookListSpinner = (Spinner) contentView.findViewById(R.id.create_note_notebook_list_spinner); 
     	noteTitleEditText = (EditText) contentView.findViewById(R.id.note_title_edit_text);
     	noteContenteditText = (EditText) contentView.findViewById(R.id.content);
-
-    	createNoteButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
-    	createNoteButton.setOnClickListener(this);
+    	baseActivity.saveButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == createNoteButton)
+		if (view == baseActivity.saveButton)
 		{
 			String noteTitle = noteTitleEditText.getText().toString().trim();
 			String noteContent = noteContenteditText.getText().toString().trim();
@@ -103,7 +98,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	public void onStop() 
 	{
 		super.onStop();
-		removeViewFromBaseHeaderLayout(createNoteButton);
+		baseActivity.saveButton.setVisibility(View.GONE);
 		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
 	}
 	
@@ -197,7 +192,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			if (notebookList != null)
 	        {
 				hideProgresIndicator();
-				createNoteButton.setVisibility(View.VISIBLE);
+				baseActivity.saveButton.setVisibility(View.VISIBLE);
 				notebookSpinnerAdapter = new CommonSpinnerAdapter(inflater, spinnerItems);
 				notebookListSpinner.setAdapter(notebookSpinnerAdapter);
 	        }

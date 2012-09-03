@@ -20,7 +20,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,7 +41,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	RestRequest recordsRequest, updateRecordRequest;
 	CommonListAdapter recordsAdapter;
 	TextView noResultsTextView;
-	LinearLayout editRecordSelectionButton, saveRecordSelectionButton;
 	int totalRequests = 0;
 	
 	@Override
@@ -64,10 +62,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.common_list_layout, container);    	
     	listView = (ListView) contentView.findViewById(R.id.common_list_view);
-    	editRecordSelectionButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_edit_button_layout, R.id.common_edit_button);    	
-    	saveRecordSelectionButton = (LinearLayout) addViewToBaseHeaderLayout(inflater, R.layout.common_save_button_layout, R.id.common_save_button);
-    	editRecordSelectionButton.setOnClickListener(this);
-    	saveRecordSelectionButton.setOnClickListener(this);
+    	baseActivity.editButton.setOnClickListener(this);
+    	baseActivity.saveButton.setOnClickListener(this);
     	noResultsTextView = (TextView) contentView.findViewById(R.id.common_list_no_results);
     	noResultsTextView.setVisibility(View.GONE);
     	return super.onCreateView(inflater, container, savedInstanceState);
@@ -146,13 +142,13 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					JSONObject object = records.getJSONObject(i);
 					item.setLabel(object.optString("Name"));
 					item.setId(object.optString("Id"));
-					item.setLeftImage(R.drawable.settings_gray);
+					item.setLeftImage(R.drawable.record_icon);
 					items.add(item);
 				}
 				hideFullScreenProgresIndicator();
 				if (items != null && items.size() > 0)
 				{
-					editRecordSelectionButton.setVisibility(View.VISIBLE);
+					baseActivity.editButton.setVisibility(View.VISIBLE);
 					recordsAdapter = new CommonListAdapter(inflater, items);
 					listView.setAdapter(recordsAdapter);
 					listView.setOnItemClickListener(this);
@@ -217,8 +213,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	public void onStop() 
 	{
 		super.onStop();
-		removeViewFromBaseHeaderLayout(editRecordSelectionButton);
-		removeViewFromBaseHeaderLayout(saveRecordSelectionButton);
+		baseActivity.editButton.setVisibility(View.GONE);
+		baseActivity.saveButton.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -232,13 +228,13 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == editRecordSelectionButton)
+		if (view == baseActivity.editButton)
 		{
-			editRecordSelectionButton.setVisibility(View.GONE);
-			saveRecordSelectionButton.setVisibility(View.VISIBLE);
+			baseActivity.editButton.setVisibility(View.GONE);
+			baseActivity.saveButton.setVisibility(View.VISIBLE);
 			recordsAdapter.showCheckList();
 		}
-		else if (view == saveRecordSelectionButton)
+		else if (view == baseActivity.saveButton)
 		{			
 			ArrayList<String> selectedRecords = recordsAdapter.getCheckedItemsList();
 			if (selectedRecords.size() > 0)
