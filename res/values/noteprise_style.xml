@@ -49,5 +49,6 @@
     <dimen name="evernote_login_button_height">40dp</dimen>
     <dimen name="evernote_button_margin_bottom">50dp</dimen>
     <dimen name="common_custom_dialog_width">250dp</dimen>
+    <dimen name="common_custom_full_dialog_width">400dp</dimen>
 
 </resources>

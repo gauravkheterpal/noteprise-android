@@ -157,6 +157,27 @@ public class SalesforceUtils
 		return responseList;
 	}
 	
+	public static ArrayList<CommonListItems> getListAttachmentItem(String[] restResponse)
+	{
+		ArrayList<CommonListItems> responseList = new ArrayList<CommonListItems>();
+		try 
+		{
+			
+			for (int i = 0; i < restResponse.length; i++)
+			{				
+				CommonListItems item = new CommonListItems();								
+				item.setLabel(restResponse[i]);				
+				responseList.add(item);
+			}
+		} 
+		catch (ParseException e) 
+		{				
+			e.printStackTrace();
+		} 
+				
+		return responseList;
+	}
+	
 	public static RestResponse publishNoteWithUserMentions(RestClient salesforceRestClient, String noteContent, String SF_API_VERSION, ArrayList<String> selectedIds, File imageFile, String fileName, String imageTitle)
 	{
 		RestResponse publishResponse = null;

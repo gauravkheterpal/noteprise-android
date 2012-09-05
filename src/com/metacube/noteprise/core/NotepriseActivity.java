@@ -85,6 +85,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     	if (isEvernoteAuthenticationComplete() && authenticationStarted)
 		{
     		//hideFullScreenProgresIndicator();
+    		
 			authenticationStarted = false;
 			noteprisePreferences.saveEvernoteAuthToken(evernoteSession.getAuthToken());						
 			AuthenticationResult authResult = evernoteSession.getAuthenticationResult();

@@ -47,14 +47,14 @@ import com.salesforce.androidsdk.rest.RestResponse;
 public class SalesforceRecordsList extends BaseFragment implements OnItemClickListener, AsyncRequestCallback, OnClickListener
 {
 	ListView listView;
-	String noteContent,filePath,encodedImage,noteGuid,authToken,name, contentType;
+	String noteContent,filePath,encodedImage,noteGuid,authToken,name, contentType,id;
 	Client client;
 	Note note;
 	RestRequest recordsRequest, updateRecordRequest,createAttachment;
 	CommonListAdapter recordsAdapter;
 	TextView noResultsTextView;
 	int totalRequests = 0;
-	boolean [] selected;
+	ArrayList<String> imageids;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -67,8 +67,10 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
     {
         super.onCreate(savedInstanceState);        
         noteContent = Utilities.getStringFromBundle(getArguments(), "noteContent");  
+        NotepriseLogger.logMessage("notecontrent in image" +noteContent);
         noteGuid = Utilities.getStringFromBundle(getArguments(), "noteGuid");
-        selected = getArguments().getBooleanArray("Attachment");
+        imageids = getArguments().getStringArrayList("Attachment");
+        NotepriseLogger.logMessage("imageids" +imageids);
         authToken = evernoteSession.getAuthToken();
     	try {
 			client = evernoteSession.createNoteStore();
@@ -140,7 +142,9 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		{
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_record_updating_message));
 			String recordId = recordsAdapter.getListItemId(position);
+			if(imageids != null)
 			sendCreateRequest(recordId);
+			if(noteContent != null)
 			sendUpdateRequest(recordId);
 		}		
 	}
@@ -176,10 +180,13 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
 		{  
 			Resource resource = iterator.next();
-			if(selected[i] == true)
-			{
-				encodedImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);			
-			    
+			for (Iterator<String> ids = imageids.iterator(); ids.hasNext();) 
+			{ 
+				String id = ids.next();
+		        if(id.equals(resource.getAttributes().getFileName()))
+		        	
+		        {
+				encodedImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);						   
 			    fields.put("Body",encodedImage);
 		        fields.put("Name", resource.getAttributes().getFileName());
 		        fields.put("ContentType", resource.getMime());
@@ -198,8 +205,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				}
 				salesforceRestClient.sendAsync(createAttachment, this);
 			}					
+			}
 			
-			i++;
 		}		
 		
 	}
@@ -296,7 +303,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					{
 						hideFullScreenProgresIndicator();
 						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
-						//clearScreen();
+												//clearScreen();
 					}
 					else
 					{

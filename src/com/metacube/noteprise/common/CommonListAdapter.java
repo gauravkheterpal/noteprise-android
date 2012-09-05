@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.util.CommonListComparator;
+import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.imageloader.ImageLoader;
 
 public class CommonListAdapter extends BaseAdapter 
@@ -54,6 +55,43 @@ public class CommonListAdapter extends BaseAdapter
 				sectionTitle = sectionTitle + "   (" + item.getTotalContent() + ")";
 			}
 			listItemMainTextView.setText(sectionTitle);			
+		}
+		else if(item.getItemType().equalsIgnoreCase(Constants.ITEM_TYPE_LIST_ATTACHMENT)){
+			listItemLayout = inflater.inflate(R.layout.common_list_item_layout, parent, false);
+			listItemMainTextView = (TextView) listItemLayout.findViewById(R.id.list_item_main_text);
+			leftImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_left_image);
+			listItemCheckBox = (ImageView) listItemLayout.findViewById(R.id.list_item_checkbox_image);
+			listArrowImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_arrow_image);
+			listItemMainTextView.setText(item.getLabel());			
+			if (isCheckListMode)
+			{
+				if (item.getIsChecked())
+				{
+					listItemCheckBox.setImageResource(R.drawable.button_checked);
+				}
+				else
+				{
+					listItemCheckBox.setImageResource(R.drawable.button_unchecked);
+				}			
+				listItemCheckBox.setVisibility(View.VISIBLE);
+			}
+			if (item.getLeftUserImageURL() != null)
+			{
+				leftImageView.setVisibility(View.VISIBLE);
+				if (baseFragment != null)
+				{
+					baseFragment.loadImageOnView(item.getLeftUserImageURL(), leftImageView, ImageLoader.UNCOMPRESSED);
+				}
+			}
+			else if (item.getLeftImage() != null)
+			{
+				leftImageView.setImageResource(item.getLeftImage());
+				leftImageView.setVisibility(View.VISIBLE);
+			}
+			if (item.getShowListArrow() && !isCheckListMode)
+			{
+				listArrowImageView.setVisibility(View.VISIBLE);
+			}
 		}
 		else
 		{
@@ -157,6 +195,8 @@ public class CommonListAdapter extends BaseAdapter
 	
 	public void setChecedkCurrentItem(int position)
 	{
+		
+		NotepriseLogger.logMessage("In check");
 		if (isItemChecked(position))
 		{
 			listItems.get(position).setIsChecked(Boolean.FALSE);
@@ -207,8 +247,8 @@ public class CommonListAdapter extends BaseAdapter
 		{
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_NAME));
 		}
-		// Sort By Date
-		else if(orderType.equalsIgnoreCase(""))
+		// Sort By Sort Order
+		else if(orderType.equalsIgnoreCase(Constants.SORT_BY_SORT_ORDER))
 		{
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_SORT_DATA));
 		}
@@ -218,7 +258,7 @@ public class CommonListAdapter extends BaseAdapter
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_ID));
 		}
 		// By default sort by Label
-		else
+		else if (orderType.equalsIgnoreCase(Constants.SORT_BY_LABEL))
 		{
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_LABEL));
 		}

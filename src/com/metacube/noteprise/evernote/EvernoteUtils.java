@@ -166,6 +166,9 @@ public class EvernoteUtils
 		{				
 			start = noteContent.indexOf("<en-media");
 			end = noteContent.indexOf("</en-media>");
+			if(start == -1){
+				return null;
+			}
 			if(end == -1)
 			{
 				if(type.equalsIgnoreCase("image/png")){

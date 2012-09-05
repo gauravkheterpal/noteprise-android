@@ -51,7 +51,10 @@
     <string name="progress_dialog_salesforce_getting_record_list_message">Getting records list..</string>
     <string name="progress_dialog_salesforce_record_updating_message">Updating selected record(s)..</string>
     <string name="progress_dialog_salesforce_record_updated_success_message">Record(s) updated successfully.</string>
-
+	<string name="dialog_image_attach_title">Select Attachment</string>
+	<string name="note_content_truncate_message">"Do you want to truncate the content"</string>
+	<string name="salesforce_object_header_message">"Post to Salesforce"</string>
+	<string name="salesforce_note_no_attachment">"There is no attachment in the note"</string>
     <!-- Chatter Related messages -->
     <string name="chatter_menu_header_view_text">Publish To Chatter</string>
     <string name="salesforce_chatter_content_exceed_message">Note content exceeds the chatter post limit.</string>

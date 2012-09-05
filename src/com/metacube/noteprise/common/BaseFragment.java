@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.evernote.client.oauth.android.EvernoteSession;
@@ -246,5 +247,11 @@ public class BaseFragment extends Fragment
 	public void instantiateCustomDialog(View view)
 	{
 		//Override in subclasses for custom dialogs. 
+	}
+
+	public void onItemClick(AdapterView<?> adapter, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -28,7 +28,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.PopupWindow.OnDismissListener;
 
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -40,6 +43,8 @@ import com.evernote.edam.type.Resource;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
 import com.metacube.noteprise.common.CommonCustomDialog;
+import com.metacube.noteprise.common.CommonListAdapter;
+import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.evernote.EvernoteUtils;
@@ -51,23 +56,28 @@ import com.metacube.noteprise.util.imageloader.ImageLoader;
 import com.metacube.noteprise.util.richtexteditor.Html;
 import com.salesforce.androidsdk.rest.RestResponse;
 
-public class NoteDetailsScreen extends BaseFragment implements OnClickListener, android.content.DialogInterface.OnClickListener, OnDismissListener
+public class NoteDetailsScreen extends BaseFragment implements OnClickListener, android.content.DialogInterface.OnClickListener, OnDismissListener,OnItemClickListener
 {
 	String authToken;
 	Client client;
 	WebView noteContentWebView;
 	String noteTitle, noteContent, noteGuid, mediaString, publishString,encodeImage;
 	Note note;
+	String fileName;
 	Bitmap bitmap;
+	ArrayList<CommonListItems> listItems = new ArrayList<CommonListItems>();;
+	CommonListAdapter listAdapter;
+	ListView listView;
 	byte[] byteimage;
+	ArrayList<String> selectedIds = null;
 	boolean mediaContent= false;
 	RestResponse publishResponse;
-	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null, TRUNCATE_NOTE = 3;
+	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null, TRUNCATE_NOTE = 3,TEXT_ONLY=4,ATTACHMENT_ONLY=5,TEXT_ATTACHMENT=6;
 	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
-	protected CharSequence[] _options ;
-	protected boolean[] _selections ;
-	Button deleteDialogYesButton, deleteDialogNoButton;
-	CommonCustomDialog deleteDialog;
+	protected String[] _options =null;
+	protected boolean[] selection=null;
+	Button deleteDialogYesButton, deleteDialogNoButton, okayButton,truncateDialogYesButton,truncateDialogNoButton;
+	CommonCustomDialog deleteDialog, imageAttachDialog,truncateContentDialog;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -93,6 +103,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
     	baseActivity.editButton.setOnClickListener(this);
     	baseActivity.publishToChatterButton.setOnClickListener(this);
     	baseActivity.deleteNoteButton.setOnClickListener(this);
+    	registerForContextMenu(baseActivity.saveToSFButton);
     	registerForContextMenu(baseActivity.publishToChatterButton);	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -104,19 +115,64 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		{			
 			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
 			{				
-				if(baseActivity.SELECTED_FIELD_LENGTH >= Html.fromHtml(noteContent).length())
-				{					
-					if(CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))
+				
+				if(((CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))== false && note.getResources() == null) ||
+						((CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))== true && note.getResources() == null)
+						|| ((CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))== false && note.getResources() != null))
+				{
+					if(baseActivity.SELECTED_FIELD_LENGTH >=Html.fromHtml(publishString).length())
 					{
-						//args.putString("encodeImage",encodeImage);
-						showToastNotification("Object is supporting the atatchment");
+						Bundle args = new Bundle();
+						selectedIds=null;
+						String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+						NotepriseLogger.logMessage("Saving string==" + saveString);
+						args.putString("noteContent", saveString);				
+						args.putStringArrayList("Attachment",selectedIds );
+						changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
 					}
-					//onCreateDialog().show();					
+					else
+					{
+						truncateContentDialog = new CommonCustomDialog(R.layout.note_content_truncate_dialog, this);
+						truncateContentDialog.show(getFragmentManager(), "TruncateContentDialog");
+					}
 				}
 				else
 				{
-					showToastNotification(getString(R.string.salesforce_select_object_field_length_message));	
+					baseActivity.saveToSFButton.showContextMenu();
 				}
+				
+				/*if(baseActivity.SELECTED_FIELD_LENGTH >=Html.fromHtml(publishString).length())
+				{					
+					if(CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))
+					{
+						if(note.getResources()!= null)
+							showImageDialog();
+						else 
+						{
+							Bundle args = new Bundle();
+							selection=null;
+							String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+							NotepriseLogger.logMessage("Saving string==" + saveString);
+							args.putString("noteContent", saveString);
+							args.putString("noteGuid", noteGuid);
+							args.putBooleanArray("Attachment",selection );
+							changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+						}
+					}
+					else 
+					{
+						Bundle args = new Bundle();
+						selection=null;
+						String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+						NotepriseLogger.logMessage("Saving string==" + saveString);
+						args.putString("noteContent", saveString);
+						args.putString("noteGuid", noteGuid);
+						args.putBooleanArray("Attachment",selection );
+						changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+					}
+					
+					//onCreateDialog().show();	*/				
+		
 			}
 			else
 			{
@@ -166,6 +222,54 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_note_delete_message));
 			executeAsyncTask();
 		}
+		else if (view == okayButton)
+		{
+			String saveString;
+			imageAttachDialog.dismiss();
+			selectedIds = listAdapter.getCheckedItemsList();
+			Bundle args = new Bundle();
+			if(TASK == ATTACHMENT_ONLY)
+			{
+				saveString=null;
+			}else		
+			{
+				saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			}
+			
+			NotepriseLogger.logMessage("Saving string==" + saveString);
+			args.putString("noteContent", saveString);
+			args.putString("noteGuid", noteGuid);
+			args.putStringArrayList("Attachment",selectedIds );
+			changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+	
+		}else if(view == truncateDialogYesButton){
+			publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			String publishStringForWall;
+			if (publishString.length() > baseActivity.SELECTED_FIELD_LENGTH)
+			{
+				publishStringForWall = publishString.substring(0, baseActivity.SELECTED_FIELD_LENGTH-1);
+				if(note.getResources()!= null)
+				{
+					showImageDialog();
+				}
+				else 
+				{
+					Bundle args = new Bundle();
+					args.putString("noteContent", publishStringForWall);
+					args.putStringArrayList("Attachment",selectedIds );
+					changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+				}
+			}
+			
+		}else if (view == truncateDialogNoButton){
+			truncateContentDialog.dismiss();
+		}
+	}
+	
+	public void showImageDialog()
+	{
+		imageAttachDialog= new CommonCustomDialog(R.layout.attachimage_salesforce_object_diolog_layout, this);
+		imageAttachDialog.show(getFragmentManager(), "ImageAttachDialog");
 	}
 	
 	@Override
@@ -179,7 +283,33 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			deleteDialogYesButton.setOnClickListener(this);
 			deleteDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
 			deleteDialogNoButton.setOnClickListener(this);
-		}
+		} else if((view.getTag() != null && ((Integer) view.getTag()) == R.layout.attachimage_salesforce_object_diolog_layout))
+				{
+					//Dialog is delete note dialog.
+			listView= (ListView)view.findViewById(R.id.notes_list_view);
+			
+			if (listItems != null && listItems.size() > 0)
+			{
+				
+				listAdapter = new CommonListAdapter(this, inflater, listItems);
+				NotepriseLogger.logMessage("Listiteminadapter"+listAdapter);
+				listAdapter.changeOrdering(Constants.SORT_BY_LABEL);
+				listView.setAdapter(listAdapter);
+				listView.setOnItemClickListener(this);
+				listAdapter.showCheckList();
+			}
+				okayButton = (Button) view.findViewById(R.id.okay_button);
+				okayButton.setOnClickListener(this);
+					
+				}else if (view.getTag() != null && ((Integer) view.getTag()) == R.layout.note_content_truncate_dialog)
+				{
+					//Dialog is delete note dialog.
+					truncateDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
+					truncateDialogYesButton.setOnClickListener(this);
+					truncateDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
+					truncateDialogNoButton.setOnClickListener(this);
+				}
+		
 	}
 	
 	@Override
@@ -190,7 +320,14 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			MenuInflater inflater = baseActivity.getMenuInflater();
 		    inflater.inflate(R.menu.chatter_context_menu, menu);
             menu.setHeaderView(this.inflater.inflate(R.layout.chatter_menu_header_view_layout, null));
-        }		
+        } else if (view == baseActivity.saveToSFButton)
+        {
+    		
+    			MenuInflater inflater = baseActivity.getMenuInflater();
+    		    inflater.inflate(R.menu.salesforce_object_menu, menu);
+                menu.setHeaderView(this.inflater.inflate(R.layout.salesforce_menu_header_layout, null));
+            	
+        }
 		super.onCreateContextMenu(menu, view, menuInfo);
 	}
 	
@@ -244,6 +381,17 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}*/
 	
 	@Override
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
+	{
+		if (listAdapter.isCheckListMode())
+		{
+			listAdapter.setChecedkCurrentItem(position);
+			selection[position]=true;
+		}
+		
+	}
+	
+	@Override
 	public boolean onContextItemSelected(MenuItem item) 
 	{
 		if (item.getItemId() == R.id.chatter_menu_post_my_feed)
@@ -265,6 +413,34 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "GROUP_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
+		}		
+		else if (item.getItemId() == R.id.salesforce_menu_post_text)
+		{	
+			if(baseActivity.SELECTED_FIELD_LENGTH >=Html.fromHtml(publishString).length())
+			{
+				Bundle args = new Bundle();
+				selection=null;
+				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+				NotepriseLogger.logMessage("Saving string==" + saveString);
+				args.putString("noteContent", saveString);				
+				args.putBooleanArray("Attachment",selection );
+				changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+			}
+			else
+			{
+				truncateContentDialog = new CommonCustomDialog(R.layout.note_content_truncate_dialog, this);
+				truncateContentDialog.show(getFragmentManager(), "TruncateContentDialog");
+			}
+		}		
+		else if (item.getItemId() == R.id.salesforce_menu_post_attachment)
+		{	
+			TASK= ATTACHMENT_ONLY;			
+			showImageDialog();
+		}		
+		else if (item.getItemId() == R.id.salesforce_menu_post_text_attachment)
+		{	TASK=TEXT_ATTACHMENT;
+		  	showImageDialog();
+			
 		}		
 		return super.onContextItemSelected(item);
 	}
@@ -364,25 +540,30 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if (res != null && noteContent.indexOf("<en-media") != -1) 
 			{   int index=0;
 				mediaContent=true;
-				_options = new CharSequence[res.size()];
-				_selections = new boolean[res.size()];
+				_options = new String[res.size()];
+				selection = new boolean[res.size()];
 				for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
 				{
 					Resource resource = iterator.next();				
 					NotepriseLogger.logMessage("File Name" + resource.getData().getBody()+"mime" + resource.getMime() +index);	
-					_options[index]= resource.getAttributes().getFileName();
-					
+					CommonListItems list = new CommonListItems();
+					list.setLabel(resource.getAttributes().getFileName()+"("+resource.getAttributes().getFileName().length()+"KB)");
+					_options[index]=resource.getAttributes().getFileName()+resource.getMime();
+					list.setId(resource.getAttributes().getFileName());
+					list.setTotalContent(resource.getData().getBody().length);
+					listItems.add(list);
+					NotepriseLogger.logMessage("listitem"+listItems);
 					if(resource.getMime().equalsIgnoreCase("image/jpeg") || resource.getMime().equalsIgnoreCase("image/png")){
 					//encodeImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);	
-					bitmap = BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);
-					if(resource.getMime().equalsIgnoreCase("image/jpeg"))
-					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle,resource.getMime());
-					else if(resource.getMime().equalsIgnoreCase("image/png")){
-					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle,resource.getMime());	
+					bitmap = BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);	
+					if(resource.getAttributes().getFileName()!=null){
+						fileName=resource.getAttributes().getFileName();
 					}
+					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle,resource.getMime());					
 					mediaString = EvernoteUtils.getMediaStringFromNote(noteContent,resource.getMime());
 					final String fileName = "file://" + SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" + resource.getAttributes().getFileName();
 					final String html = "<img src=\"" + fileName + "\">";
+					if(mediaString != null)
 					noteContent = noteContent.replace(mediaString, html);
 					}					
 					NotepriseLogger.logMessage("HTML" + noteContent);
