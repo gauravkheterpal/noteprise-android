@@ -13,8 +13,6 @@ import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -40,6 +38,7 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Resource;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
+import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.evernote.EvernoteUtils;
@@ -90,30 +89,26 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
     	baseActivity.saveToSFButton.setOnClickListener(this);
     	baseActivity.editButton.setOnClickListener(this);
     	baseActivity.publishToChatterButton.setOnClickListener(this);
+    	baseActivity.deleteNoteButton.setOnClickListener(this);
     	registerForContextMenu(baseActivity.publishToChatterButton);	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 	@Override
 	public void onClick(View view) 
-	{
-		
+	{		
 		if (view == baseActivity.saveToSFButton)
-		{
-			
+		{			
 			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
-			{
-				
-				
+			{				
 				if(baseActivity.SELECTED_FIELD_LENGTH >= Html.fromHtml(noteContent).length())
-				{
-					
-					if(CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME)){
+				{					
+					if(CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))
+					{
 						//args.putString("encodeImage",encodeImage);
 						showToastNotification("Object is supporting the atatchment");
 					}
-					//onCreateDialog().show();
-					
+					//onCreateDialog().show();					
 				}
 				else
 				{
@@ -137,7 +132,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				e.printStackTrace();
 			}
-			commonMessageDialog.showDeleteNoteDialog(authToken, client, this);
+			CommonCustomDialog deleteDialog = new CommonCustomDialog(R.layout.delete_note_dialog_layout, this);
+			deleteDialog.show(getFragmentManager(), "DeleteNoteDialog");
+			//commonMessageDialog.showDeleteNoteDialog(authToken, client, this);
 		}
 		else if (view == baseActivity.editButton)
 		{

@@ -39,6 +39,7 @@ public class BaseActivity extends FragmentActivity
 	public NoteprisePreferences noteprisePreferences;
 	public CommonMessageDialog commonMessageDialog;
 	public ProgressBar headerProgressBar;
+	//public ImageView headerProgressBar;
 	public ProgressDialog commonProgressDialog;
 	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton,
 						saveToSFButton, publishToChatterButton, editButton, saveButton;
@@ -50,7 +51,7 @@ public class BaseActivity extends FragmentActivity
 	
 	public String SELECTED_OBJECT_NAME, SELECTED_OBJECT_LABEL;
 	public String SELECTED_FIELD_NAME, SELECTED_FIELD_LABEL;
-	public int SELECTED_FIELD_LENGTH;
+	public Integer SELECTED_FIELD_LENGTH;
 	
 	//Main menu save data..
 	public CommonListAdapter savedListAdapter = null;
@@ -226,6 +227,7 @@ public class BaseActivity extends FragmentActivity
 		SELECTED_OBJECT_LABEL = noteprisePreferences.getUserSavedSalesforceObjectLabel();
 		SELECTED_FIELD_NAME = noteprisePreferences.getUserSavedSalesforceFieldName();
 		SELECTED_FIELD_LABEL = noteprisePreferences.getUserSavedSalesforceFieldLabel();
+		SELECTED_FIELD_LENGTH = noteprisePreferences.getUserSavedSalesforceFieldLength();
 	}
 	
 	public void executeAsyncTask()

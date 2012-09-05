@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="noteprise_base_style" parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="noteprise_base_style" parent="@android:style/Theme.Light.NoTitleBar"></style>
+
+    <style name="circular_progress_bar">
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:indeterminateDrawable">@drawable/circular_progress_bar</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:indeterminateDuration">10500</item>
+        <item name="android:minWidth">48dip</item>
+        <item name="android:maxWidth">48dip</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:maxHeight">48dip</item>
+        <item name="android:interpolator">@anim/linear_interpolator</item>
     </style>
 
     <color name="translucent_black">#80000000</color>
@@ -13,13 +24,14 @@
     <dimen name="header_bar_title_text_size">16dp</dimen>
 
     <color name="text_color_for_dark_background">@android:color/white</color>
-    
+
     <dimen name="header_app_icon_image_view_width">140dp</dimen>
-	<dimen name="header_app_icon_image_view_height">25dp</dimen>
+    <dimen name="header_app_icon_image_view_height">25dp</dimen>
     <dimen name="header_progress_bar_width_height">30dp</dimen>
     <dimen name="normal_margin_padding">10dp</dimen>
     <dimen name="small_margin_padding">5dp</dimen>
     <dimen name="large_margin_padding">15dp</dimen>
+    <dimen name="huge_margin_padding">25dp</dimen>
     <dimen name="common_button_icon_width_height">30dp</dimen>
     <dimen name="common_list_item_layout_height">45dp</dimen>
     <dimen name="common_list_item_left_image_width_height">30dp</dimen>
@@ -30,15 +42,12 @@
     <dimen name="common_extra_large_text_size">24dp</dimen>
     <dimen name="common_form_element_height">40dp</dimen>
     <dimen name="common_spinner_height">55dp</dimen>
-
-
     <dimen name="home_search_bar_height">40dp</dimen>
     <dimen name="common_divider_width_height">1dp</dimen>
-    
     <dimen name="common_list_section_layout_height">20dp</dimen>
-    
     <dimen name="evernote_login_button_width">160dp</dimen>
     <dimen name="evernote_login_button_height">40dp</dimen>
     <dimen name="evernote_button_margin_bottom">50dp</dimen>
+    <dimen name="common_custom_dialog_width">250dp</dimen>
 
 </resources>

@@ -19,6 +19,9 @@
 	<string name="radio_button_keyword_text">Keyword</string>
 	<string name="search_field_hint_text">Search</string>
 	<string name="list_item_default_text">Item Text</string>
+	
+	<!-- Dialog/Header Titles -->
+	<string name="dialog_note_delete_title">Delete Note?</string>
     
     <!-- Note related Messages -->
     <string name="choose_notebook_prompt">Please select a Notebook</string>
@@ -66,5 +69,8 @@
     <string name="progress_dialog_chatter_failed_getting_chatter_users_message">Error in getting list of Chatter Users</string>
     <string name="progress_dialog_chatter_failed_posting_to_selected_users_message">Failed to publish the selected note to chosen Chatter users.</string>
     <string name="progress_dialog_chatter_failed_posting_to_group_feed_message">Failed to publish the selected note to chosen Chatter groups</string> -->
+    
+ <!--    "No notebook exists with that name, try another keyword"
+"No note found with that keyword, please try another keyword" -->
 
 </resources>

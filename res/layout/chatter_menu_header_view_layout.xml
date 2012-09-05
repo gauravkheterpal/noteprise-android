@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/common_list_item_layout_height"
+    android:background="@drawable/main_nav_bar_background"
     android:orientation="horizontal" >
 
     <ImageView
@@ -18,7 +19,7 @@
         android:gravity="center_vertical"
         android:text="@string/chatter_menu_header_view_text"
         android:textColor="@color/text_color_for_dark_background"
-        android:textStyle="bold"
-        android:textSize="@dimen/common_extra_large_text_size" />
+        android:textSize="@dimen/common_extra_large_text_size"
+        android:textStyle="bold" />
 
 </LinearLayout>

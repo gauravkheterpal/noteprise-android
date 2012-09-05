@@ -28,6 +28,7 @@ public class BaseFragment extends Fragment
 	public RestClient salesforceRestClient;
 	public String SF_API_VERSION;
 	public String selectedObjectName, selectedFieldName, selectedObjectLabel, selectedFieldLabel;
+	public Integer selectedFieldLength;
 	public AsyncTaskDataLoader backgroundDataLoader;
 	public RelativeLayout baseHeaderLayout;
 	public String screenTitle;
@@ -162,6 +163,7 @@ public class BaseFragment extends Fragment
 		this.selectedFieldLabel = baseActivity.SELECTED_FIELD_LABEL;
 		this.selectedObjectName = baseActivity.SELECTED_OBJECT_NAME;
 		this.selectedObjectLabel = baseActivity.SELECTED_OBJECT_LABEL;
+		this.selectedFieldLength = baseActivity.SELECTED_FIELD_LENGTH;
 	}
 	
 	public void showFullScreenProgresIndicator()

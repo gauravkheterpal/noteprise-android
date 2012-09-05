@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/common_custom_dialog_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/common_list_item_layout_height"
+        android:background="@drawable/main_nav_bar_background" >
+
+        <ImageView
+            android:layout_width="@dimen/common_list_item_left_image_width_height"
+            android:layout_height="@dimen/common_list_item_left_image_width_height"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/small_margin_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/delete_button_normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/dialog_note_delete_title"
+            android:textColor="@color/text_color_for_dark_background"
+            android:textSize="@dimen/common_large_text_size"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/large_margin_padding"
+        android:gravity="center_horizontal"
+        android:text="@string/note_delete_confirm_message"
+        android:textColor="@color/common_text_color"
+        android:textSize="@dimen/common_large_text_size" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/small_margin_padding" >
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/white_button_selector"
+            android:text="@string/dialog_positive_button_text" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/normal_margin_padding"
+            android:layout_weight="1"
+            android:background="@drawable/white_button_selector"
+            android:text="@string/dialog_negative_button_text" />
+    </LinearLayout>
+
+</LinearLayout>

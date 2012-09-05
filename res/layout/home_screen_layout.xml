@@ -83,33 +83,34 @@
                 android:textStyle="bold" />
         </RadioGroup>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="@dimen/home_search_bar_height"
-            android:layout_margin="@dimen/small_margin_padding"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
+            android:layout_margin="@dimen/small_margin_padding" >
+            
             <EditText
                 android:id="@+id/search_query_edit_text"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="35dp"
-                android:layout_margin="@dimen/small_margin_padding"
-                android:layout_weight="1"
-                android:background="@drawable/common_search_field_background"
+                android:layout_centerVertical="true"
+                android:background="@drawable/search_bar"
                 android:hint="@string/search_field_hint_text"
-                android:paddingLeft="@dimen/small_margin_padding"
+                android:imeActionLabel="@string/search_field_hint_text"
+                android:paddingLeft="35dp"
+                android:singleLine="true"
                 android:textSize="@dimen/common_text_size" />
 
             <ImageButton
                 android:id="@+id/search_button"
-                android:layout_width="@dimen/common_form_element_height"
-                android:layout_height="@dimen/common_form_element_height"
-                android:layout_margin="@dimen/small_margin_padding"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/normal_margin_padding"
                 android:layout_weight="0"
-                android:background="@drawable/search_bttn"
+                android:background="@drawable/search_glass_button"
                 android:src="@drawable/common_view_selector" />
-        </LinearLayout>
+            
+        </RelativeLayout>
     </LinearLayout>
 
     <View

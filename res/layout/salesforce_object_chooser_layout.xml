@@ -34,7 +34,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin_padding"
-            android:src="@drawable/sf__edit_icon" />
+            android:src="@drawable/down_icon" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -56,7 +56,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin_padding"
-            android:src="@drawable/sf__edit_icon" />
+            android:src="@drawable/down_icon" />
     </RelativeLayout>
 
 </RelativeLayout>

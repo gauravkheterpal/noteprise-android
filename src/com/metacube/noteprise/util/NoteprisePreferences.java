@@ -1,11 +1,11 @@
 package com.metacube.noteprise.util;
 
-import com.metacube.noteprise.common.Constants;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import com.metacube.noteprise.common.Constants;
 
 public class NoteprisePreferences 
 {
@@ -90,15 +90,25 @@ public class NoteprisePreferences
 	{
 		return appSharedPrefs.getString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, null);
 	}
+	
+	public Integer getUserSavedSalesforceFieldLength() 
+	{
+		int length = appSharedPrefs.getInt(Constants.USER_SAVED_SALESFORCE_FIELD_LENGTH, 0); 
+		if (length == 0)
+		{
+			return null;
+		}
+		return length;
+	}
 
 	public void saveUserSalesforceObjectFieldMapping(String userSavedSalesforceObjectName, String userSavedSalesforceObjectLabel, 
-			String userSavedSalesforceFieldName, String userSavedSalesforceFieldLabel, int fieldLength) 
+			String userSavedSalesforceFieldName, String userSavedSalesforceFieldLabel, Integer userSavedSalesforceFieldLength) 
 	{
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_NAME, userSavedSalesforceObjectName);		
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_OBJECT_LABEL, userSavedSalesforceObjectLabel);
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_NAME, userSavedSalesforceFieldName);
 		prefsEditor.putString(Constants.USER_SAVED_SALESFORCE_FIELD_LABEL, userSavedSalesforceFieldLabel);
-		prefsEditor.putInt(Constants.USER_SAVED_SALESFORCE_FIELD_LENGTH, fieldLength);
+		prefsEditor.putInt(Constants.USER_SAVED_SALESFORCE_FIELD_LENGTH, userSavedSalesforceFieldLength);
 		prefsEditor.commit();
 	}	
 }
