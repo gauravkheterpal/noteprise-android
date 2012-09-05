@@ -32,4 +32,31 @@ public class CommonSOQL
 		String query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField;
 		return query;
 	}
+	
+	public static boolean getSupportedObject(String object)
+	{
+		HashMap<String, String> OBJECT_FIELD_MAP = new LinkedHashMap<String, String>();	
+		boolean result= false;
+		OBJECT_FIELD_MAP.put("Account", "Account");
+		OBJECT_FIELD_MAP.put("Asset", "Asset");
+		OBJECT_FIELD_MAP.put("Campaign", "Campaign");
+		OBJECT_FIELD_MAP.put("Case", "Case");
+		OBJECT_FIELD_MAP.put("Contact", "Contact");
+		OBJECT_FIELD_MAP.put("Contract", "Contract");
+		OBJECT_FIELD_MAP.put("Custom objects", "Custom objects");
+		OBJECT_FIELD_MAP.put("EmailMessage", "EmailMessage");
+		OBJECT_FIELD_MAP.put("EmailTemplate", "EmailTemplate");
+		OBJECT_FIELD_MAP.put("Event", "Event");		
+		OBJECT_FIELD_MAP.put("Lead", "Lead");
+		OBJECT_FIELD_MAP.put("Opportunity", "Opportunity");
+		OBJECT_FIELD_MAP.put("Product2", "Product2");
+		OBJECT_FIELD_MAP.put("Solution", "Solution");
+		OBJECT_FIELD_MAP.put("Task", "Task");
+		
+		if (OBJECT_FIELD_MAP.get(object) != null)
+		{
+			result = true;
+		}		
+		return result;
+	}
 }

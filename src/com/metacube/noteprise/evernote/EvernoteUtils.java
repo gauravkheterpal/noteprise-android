@@ -158,7 +158,7 @@ public class EvernoteUtils
 		return listItems;
 	}
 	
-	public static String getMediaStringFromNote(String noteContent)
+	public static String getMediaStringFromNote(String noteContent,String type)
 	{
 		int start, end;
 		String content = null;
@@ -168,8 +168,17 @@ public class EvernoteUtils
 			end = noteContent.indexOf("</en-media>");
 			if(end == -1)
 			{
-				end = noteContent.indexOf("image/png");
-				content = noteContent.substring(start, end+12);
+				if(type.equalsIgnoreCase("image/png")){
+					end = noteContent.indexOf("image/png");
+					content = noteContent.substring(start, end+12);
+				}
+				
+			
+				else if(type.equalsIgnoreCase("image/jpeg"))
+				{
+				end = noteContent.indexOf("image/jpeg");	
+				content = noteContent.substring(start, end+13);
+				}
 			}
 			else
 			content = noteContent.substring(start, end+11);

@@ -1,6 +1,5 @@
 package com.metacube.noteprise.core.screens;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,6 +13,8 @@ import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -42,9 +43,11 @@ import com.metacube.noteprise.common.BaseFragment;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.evernote.EvernoteUtils;
+import com.metacube.noteprise.salesforce.CommonSOQL;
 import com.metacube.noteprise.salesforce.SalesforceUtils;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.Utilities;
+import com.metacube.noteprise.util.imageloader.ImageLoader;
 import com.metacube.noteprise.util.richtexteditor.Html;
 import com.salesforce.androidsdk.rest.RestResponse;
 
@@ -53,12 +56,16 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	String authToken;
 	Client client;
 	WebView noteContentWebView;
-	String noteTitle, noteContent, noteGuid, mediaString, publishString;
+	String noteTitle, noteContent, noteGuid, mediaString, publishString,encodeImage;
 	Note note;
 	Bitmap bitmap;
+	byte[] byteimage;
+	boolean mediaContent= false;
 	RestResponse publishResponse;
 	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null, TRUNCATE_NOTE = 3;
 	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
+	protected CharSequence[] _options ;
+	protected boolean[] _selections ;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -82,6 +89,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
     	noteContentWebView = (WebView) contentView.findViewById(R.id.note_content_web_view);
     	baseActivity.saveToSFButton.setOnClickListener(this);
     	baseActivity.editButton.setOnClickListener(this);
+    	baseActivity.publishToChatterButton.setOnClickListener(this);
     	registerForContextMenu(baseActivity.publishToChatterButton);	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -89,17 +97,23 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	@Override
 	public void onClick(View view) 
 	{
+		
 		if (view == baseActivity.saveToSFButton)
 		{
+			
 			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
 			{
+				
+				
 				if(baseActivity.SELECTED_FIELD_LENGTH >= Html.fromHtml(noteContent).length())
 				{
-					Bundle args = new Bundle();
-					String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-					NotepriseLogger.logMessage("Saving string==" + saveString);
-					args.putString("noteContent", saveString);
-					changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+					
+					if(CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME)){
+						//args.putString("encodeImage",encodeImage);
+						showToastNotification("Object is supporting the atatchment");
+					}
+					//onCreateDialog().show();
+					
 				}
 				else
 				{
@@ -155,6 +169,55 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
         }		
 		super.onCreateContextMenu(menu, view, menuInfo);
 	}
+	
+/*	@Override
+	protected Dialog onCreateDialog() 
+	{
+		return 
+		new AlertDialog.Builder(baseActivity)
+        	.setTitle( "Attachment" )
+        	.setMultiChoiceItems( _options, _selections, new DialogSelectionClickHandler() )
+        	.setPositiveButton( "OK", new DialogButtonClickHandler() )
+        	.create();
+	}
+	
+	public class DialogSelectionClickHandler implements DialogInterface.OnMultiChoiceClickListener
+	{
+		public void onClick( DialogInterface dialog, int clicked, boolean selected )
+		{
+			NotepriseLogger.logMessage("ClickItems"+ _options[ clicked ] + " selected: " + selected );
+			_selections[clicked]= selected;
+			//Log.i( "ME", _options[ clicked ] + " selected: " + selected );
+		}
+	}
+	
+
+	public class DialogButtonClickHandler implements DialogInterface.OnClickListener
+	{
+		public void onClick( DialogInterface dialog, int clicked )
+		{
+			switch( clicked )
+			{
+				case DialogInterface.BUTTON_POSITIVE:
+					printSelectedPlanets();
+					break;
+			}
+		}
+	}*/
+	
+	/*protected void printSelectedPlanets(){
+		if(onCreateDialog()!=null)
+			onCreateDialog().dismiss();
+		Bundle args = new Bundle();
+		String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+		NotepriseLogger.logMessage("Saving string==" + saveString);
+		args.putString("noteContent", saveString);
+		args.putString("noteGuid", noteGuid);
+		args.putBooleanArray("Attachment", _selections);
+		
+		changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
+		
+		}*/
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) 
@@ -254,8 +317,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}			
 			NotepriseLogger.logMessage("Response" + publishResponse + "Content" + publishStringForWall);			
 			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, null, null, null);			
-			//File file = new File("/mnt/sdcard/image.png");
-			//publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, file, "image", "Chatter!");
+			File file = new File("/mnt/sdcard/plus_icon.png");
+			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, file, "image", "Chatter!");
 		}
 	}
 	
@@ -272,24 +335,39 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			NotepriseLogger.logMessage("Note Content" + noteContent);
 			List<Resource> res = new ArrayList<Resource>();
 			res = note.getResources();
+			//NotepriseLogger.logMessage("Resources" + res.toString());
 			mediaString = noteContent;
-			if (res != null && noteContent.indexOf("<en-media>") != -1) 
-			{
+			if (res != null && noteContent.indexOf("<en-media") != -1) 
+			{   int index=0;
+				mediaContent=true;
+				_options = new CharSequence[res.size()];
+				_selections = new boolean[res.size()];
 				for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
 				{
-					Resource resource = iterator.next();
-					NotepriseLogger.logMessage("File Name" + resource.getData().getBody());
+					Resource resource = iterator.next();				
+					NotepriseLogger.logMessage("File Name" + resource.getData().getBody()+"mime" + resource.getMime() +index);	
+					_options[index]= resource.getAttributes().getFileName();
+					
+					if(resource.getMime().equalsIgnoreCase("image/jpeg") || resource.getMime().equalsIgnoreCase("image/png")){
+					//encodeImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);	
 					bitmap = BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);
-					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle);
-					mediaString = EvernoteUtils.getMediaStringFromNote(noteContent);
+					if(resource.getMime().equalsIgnoreCase("image/jpeg"))
+					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle,resource.getMime());
+					else if(resource.getMime().equalsIgnoreCase("image/png")){
+					saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle,resource.getMime());	
+					}
+					mediaString = EvernoteUtils.getMediaStringFromNote(noteContent,resource.getMime());
 					final String fileName = "file://" + SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" + resource.getAttributes().getFileName();
 					final String html = "<img src=\"" + fileName + "\">";
 					noteContent = noteContent.replace(mediaString, html);
+					}					
 					NotepriseLogger.logMessage("HTML" + noteContent);
+					index++;
 				}
 			}
-			if (res != null && noteContent.indexOf("<en-media>") != -1)
+			if (res != null && mediaContent)
 			{
+				NotepriseLogger.logMessage("Image URL");
 				noteContentWebView.loadDataWithBaseURL(SD_CARD + Constants.IMAGE_PATH + Constants.APP_PATH_SD_CARD, noteContent, "text/html", "utf-8", "");
 			}				
 			else
@@ -344,10 +422,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 	}
 
-	public boolean saveImageToExternalStorage(Bitmap image, String imageName, String noteTitle) 
+	public boolean saveImageToExternalStorage(Bitmap image, String imageName, String noteTitle,String type) 
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 40, bytes);
+	
 		try 
 		{
 			File dir = new File(SD_CARD + Constants.IMAGE_PATH);
@@ -364,7 +441,12 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}
 			file.createNewFile();
 			fOut = new FileOutputStream(file);
-			image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+			if(type.equalsIgnoreCase("image/png")){
+				image.compress(Bitmap.CompressFormat.PNG, ImageLoader.REQ_SIZE_100, fOut);
+			}else if (type.equalsIgnoreCase("image/jpeg")){
+				image.compress(Bitmap.CompressFormat.JPEG, ImageLoader.REQ_SIZE_100, fOut);
+			}
+			
 			fOut.flush();
 			fOut.close();
 			MediaStore.Images.Media.insertImage(baseActivity.getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
