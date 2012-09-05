@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.PopupWindow.OnDismissListener;
 
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -65,6 +66,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
 	protected CharSequence[] _options ;
 	protected boolean[] _selections ;
+	Button deleteDialogYesButton, deleteDialogNoButton;
+	CommonCustomDialog deleteDialog;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -132,9 +135,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				e.printStackTrace();
 			}
-			CommonCustomDialog deleteDialog = new CommonCustomDialog(R.layout.delete_note_dialog_layout, this);
+			deleteDialog = new CommonCustomDialog(R.layout.delete_note_dialog_layout, this);
 			deleteDialog.show(getFragmentManager(), "DeleteNoteDialog");
-			//commonMessageDialog.showDeleteNoteDialog(authToken, client, this);
 		}
 		else if (view == baseActivity.editButton)
 		{
@@ -152,6 +154,31 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}
 			else 
 			baseActivity.publishToChatterButton.showContextMenu();
+		}
+		else if (view == deleteDialogNoButton)
+		{
+			deleteDialog.dismiss();
+		}
+		else if (view == deleteDialogYesButton)
+		{
+			deleteDialog.dismiss();
+			TASK = DELETE_NOTE;
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_note_delete_message));
+			executeAsyncTask();
+		}
+	}
+	
+	@Override
+	public void instantiateCustomDialog(View view) 
+	{
+		super.instantiateCustomDialog(view);
+		if (view.getTag() != null && ((Integer) view.getTag()) == R.layout.delete_note_dialog_layout)
+		{
+			//Dialog is delete note dialog.
+			deleteDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
+			deleteDialogYesButton.setOnClickListener(this);
+			deleteDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
+			deleteDialogNoButton.setOnClickListener(this);
 		}
 	}
 	
@@ -462,12 +489,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		if(TASK == TRUNCATE_NOTE && which == -1)
 		{
 			baseActivity.publishToChatterButton.showContextMenu();
-		}
-		else if (which == -1) // For Positive Button
-		{
-			TASK = DELETE_NOTE;
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_delete_message));
-			executeAsyncTask();
 		}
 		else
 		{

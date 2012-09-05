@@ -32,6 +32,7 @@ public class BaseFragment extends Fragment
 	public AsyncTaskDataLoader backgroundDataLoader;
 	public RelativeLayout baseHeaderLayout;
 	public String screenTitle;
+	public View dialogView = null;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -240,5 +241,10 @@ public class BaseFragment extends Fragment
 	public void onTaskUpdate()
 	{
 		
+	}
+	
+	public void instantiateCustomDialog(View view)
+	{
+		//Override in subclasses for custom dialogs. 
 	}
 }
