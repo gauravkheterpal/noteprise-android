@@ -13,6 +13,7 @@ public class CommonListItems
 	private String itemType = Constants.ITEM_TYPE_LIST_ITEM;
 	private Integer totalContent = null;
 	private Integer fieldLength = null;
+	private String attachmentLength=null;
 	private Boolean showListArrow = Boolean.TRUE;
 	public String getId() {
 		return id;
@@ -86,4 +87,11 @@ public class CommonListItems
 	public void setShowListArrow(Boolean showListArrow) {
 		this.showListArrow = showListArrow;
 	}	
+	public void setAttachmentLength(String attachmentLength) {
+		this.attachmentLength = attachmentLength;
+	}
+	public String getAttachmentLength() {
+		return attachmentLength;
+	}
+
 }

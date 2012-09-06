@@ -21,7 +21,7 @@ public class CommonListAdapter extends BaseAdapter
 	int count;
 	LayoutInflater inflater = null;
 	View listItemLayout = null;
-	TextView listItemMainTextView = null;
+	TextView listItemMainTextView = null,listItemMainTextsize;
 	ImageView leftImageView = null, listArrowImageView = null, listItemCheckBox = null;
 	Boolean isCheckListMode = Boolean.FALSE;
 	BaseFragment baseFragment;
@@ -59,10 +59,13 @@ public class CommonListAdapter extends BaseAdapter
 		else if(item.getItemType().equalsIgnoreCase(Constants.ITEM_TYPE_LIST_ATTACHMENT)){
 			listItemLayout = inflater.inflate(R.layout.common_list_item_layout, parent, false);
 			listItemMainTextView = (TextView) listItemLayout.findViewById(R.id.list_item_main_text);
+			listItemMainTextsize =(TextView) listItemLayout.findViewById(R.id.list_item_size); 
 			leftImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_left_image);
 			listItemCheckBox = (ImageView) listItemLayout.findViewById(R.id.list_item_checkbox_image);
 			listArrowImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_arrow_image);
 			listItemMainTextView.setText(item.getLabel());			
+			if(item.getAttachmentLength()!=null && listItemMainTextsize !=null)
+				listItemMainTextsize.setText(item.getAttachmentLength()+""+"KB");
 			if (isCheckListMode)
 			{
 				if (item.getIsChecked())
@@ -91,16 +94,24 @@ public class CommonListAdapter extends BaseAdapter
 			if (item.getShowListArrow() && !isCheckListMode)
 			{
 				listArrowImageView.setVisibility(View.VISIBLE);
+			}
+			
+			if (item.getAttachmentLength() != null)
+			{
+				listItemMainTextsize.setVisibility(View.VISIBLE);
 			}
 		}
 		else
 		{
 			listItemLayout = inflater.inflate(R.layout.common_list_item_layout, parent, false);
 			listItemMainTextView = (TextView) listItemLayout.findViewById(R.id.list_item_main_text);
+			listItemMainTextsize =(TextView) listItemLayout.findViewById(R.id.list_item_size); 
 			leftImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_left_image);
 			listItemCheckBox = (ImageView) listItemLayout.findViewById(R.id.list_item_checkbox_image);
 			listArrowImageView = (ImageView) listItemLayout.findViewById(R.id.list_item_arrow_image);
 			listItemMainTextView.setText(item.getLabel());			
+			if(item.getAttachmentLength()!=null && listItemMainTextsize !=null)
+				listItemMainTextsize.setText(item.getAttachmentLength()+""+"KB");
 			if (isCheckListMode)
 			{
 				if (item.getIsChecked())
@@ -129,6 +140,11 @@ public class CommonListAdapter extends BaseAdapter
 			if (item.getShowListArrow() && !isCheckListMode)
 			{
 				listArrowImageView.setVisibility(View.VISIBLE);
+			}
+			
+			if (item.getAttachmentLength() != null)
+			{
+				listItemMainTextsize.setVisibility(View.VISIBLE);
 			}
 		}		
 		return listItemLayout;

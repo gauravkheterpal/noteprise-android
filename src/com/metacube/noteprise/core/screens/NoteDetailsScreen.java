@@ -65,7 +65,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	Note note;
 	String fileName;
 	Bitmap bitmap;
-	ArrayList<CommonListItems> listItems = new ArrayList<CommonListItems>();;
+	ArrayList<CommonListItems> listItems=null;
 	CommonListAdapter listAdapter;
 	ListView listView;
 	byte[] byteimage;
@@ -125,7 +125,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 						Bundle args = new Bundle();
 						selectedIds=null;
 						String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-						NotepriseLogger.logMessage("Saving string==" + saveString);
 						args.putString("noteContent", saveString);				
 						args.putStringArrayList("Attachment",selectedIds );
 						changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
@@ -141,37 +140,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 					baseActivity.saveToSFButton.showContextMenu();
 				}
 				
-				/*if(baseActivity.SELECTED_FIELD_LENGTH >=Html.fromHtml(publishString).length())
-				{					
-					if(CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))
-					{
-						if(note.getResources()!= null)
-							showImageDialog();
-						else 
-						{
-							Bundle args = new Bundle();
-							selection=null;
-							String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-							NotepriseLogger.logMessage("Saving string==" + saveString);
-							args.putString("noteContent", saveString);
-							args.putString("noteGuid", noteGuid);
-							args.putBooleanArray("Attachment",selection );
-							changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
-						}
-					}
-					else 
-					{
-						Bundle args = new Bundle();
-						selection=null;
-						String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-						NotepriseLogger.logMessage("Saving string==" + saveString);
-						args.putString("noteContent", saveString);
-						args.putString("noteGuid", noteGuid);
-						args.putBooleanArray("Attachment",selection );
-						changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
-					}
 					
-					//onCreateDialog().show();	*/				
 		
 			}
 			else
@@ -202,7 +171,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if (view == baseActivity.publishToChatterButton)			
 		{
-			NotepriseLogger.logMessage("Length" + Html.fromHtml(noteContent).length());
+			
 			if (Html.fromHtml(publishString).length() > 1000)
 			{
 				TASK = TRUNCATE_NOTE;
@@ -236,7 +205,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 			}
 			
-			NotepriseLogger.logMessage("Saving string==" + saveString);
+			
 			args.putString("noteContent", saveString);
 			args.putString("noteGuid", noteGuid);
 			args.putStringArrayList("Attachment",selectedIds );
@@ -292,7 +261,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				
 				listAdapter = new CommonListAdapter(this, inflater, listItems);
-				NotepriseLogger.logMessage("Listiteminadapter"+listAdapter);
+				
 				listAdapter.changeOrdering(Constants.SORT_BY_LABEL);
 				listView.setAdapter(listAdapter);
 				listView.setOnItemClickListener(this);
@@ -331,54 +300,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		super.onCreateContextMenu(menu, view, menuInfo);
 	}
 	
-/*	@Override
-	protected Dialog onCreateDialog() 
-	{
-		return 
-		new AlertDialog.Builder(baseActivity)
-        	.setTitle( "Attachment" )
-        	.setMultiChoiceItems( _options, _selections, new DialogSelectionClickHandler() )
-        	.setPositiveButton( "OK", new DialogButtonClickHandler() )
-        	.create();
-	}
 	
-	public class DialogSelectionClickHandler implements DialogInterface.OnMultiChoiceClickListener
-	{
-		public void onClick( DialogInterface dialog, int clicked, boolean selected )
-		{
-			NotepriseLogger.logMessage("ClickItems"+ _options[ clicked ] + " selected: " + selected );
-			_selections[clicked]= selected;
-			//Log.i( "ME", _options[ clicked ] + " selected: " + selected );
-		}
-	}
-	
-
-	public class DialogButtonClickHandler implements DialogInterface.OnClickListener
-	{
-		public void onClick( DialogInterface dialog, int clicked )
-		{
-			switch( clicked )
-			{
-				case DialogInterface.BUTTON_POSITIVE:
-					printSelectedPlanets();
-					break;
-			}
-		}
-	}*/
-	
-	/*protected void printSelectedPlanets(){
-		if(onCreateDialog()!=null)
-			onCreateDialog().dismiss();
-		Bundle args = new Bundle();
-		String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-		NotepriseLogger.logMessage("Saving string==" + saveString);
-		args.putString("noteContent", saveString);
-		args.putString("noteGuid", noteGuid);
-		args.putBooleanArray("Attachment", _selections);
 		
-		changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
 		
-		}*/
 	
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
@@ -421,7 +345,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				Bundle args = new Bundle();
 				selection=null;
 				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-				NotepriseLogger.logMessage("Saving string==" + saveString);
+				
 				args.putString("noteContent", saveString);				
 				args.putBooleanArray("Attachment",selection );
 				changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
@@ -515,8 +439,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				publishStringForWall = publishString.substring(0, 999);
 			}			
-			NotepriseLogger.logMessage("Response" + publishResponse + "Content" + publishStringForWall);			
-			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, null, null, null);			
+					
+			//publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, null, null, null);			
 			File file = new File("/mnt/sdcard/plus_icon.png");
 			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, file, "image", "Chatter!");
 		}
@@ -532,29 +456,28 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			noteTitle = note.getTitle();
 			noteContent = note.getContent();
 			setHeaderTitle(noteTitle);
-			NotepriseLogger.logMessage("Note Content" + noteContent);
 			List<Resource> res = new ArrayList<Resource>();
 			res = note.getResources();
-			//NotepriseLogger.logMessage("Resources" + res.toString());
 			mediaString = noteContent;
 			if (res != null && noteContent.indexOf("<en-media") != -1) 
 			{   int index=0;
 				mediaContent=true;
+				 listItems = new ArrayList<CommonListItems>();
 				_options = new String[res.size()];
 				selection = new boolean[res.size()];
 				for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
 				{
 					Resource resource = iterator.next();				
-					NotepriseLogger.logMessage("File Name" + resource.getData().getBody()+"mime" + resource.getMime() +index);	
 					CommonListItems list = new CommonListItems();
-					list.setLabel(resource.getAttributes().getFileName()+"("+resource.getAttributes().getFileName().length()+"KB)");
+					Integer length = resource.getAttributes().getFileName().length();
+					list.setLabel(resource.getAttributes().getFileName());
 					_options[index]=resource.getAttributes().getFileName()+resource.getMime();
 					list.setId(resource.getAttributes().getFileName());
-					list.setTotalContent(resource.getData().getBody().length);
+					list.setAttachmentLength(length.toString());
+					list.setShowListArrow(false);
 					listItems.add(list);
-					NotepriseLogger.logMessage("listitem"+listItems);
+					
 					if(resource.getMime().equalsIgnoreCase("image/jpeg") || resource.getMime().equalsIgnoreCase("image/png")){
-					//encodeImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);	
 					bitmap = BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);	
 					if(resource.getAttributes().getFileName()!=null){
 						fileName=resource.getAttributes().getFileName();
@@ -566,13 +489,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 					if(mediaString != null)
 					noteContent = noteContent.replace(mediaString, html);
 					}					
-					NotepriseLogger.logMessage("HTML" + noteContent);
+					
 					index++;
 				}
 			}
 			if (res != null && mediaContent)
 			{
-				NotepriseLogger.logMessage("Image URL");
+				
 				noteContentWebView.loadDataWithBaseURL(SD_CARD + Constants.IMAGE_PATH + Constants.APP_PATH_SD_CARD, noteContent, "text/html", "utf-8", "");
 			}				
 			else
@@ -583,7 +506,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			baseActivity.saveToSFButton.setVisibility(View.VISIBLE);
 			baseActivity.publishToChatterButton.setVisibility(View.VISIBLE);
 			publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-			NotepriseLogger.logMessage("PublishString" + publishString);
+			
 		}
 		else if(TASK == DELETE_NOTE)
 		{
@@ -642,7 +565,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if (file.exists()) 
 			{
 				file.delete();
-				NotepriseLogger.logMessage("Deleting file" + file.delete() + "filename" + file.getName());
+				
 			}
 			file.createNewFile();
 			fOut = new FileOutputStream(file);
