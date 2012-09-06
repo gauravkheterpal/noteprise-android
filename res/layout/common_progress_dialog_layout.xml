@@ -17,50 +17,43 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/small_margin_padding"
             android:scaleType="fitXY"
-            android:src="@drawable/delete_button_normal" />
+            android:src="@drawable/info_icon" />
 
         <TextView
+            android:id="@+id/progress_dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center"
             android:layout_margin="@dimen/normal_margin_padding"
-            android:text="@string/dialog_note_delete_title"
+            android:text="@string/progress_dialog_title"
             android:textColor="@color/text_color_for_dark_background"
             android:textSize="@dimen/common_large_text_size"
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/large_margin_padding"
-        android:gravity="center_horizontal"
-        android:text="@string/note_delete_confirm_message"
-        android:textColor="@color/common_text_color"
-        android:textSize="@dimen/common_large_text_size" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/normal_margin_padding"
         android:orientation="horizontal"
         android:padding="@dimen/small_margin_padding" >
 
-        <Button
-            android:id="@+id/delete_note_yes_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/white_button_selector"
-            android:text="@string/dialog_positive_button_text" />
+        <ProgressBar
+            android:id="@+id/header_progress_bar"
+            style="@style/circular_progress_bar"
+            android:layout_width="@dimen/dialog_progress_bar_width_height"
+            android:layout_height="@dimen/dialog_progress_bar_width_height"
+            android:layout_gravity="center_vertical" />
 
-        <Button
-            android:id="@+id/delete_note_no_button"
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/progress_dialog_message"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/normal_margin_padding"
-            android:layout_weight="1"
-            android:background="@drawable/white_button_selector"
-            android:text="@string/dialog_negative_button_text" />
+            android:layout_margin="@dimen/large_margin_padding"
+            android:gravity="center_vertical"
+            android:text="@string/progress_dialog_message"
+            android:textColor="@color/common_text_color"
+            android:textSize="@dimen/common_large_text_size" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,10 +1,12 @@
 package com.metacube.noteprise.common;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -39,8 +41,7 @@ public class BaseActivity extends FragmentActivity
 	public NoteprisePreferences noteprisePreferences;
 	public CommonMessageDialog commonMessageDialog;
 	public ProgressBar headerProgressBar;
-	//public ImageView headerProgressBar;
-	public ProgressDialog commonProgressDialog;
+	public CommonProgressDialog commonProgressDialog;
 	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton,
 						saveToSFButton, publishToChatterButton, editButton, saveButton;
 	public TextView baseHeaderTitleTextView;
@@ -69,11 +70,7 @@ public class BaseActivity extends FragmentActivity
 		
 		noteprisePreferences = new NoteprisePreferences(this);
 		commonMessageDialog = new CommonMessageDialog(this);
-		backgroundDataLoader = new AsyncTaskDataLoader(this);
-		commonProgressDialog = new ProgressDialog(this);
-		commonProgressDialog.setTitle(getResources().getString(R.string.progress_dialog_title));
-		commonProgressDialog.setMessage(getResources().getString(R.string.progress_dialog_message));
-		
+		backgroundDataLoader = new AsyncTaskDataLoader(this);		
 		getObjectFieldMappingsFromPreferences();
 	}	
 	
@@ -156,27 +153,25 @@ public class BaseActivity extends FragmentActivity
 	
 	public void showFullScreenProgresIndicator()
 	{
-		if (commonProgressDialog != null && !commonProgressDialog.isShowing())
+		if (commonProgressDialog == null || !commonProgressDialog.isVisible())
 		{
-			commonProgressDialog.setTitle(getResources().getString(R.string.progress_dialog_title));
-			commonProgressDialog.setMessage(getResources().getString(R.string.progress_dialog_message));
-			commonProgressDialog.show();			
+			commonProgressDialog = new CommonProgressDialog(getResources().getString(R.string.progress_dialog_title), getResources().getString(R.string.progress_dialog_message));
+			commonProgressDialog.show(getSupportFragmentManager(), "CommonProgressDialog");			
 		}
 	}
 	
 	public void showFullScreenProgresIndicator(String title, String message)
 	{
-		if (commonProgressDialog != null && !commonProgressDialog.isShowing())
+		if (commonProgressDialog == null || !commonProgressDialog.isVisible())
 		{
-			commonProgressDialog.setTitle(title);
-			commonProgressDialog.setMessage(message);
-			commonProgressDialog.show();			
+			commonProgressDialog = new CommonProgressDialog(title, message);
+			commonProgressDialog.show(getSupportFragmentManager(), "CommonProgressDialog");			
 		}
 	}
 	
 	public void hideFullScreenProgresIndicator()
 	{
-		if (commonProgressDialog != null && commonProgressDialog.isShowing())
+		if (commonProgressDialog != null)
 		{
 			commonProgressDialog.dismiss();
 		}
@@ -200,6 +195,16 @@ public class BaseActivity extends FragmentActivity
 	
 	public void showToastNotification(String message)
 	{
+		/*LayoutInflater inflater = getLayoutInflater();
+		View layout = inflater.inflate(R.layout.custom_toast_layout, (ViewGroup) findViewById(R.id.toast_layout_root));
+		TextView text = (TextView) layout.findViewById(R.id.toast_layout_text);
+		text.setText(message);
+
+		Toast toast = new Toast(getApplicationContext());
+		toast.setGravity(Gravity.BOTTOM, 0, 0);
+		toast.setDuration(Toast.LENGTH_LONG);
+		toast.setView(layout);
+		toast.show();*/
 		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 	}
 	

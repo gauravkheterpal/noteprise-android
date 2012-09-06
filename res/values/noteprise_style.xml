@@ -28,6 +28,7 @@
     <dimen name="header_app_icon_image_view_width">140dp</dimen>
     <dimen name="header_app_icon_image_view_height">25dp</dimen>
     <dimen name="header_progress_bar_width_height">30dp</dimen>
+    <dimen name="dialog_progress_bar_width_height">45dp</dimen>
     <dimen name="normal_margin_padding">10dp</dimen>
     <dimen name="small_margin_padding">5dp</dimen>
     <dimen name="large_margin_padding">15dp</dimen>
@@ -49,6 +50,5 @@
     <dimen name="evernote_login_button_height">40dp</dimen>
     <dimen name="evernote_button_margin_bottom">50dp</dimen>
     <dimen name="common_custom_dialog_width">250dp</dimen>
-    <dimen name="common_custom_full_dialog_width">400dp</dimen>
 
 </resources>
