@@ -12,8 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
@@ -23,16 +27,17 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
+import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.CommonSpinnerAdapter;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.Utilities;
 import com.metacube.noteprise.util.richtexteditor.Html;
 
-public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
+public class CreateNewNoteScreen extends BaseFragment implements OnClickListener, OnItemClickListener
 {	
 	List<Notebook> notebookList;
-	Spinner notebookListSpinner;
+	Button notebookListSpinnerButton;
 	String authToken;
 	Client client;
 	ArrayList<CommonListItems> spinnerItems;
@@ -40,17 +45,23 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	EditText noteTitleEditText, noteContenteditText;
 	int GET_DATA = 0, SAVE_DATA = 1, CURRENT_TASK = 0;
 	Note createdNote, savedNote;
+	CommonCustomDialog notebookSpinnerDialog;
+	TextView notebookSpinnerDialogPromptText;
+	ListView notebookSpinnerListView;
+	String selectedNotebookGuid = null;
 	
 	@Override
 	public void onAttach(Activity activity) 
 	{
 		super.onAttach(activity);
+		initFragment("Create Note");
 	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
+        notebookSpinnerDialog = new CommonCustomDialog(R.layout.custom_spinner_dropdown_layout, this);
     }
     
     @Override
@@ -58,7 +69,8 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
     {
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.create_new_note_layout, container);    	
-    	notebookListSpinner = (Spinner) contentView.findViewById(R.id.create_note_notebook_list_spinner); 
+    	notebookListSpinnerButton = (Button) contentView.findViewById(R.id.create_note_notebook_list_spinner); 
+    	notebookListSpinnerButton.setOnClickListener(this);
     	noteTitleEditText = (EditText) contentView.findViewById(R.id.note_title_edit_text);
     	noteContenteditText = (EditText) contentView.findViewById(R.id.content);
     	baseActivity.saveButton.setOnClickListener(this);
@@ -72,7 +84,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 		{
 			String noteTitle = noteTitleEditText.getText().toString().trim();
 			String noteContent = noteContenteditText.getText().toString().trim();
-			if (Utilities.verifyStringData(noteTitle) && Utilities.verifyStringData(noteContent))
+			if (Utilities.verifyStringData(noteTitle) && Utilities.verifyStringData(noteContent) && Utilities.verifyStringData(selectedNotebookGuid))
 			{
 				CURRENT_TASK = SAVE_DATA;
 				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_note_create_message));
@@ -83,13 +95,19 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 				showToastNotification(getString(R.string.note_creation_all_fields_required_message));
 			}
 		}
+		else if (view == notebookListSpinnerButton)
+		{
+			if (notebookSpinnerDialog != null)
+			{
+				notebookSpinnerDialog.show(getFragmentManager(), "NotebookSpinnerDialog");
+			}			
+		}
 	}
 	
 	@Override
 	public void onResume() 
 	{
 		super.onResume();
-		baseActivity.createNewNoteButton.setVisibility(View.GONE);
 		showProgresIndicator();
 		executeAsyncTask();		
 	}
@@ -99,7 +117,20 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	{
 		super.onStop();
 		baseActivity.saveButton.setVisibility(View.GONE);
-		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
+	}
+	
+	@Override
+	public void instantiateCustomDialog(View view) 
+	{
+		super.instantiateCustomDialog(view);
+		if (((Integer) view.getTag()) == R.layout.custom_spinner_dropdown_layout)
+		{
+			notebookSpinnerDialogPromptText = (TextView) view.findViewById(R.id.custom_spinner_prompt_text);
+			notebookSpinnerDialogPromptText.setText(R.string.choose_notebook_prompt);
+			notebookSpinnerListView = (ListView) view.findViewById(R.id.custom_spinner_list_view);
+			notebookSpinnerListView.setAdapter(notebookSpinnerAdapter);
+			notebookSpinnerListView.setOnItemClickListener(this);
+		}
 	}
 	
 	@Override
@@ -145,18 +176,14 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 		{
 			try 
 			{
-
 				authToken = evernoteSession.getAuthToken();
 	        	client = evernoteSession.createNoteStore();
-	        	createdNote = new Note();
-	        	
-	        	createdNote.setNotebookGuid(notebookSpinnerAdapter.getSpinnerItemId(notebookListSpinner.getSelectedItemPosition()));
+	        	createdNote = new Note();	        	
+	        	createdNote.setNotebookGuid(selectedNotebookGuid);
 	        	createdNote.setTitle(noteTitleEditText.getText().toString().trim());
-
 				createdNote.setContent(Constants.NOTE_PREFIX + Html.toHtml(noteContenteditText.getText()) + Constants.NOTE_SUFFIX);
 	        	createdNote.setContent(createdNote.getContent().replace("<br>", "<br />"));
-	        	createdNote.setContent(createdNote.getContent().replace("&#160;", ""));
-	        	
+	        	createdNote.setContent(createdNote.getContent().replace("&#160;", ""));	        	
 	        	savedNote = client.createNote(authToken, createdNote);
 			} 
 			catch (TTransportException e) 
@@ -194,7 +221,6 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 				hideProgresIndicator();
 				baseActivity.saveButton.setVisibility(View.VISIBLE);
 				notebookSpinnerAdapter = new CommonSpinnerAdapter(inflater, spinnerItems);
-				notebookListSpinner.setAdapter(notebookSpinnerAdapter);
 	        }
 		}
 		else if (CURRENT_TASK == SAVE_DATA)
@@ -213,5 +239,16 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 				showToastNotification(getString(R.string.note_creation_failed_message));
 			}			
 		}		
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
+	{
+		if (adapter.getAdapter() == notebookSpinnerAdapter)
+		{
+			selectedNotebookGuid = notebookSpinnerAdapter.getListItem(position).getId();
+			notebookSpinnerDialog.dismiss();
+			notebookListSpinnerButton.setText(notebookSpinnerAdapter.getListItem(position).getLabel());
+		}
 	}
 }

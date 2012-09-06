@@ -7,12 +7,17 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +25,7 @@ import org.json.JSONObject;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.NotepriseLogger;
+import com.metacube.noteprise.util.Utilities;
 import com.salesforce.androidsdk.rest.RestClient;
 import com.salesforce.androidsdk.rest.RestRequest.RestMethod;
 import com.salesforce.androidsdk.rest.RestResponse;
@@ -61,14 +67,43 @@ public class SalesforceUtils
 				if (imageFile != null && fileName != null && imageTitle != null)
 				{
 					//String stringBody = generateJSONBodyForChatterFeed(noteContent, null, null, fileName, imageTitle);					
-					String url = "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items";
-					NotepriseLogger.logMessage(url);
+					//String url = "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items";
+					String url ="https://ap1.salesforce.com/services/data/v25.0/chatter/feeds/news/me/feed-items";
+					
+					HttpClient httpclient = new DefaultHttpClient();
+			        HttpPost httppost;
+			        MultipartEntity reqEntity;
+			        httppost = new HttpPost(url);
+			        reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+			        File file = new File("/mnt/sdcard/image.png"); 
+			        NotepriseLogger.logMessage("File can read=="+file.canRead() + "--" + file.length());
+			       /* File imageFile1 = new File(
+			        		"E:\\NotePrise\\Salesforce\\menu.jpg");*/
+			        FileBody bin = new FileBody(file);
+			        reqEntity.addPart("feedItemFileUpload", bin);
+			        String fileName1 = "Chatter Image";
+			        // file name can be text plain only, though using text/html doesn't breaks
+			        reqEntity.addPart("fileName", new StringBody(fileName1, "text/plain",
+			                Charset.defaultCharset()));
+			        // Sending text/html doesn't helps as HTML will be printed, though using text/html doesn't breaks
+			        reqEntity.addPart("text", new StringBody("Hello World", "text/plain",
+			                Charset.defaultCharset()));
+			        reqEntity.addPart("feedItemFileUpload", new FileBody(file,
+			                fileName1, "application/octet-stream", Charset.defaultCharset()
+			                        .toString()));
+			        httppost.setEntity(reqEntity);
+
+			        httppost.setHeader("Authorization", "OAuth " + salesforceRestClient.getAuthToken());
+			        HttpResponse resp = httpclient.execute(httppost);
+			        HttpEntity response = resp.getEntity();
+			        NotepriseLogger.logMessage("Response for image"+resp.getStatusLine().toString() + "--" + Utilities.convertStreamToString(response.getContent()));
+					/*NotepriseLogger.logMessage(url);
 					MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 					multipartEntity.addPart("fileName", new StringBody(fileName, "text/html", Charset.defaultCharset()));
 					multipartEntity.addPart("text", new StringBody(noteContent, "text/html", Charset.defaultCharset()));
 					multipartEntity.addPart("feedItemFileUpload", new FileBody(imageFile, fileName, "application/octet-stream", Charset.defaultCharset().toString()));
 					publishResponse = salesforceRestClient.sendSync(RestMethod.POST, url, multipartEntity);
-					/*Part[] parts = { 
+					Part[] parts = { 
 										new StringPart("fileName", fileName),
 										new StringPart("text", noteContent),
 										new FilePart("feedItemFileUpload", imageFile),
@@ -88,7 +123,7 @@ public class SalesforceUtils
 				else
 				{
 					String encodedText = URLEncoder.encode(noteContent, "UTF-8");		
-					publishResponse = salesforceRestClient.sendSync(RestMethod.POST, "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items?text=" + encodedText, null);
+					//publishResponse = salesforceRestClient.sendSync(RestMethod.POST, "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items?text=" + encodedText, null);
 				}				
 			}
 			catch (UnsupportedEncodingException e) 
@@ -102,6 +137,7 @@ public class SalesforceUtils
 		}
 		return publishResponse;
 	}
+	
 	
 	public static RestResponse getUserFollowingData(RestClient salesforceRestClient, String SF_API_VERSION)
 	{

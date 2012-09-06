@@ -43,7 +43,7 @@ public class BaseActivity extends FragmentActivity
 	public ProgressBar headerProgressBar;
 	public CommonProgressDialog commonProgressDialog;
 	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton,
-						saveToSFButton, publishToChatterButton, editButton, saveButton;
+						saveToSFButton, publishToChatterButton, editButton, saveButton, notepirseLogoImageView;
 	public TextView baseHeaderTitleTextView;
 	public RelativeLayout baseHeaderLayout;
 	
@@ -195,7 +195,7 @@ public class BaseActivity extends FragmentActivity
 	
 	public void showToastNotification(String message)
 	{
-		/*LayoutInflater inflater = getLayoutInflater();
+		LayoutInflater inflater = getLayoutInflater();
 		View layout = inflater.inflate(R.layout.custom_toast_layout, (ViewGroup) findViewById(R.id.toast_layout_root));
 		TextView text = (TextView) layout.findViewById(R.id.toast_layout_text);
 		text.setText(message);
@@ -204,8 +204,8 @@ public class BaseActivity extends FragmentActivity
 		toast.setGravity(Gravity.BOTTOM, 0, 0);
 		toast.setDuration(Toast.LENGTH_LONG);
 		toast.setView(layout);
-		toast.show();*/
-		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+		toast.show();
+		//Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 	}
 	
 	public void handleSalesforceLoginComplete()

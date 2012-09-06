@@ -68,6 +68,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
         searchCriteriaRadioGroup = (RadioGroup) contentView.findViewById(R.id.search_criteria_radio_group);
         searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
         searchQueryEditText = (EditText) contentView.findViewById(R.id.search_query_edit_text);
+        searchQueryEditText.setImeActionLabel(getString(R.string.search_field_hint_text), R.id.search_button);
         searchButton = (ImageButton) contentView.findViewById(R.id.search_button);
         searchButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
@@ -86,7 +87,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 			}
 			Integer searchMessage = R.string.progress_dialog_note_search_message;
 			listView.setAdapter(null);
-			switch(searchCriteriaRadioGroup.getCheckedRadioButtonId())
+			switch (searchCriteriaRadioGroup.getCheckedRadioButtonId())
 			{
 				case R.id.search_notebook_radio_button:
 				{
@@ -122,7 +123,9 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 	public void onResume() 
 	{
 		super.onResume();
-		baseActivity.logoutButton.setVisibility(View.VISIBLE);		
+		baseActivity.logoutButton.setVisibility(View.VISIBLE);
+		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
+		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 		if (isEvernoteAuthenticationComplete())
 		{
 			if (baseActivity.isDataSaved && checkPreviousScreenActionForNotRefresh())
@@ -215,6 +218,8 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 		super.onStop();
 		saveCurrentState();
 		baseActivity.logoutButton.setVisibility(View.GONE);
+		baseActivity.createNewNoteButton.setVisibility(View.GONE);
+		baseActivity.salesforceObjectsButton.setVisibility(View.GONE);
 	}
 	
 	public void saveCurrentState()

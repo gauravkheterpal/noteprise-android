@@ -5,28 +5,22 @@
     android:orientation="vertical"
     android:padding="@dimen/normal_margin_padding" >
 
-    <TextView
-        android:id="@+id/chooser_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/normal_margin_padding"
-        android:text="Mapping"
-        android:textColor="@color/common_text_color"
-        android:textSize="@dimen/common_large_text_size" />
-
     <RelativeLayout
         android:id="@+id/object_list_spinner_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/chooser_title"
         android:layout_marginBottom="@dimen/normal_margin_padding" >
 
-        <Spinner
-            android:id="@+id/object_list_spinner"
+        <Button
+            android:id="@+id/object_list_spinner_button"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/common_spinner_height"
             android:background="@drawable/common_spinner_selector"
-            android:prompt="@string/choose_object_prompt" />
+            android:gravity="left|center_vertical"
+            android:padding="@dimen/normal_margin_padding"
+            android:text="@string/choose_object_prompt"
+            android:textColor="@color/common_text_color"
+            android:textSize="@dimen/common_large_text_size" />
 
         <ImageView
             android:layout_width="@dimen/common_button_icon_width_height"
@@ -34,21 +28,27 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin_padding"
-            android:src="@drawable/down_icon" />
+            android:src="@drawable/down_icon"
+            android:textColor="@color/common_text_color" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/field_list_spinner_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/object_list_spinner_layout"
         android:layout_marginBottom="@dimen/normal_margin_padding" >
 
-        <Spinner
-            android:id="@+id/field_list_spinner"
+        <Button
+            android:id="@+id/field_list_spinner_button"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/common_spinner_height"
             android:background="@drawable/common_spinner_selector"
-            android:prompt="@string/choose_field_prompt" />
+            android:gravity="left|center_vertical"
+            android:padding="@dimen/normal_margin_padding"
+            android:text="@string/choose_field_prompt"
+            android:textColor="@color/common_text_color"
+            android:textSize="@dimen/common_large_text_size" />
 
         <ImageView
             android:layout_width="@dimen/common_button_icon_width_height"

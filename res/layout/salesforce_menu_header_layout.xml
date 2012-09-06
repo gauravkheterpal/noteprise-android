@@ -11,7 +11,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/normal_margin_padding"
         android:scaleType="fitXY"
-        android:src="@drawable/chatter_button_selector" />
+        android:src="@drawable/record_icon" />
 
     <TextView
         android:layout_width="fill_parent"

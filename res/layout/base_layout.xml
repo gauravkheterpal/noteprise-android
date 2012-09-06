@@ -82,14 +82,6 @@
                 android:layout_height="@dimen/header_progress_bar_width_height"
                 android:layout_marginRight="@dimen/normal_margin_padding"
                 android:visibility="gone" />
-            
-            <!-- <ImageView
-                android:id="@+id/header_progress_bar"
-                android:layout_width="@dimen/header_progress_bar_width_height"
-                android:layout_height="@dimen/header_progress_bar_width_height"
-                android:layout_marginRight="@dimen/normal_margin_padding"
-                android:src="@drawable/spinner_blue_72"
-                android:visibility="gone" /> -->
         </LinearLayout>
     </RelativeLayout>
 
@@ -152,6 +144,7 @@
             android:id="@+id/save_to_sf_button"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/common_button_icon_width_height"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin_padding"
             android:layout_toLeftOf="@id/object_mapping_settings_button"

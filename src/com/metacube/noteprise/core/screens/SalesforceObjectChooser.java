@@ -15,11 +15,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Spinner;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
+import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.CommonSpinnerAdapter;
 import com.metacube.noteprise.common.Constants;
@@ -29,11 +33,18 @@ import com.salesforce.androidsdk.rest.RestClient.AsyncRequestCallback;
 import com.salesforce.androidsdk.rest.RestRequest;
 import com.salesforce.androidsdk.rest.RestResponse;
 
-public class SalesforceObjectChooser extends BaseFragment implements OnClickListener, AsyncRequestCallback, OnItemSelectedListener 
+public class SalesforceObjectChooser extends BaseFragment implements OnClickListener, AsyncRequestCallback, OnItemClickListener 
 {
-	Spinner objectSpinner, fieldSpinner;
+	Button objectSpinnerButton, fieldSpinnerButton;
 	RestRequest sobjectsRequest, fieldsRequest;
-	CommonSpinnerAdapter objectsSpinnerAdapter, fieldsSpinnerAdapter;
+	CommonSpinnerAdapter objectSpinnerAdapter, fieldSpinnerAdapter;
+	String OBJECT_SPINNER_TAG = "OBJECT_SPINNER", FIELD_SPINNER_TAG = "FIELD_SPINNER";
+	CommonCustomDialog objectSpinnerDialog, fieldSpinnerDialog;
+	RelativeLayout objectSpinnerLayout, fieldSpinnerLayout;
+	ListView objectSpinnerList, fieldSpinnerList;
+	String objectName, objectLabel, fieldName, fieldLabel;
+	Integer fieldLength;
+	TextView objectSpinnerDialogPromptText, fieldSpinnerDialogPromptText;
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -45,6 +56,8 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
+        objectSpinnerDialog = new CommonCustomDialog(R.layout.custom_spinner_dropdown_layout, this, OBJECT_SPINNER_TAG);
+        fieldSpinnerDialog = new CommonCustomDialog(R.layout.custom_spinner_dropdown_layout, this, FIELD_SPINNER_TAG);
     }
     
     @Override
@@ -52,8 +65,16 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
     {
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.salesforce_object_chooser_layout, container);
-    	objectSpinner = (Spinner) contentView.findViewById(R.id.object_list_spinner);
-        fieldSpinner = (Spinner) contentView.findViewById(R.id.field_list_spinner);
+    	objectSpinnerButton = (Button) contentView.findViewById(R.id.object_list_spinner_button);        
+        objectSpinnerButton.setOnClickListener(this);
+        objectSpinnerButton.setEnabled(Boolean.FALSE);        
+        objectSpinnerLayout = (RelativeLayout) contentView.findViewById(R.id.object_list_spinner_layout);
+        objectSpinnerLayout.setVisibility(View.GONE);
+        fieldSpinnerButton = (Button) contentView.findViewById(R.id.field_list_spinner_button);
+        fieldSpinnerButton.setOnClickListener(this);
+        fieldSpinnerButton.setEnabled(Boolean.FALSE);
+        fieldSpinnerLayout = (RelativeLayout) contentView.findViewById(R.id.field_list_spinner_layout);
+        fieldSpinnerLayout.setVisibility(View.GONE);        
         baseActivity.saveButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -63,19 +84,27 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 	{
 		if (view == baseActivity.saveButton)
 		{
-			String objectName = ((CommonListItems) objectSpinner.getSelectedItem()).getName();
-			String objectLabel = ((CommonListItems) objectSpinner.getSelectedItem()).getLabel();
-			String fieldName = ((CommonListItems) fieldSpinner.getSelectedItem()).getName();
-			String fieldLabel = ((CommonListItems) fieldSpinner.getSelectedItem()).getLabel();		
-			Integer fieldLength = ((CommonListItems) fieldSpinner.getSelectedItem()).getFieldLength();
 			noteprisePreferences.saveUserSalesforceObjectFieldMapping(objectName, objectLabel, fieldName, fieldName, fieldLength);			
 			baseActivity.SELECTED_OBJECT_NAME = objectName;
 			baseActivity.SELECTED_OBJECT_LABEL = objectLabel;
 			baseActivity.SELECTED_FIELD_NAME = fieldName;
 			baseActivity.SELECTED_FIELD_LABEL = fieldLabel;
 			baseActivity.SELECTED_FIELD_LENGTH = fieldLength;
-			baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 			finishScreen();
+		}
+		else if (view == objectSpinnerButton)
+		{
+			if (objectSpinnerDialog != null)
+			{
+				objectSpinnerDialog.show(getFragmentManager(), "ObjectSpinnerDialog");
+			}
+		}
+		else if (view == fieldSpinnerButton)
+		{
+			if (fieldSpinnerDialog != null)
+			{
+				fieldSpinnerDialog.show(getFragmentManager(), "FieldSpinnerDialog");
+			}
 		}
 	}
 	
@@ -83,7 +112,6 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 	public void onResume() 
 	{
 		super.onResume();
-		baseActivity.salesforceObjectsButton.setVisibility(View.GONE);
 		if (salesforceRestClient != null)
 		{
 			showProgresIndicator();			
@@ -96,15 +124,29 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 	public void onStop() 
 	{
 		super.onStop();
-		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 		baseActivity.saveButton.setVisibility(View.GONE);
 	}
 	
 	@Override
-	public void onDetach() 
+	public void instantiateCustomDialog(View view) 
 	{
-		super.onDetach();
-		
+		super.instantiateCustomDialog(view);
+		if (view != null && (String) view.getTag() == OBJECT_SPINNER_TAG)
+		{
+			objectSpinnerDialogPromptText = (TextView) view.findViewById(R.id.custom_spinner_prompt_text);
+			objectSpinnerDialogPromptText.setText(R.string.choose_object_prompt);
+			objectSpinnerList = (ListView) view.findViewById(R.id.custom_spinner_list_view);
+			objectSpinnerList.setAdapter(objectSpinnerAdapter);
+			objectSpinnerList.setOnItemClickListener(this);
+		}
+		else if (view != null && (String) view.getTag() == FIELD_SPINNER_TAG)
+		{
+			fieldSpinnerDialogPromptText = (TextView) view.findViewById(R.id.custom_spinner_prompt_text);
+			fieldSpinnerDialogPromptText.setText(R.string.choose_field_prompt);
+			fieldSpinnerList = (ListView) view.findViewById(R.id.custom_spinner_list_view);
+			fieldSpinnerList.setAdapter(fieldSpinnerAdapter);
+			fieldSpinnerList.setOnItemClickListener(this);
+		}
 	}
 
 	@Override
@@ -130,10 +172,11 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 						items.add(item);
 					}					
 				}
-				objectsSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
-				objectsSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
-				objectSpinner.setAdapter(objectsSpinnerAdapter);
-				objectSpinner.setOnItemSelectedListener(this);
+				objectSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
+				objectSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
+				objectSpinnerButton.setEnabled(Boolean.TRUE);
+				objectSpinnerLayout.setVisibility(View.VISIBLE);
+				hideProgresIndicator();
 			} 
 			catch (ParseException e) 
 			{
@@ -168,10 +211,9 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 						items.add(item);
 					}
 				}
-				fieldsSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
-				fieldsSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
-				fieldSpinner.setAdapter(fieldsSpinnerAdapter);
-				baseActivity.saveButton.setVisibility(View.VISIBLE);
+				fieldSpinnerAdapter = new CommonSpinnerAdapter(inflater, items);
+				fieldSpinnerAdapter.changeOrdering(Constants.SORT_BY_LABEL);
+				fieldSpinnerButton.setEnabled(Boolean.TRUE);
 				hideProgresIndicator();
 			} 
 			catch (ParseException e) 
@@ -192,24 +234,37 @@ public class SalesforceObjectChooser extends BaseFragment implements OnClickList
 	@Override
 	public void onError(Exception exception) 
 	{
-		NotepriseLogger.logError("Exception getting response for accounts.", NotepriseLogger.ERROR, exception);
+		NotepriseLogger.logError("Exception getting response in objectChooser fragment.", NotepriseLogger.ERROR, exception);
 	}
-
+	
 	@Override
-	public void onItemSelected(AdapterView<?> adapter, View view, int position, long id) 
-	{
-		CommonListItems item = (CommonListItems) objectsSpinnerAdapter.getItem(position);	
-		if (salesforceRestClient != null)
-		{
-			showProgresIndicator();
-			baseActivity.saveButton.setVisibility(View.GONE);
-			fieldsRequest = RestRequest.getRequestForDescribe(SF_API_VERSION, item.getName());
-			salesforceRestClient.sendAsync(fieldsRequest, this);			
-		}
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) 
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
 	{		
+		if (adapter.getAdapter() == objectSpinnerAdapter)
+		{
+			CommonListItems item = objectSpinnerAdapter.getListItem(position);
+			objectLabel = item.getLabel();
+			objectName = item.getName();
+			objectSpinnerDialog.dismiss();
+			fieldSpinnerLayout.setVisibility(View.VISIBLE);
+			objectSpinnerButton.setText(objectLabel);			
+			if (salesforceRestClient != null)
+			{
+				showProgresIndicator();
+				baseActivity.saveButton.setVisibility(View.GONE);
+				fieldsRequest = RestRequest.getRequestForDescribe(SF_API_VERSION, item.getName());
+				salesforceRestClient.sendAsync(fieldsRequest, this);			
+			}
+		}
+		else if (adapter.getAdapter() == fieldSpinnerAdapter)
+		{
+			CommonListItems item = fieldSpinnerAdapter.getListItem(position);
+			fieldLabel = item.getLabel();
+			fieldName = item.getName();
+			fieldLength = item.getFieldLength();
+			fieldSpinnerDialog.dismiss();
+			baseActivity.saveButton.setVisibility(View.VISIBLE);
+			fieldSpinnerButton.setText(fieldLabel);
+		}		
 	}	
 }

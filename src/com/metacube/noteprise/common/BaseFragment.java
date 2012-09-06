@@ -32,7 +32,7 @@ public class BaseFragment extends Fragment
 	public Integer selectedFieldLength;
 	public AsyncTaskDataLoader backgroundDataLoader;
 	public RelativeLayout baseHeaderLayout;
-	public String screenTitle;
+	public String screenTitle = null;
 	public View dialogView = null;
 	
 	@Override
@@ -81,6 +81,11 @@ public class BaseFragment extends Fragment
 		{
 			setHeaderTitle(screenTitle);
 		}		
+		else
+		{
+			baseActivity.baseHeaderTitleTextView.setVisibility(View.GONE);
+			baseActivity.notepirseLogoImageView.setVisibility(View.VISIBLE);
+		}
 		updateData();
 	}
 	
@@ -102,6 +107,8 @@ public class BaseFragment extends Fragment
 		if (baseActivity.baseHeaderTitleTextView != null && Utilities.verifyStringData(title))
 		{
 			baseActivity.baseHeaderTitleTextView.setText(title);
+			baseActivity.notepirseLogoImageView.setVisibility(View.GONE);
+			baseActivity.baseHeaderTitleTextView.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -249,9 +256,8 @@ public class BaseFragment extends Fragment
 		//Override in subclasses for custom dialogs. 
 	}
 
-	public void onItemClick(AdapterView<?> adapter, View view, int position,
-			long id) {
-		// TODO Auto-generated method stub
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
+	{
 		
 	}
 }

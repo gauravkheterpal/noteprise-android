@@ -133,8 +133,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		baseHeaderLayout = (RelativeLayout) findViewById(R.id.base_header_layout);
 		baseHeaderTitleTextView = (TextView) findViewById(R.id.base_header_title_text_view);
 		headerProgressBar = (ProgressBar) findViewById(R.id.header_progress_bar);
-		/*headerProgressBar = (ImageView) findViewById(R.id.header_progress_bar);
-		headerProgressBar.startAnimation(AnimationUtils.loadAnimation(this, R.anim.spinner_indefinitely_rotate));*/
+		notepirseLogoImageView = (ImageView) findViewById(R.id.base_header_title_image_view);
 		salesforceObjectsButton = (ImageView) findViewById(R.id.object_mapping_settings_button);
     	salesforceObjectsButton.setOnClickListener(this);
     	createNewNoteButton = (ImageView) findViewById(R.id.create_new_note_button);

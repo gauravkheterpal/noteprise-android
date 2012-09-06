@@ -32,7 +32,7 @@
         android:layout_marginRight="@dimen/large_margin_padding"
         android:layout_toRightOf="@id/list_item_left_image"
         android:text="@string/list_item_default_text"
-        android:textColor="@color/common_text_color"
+        android:textColor="@drawable/common_list_item_color"
         android:textSize="@dimen/common_text_size" />
 
     <ImageView
@@ -49,12 +49,11 @@
         android:id="@+id/list_item_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/small_margin_padding"
         android:layout_toLeftOf="@id/list_item_arrow_image"
-        android:text="Size"
-        android:textColor="@color/common_text_color"
+        android:textColor="@drawable/common_list_item_color"
         android:textSize="@dimen/common_small_text_size"
         android:visibility="gone" />
 

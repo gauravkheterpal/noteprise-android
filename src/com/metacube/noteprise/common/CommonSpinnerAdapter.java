@@ -3,17 +3,17 @@ package com.metacube.noteprise.common;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.metacube.noteprise.R;
-import com.metacube.noteprise.util.CommonListComparator;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.SpinnerAdapter;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
-public class CommonSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
+import com.metacube.noteprise.R;
+import com.metacube.noteprise.util.CommonListComparator;
+
+public class CommonSpinnerAdapter extends BaseAdapter implements ListAdapter 
 {
 	ArrayList<CommonListItems> items;
 	LayoutInflater inflater;
@@ -32,6 +32,11 @@ public class CommonSpinnerAdapter extends BaseAdapter implements SpinnerAdapter
 
 	@Override
 	public Object getItem(int position) 
+	{
+		return items.get(position);
+	}	
+	
+	public CommonListItems getListItem(int position) 
 	{
 		return items.get(position);
 	}
