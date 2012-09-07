@@ -11,6 +11,9 @@ import java.util.List;
 import org.apache.http.ParseException;
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -32,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.PopupWindow.OnDismissListener;
 
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -78,7 +82,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	protected boolean[] selection=null;
 	Button deleteDialogYesButton, deleteDialogNoButton, okayButton,truncateDialogYesButton,truncateDialogNoButton, chatterTruncateDialogYesButton, chatterTruncateDialogNoButton;
 	CommonCustomDialog deleteDialog, imageAttachDialog, truncateContentDialog, chatterTruncateDialog;
-	String CHATTER_TRUNCATE_DIALOG_TAG = "CHATTER_TRUNCATE_DIALOG_TAG", DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG", SF_TRUNCATE_DIALOG_TAG = "SF_TRUNCATE_DIALOG_TAG";
+	TextView chatterTruncateDialogHeaderText, chatterTruncateDialogMessage; 
+	String CHATTER_TRUNCATE_DIALOG_TAG = "CHATTER_TRUNCATE_DIALOG_TAG", DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG", 
+			SF_TRUNCATE_DIALOG_TAG = "SF_TRUNCATE_DIALOG_TAG", SF_ATTACHMENTS_DIALOG_TAG = "SF_ATTACHMENTS_DIALOG_TAG";
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -116,7 +122,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		{			
 			if (baseActivity.SELECTED_OBJECT_NAME != null && baseActivity.SELECTED_FIELD_NAME != null)
 			{				
-				
 				if(((CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))== false && note.getResources() == null) ||
 						((CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))== true && note.getResources() == null)
 						|| ((CommonSOQL.getSupportedObject(baseActivity.SELECTED_OBJECT_NAME))== false && note.getResources() != null))
@@ -132,7 +137,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 					}
 					else
 					{
-						truncateContentDialog = new CommonCustomDialog(R.layout.note_content_truncate_dialog, this);
+						truncateContentDialog = new CommonCustomDialog(R.layout.note_content_truncate_dialog, this, SF_TRUNCATE_DIALOG_TAG);
 						truncateContentDialog.show(getFragmentManager(), "TruncateContentDialog");
 					}
 				}
@@ -158,7 +163,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				e.printStackTrace();
 			}
-			deleteDialog = new CommonCustomDialog(R.layout.delete_note_dialog_layout, this);
+			deleteDialog = new CommonCustomDialog(R.layout.delete_note_dialog_layout, this, DELETE_DIALOG_TAG);
 			deleteDialog.show(getFragmentManager(), "DeleteNoteDialog");
 		}
 		else if (view == baseActivity.editButton)
@@ -172,9 +177,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if (Html.fromHtml(publishString).length() > 1000)
 			{
 				TASK = TRUNCATE_NOTE;
-				/*truncateContentDialog = new CommonCustomDialog(R.layout.note_content_truncate_dialog, this);
-				truncateContentDialog.show(getFragmentManager(), "TruncateContentDialog");*/	
-				commonMessageDialog.showContentTruncateDialog(this);
+				chatterTruncateDialog = new CommonCustomDialog(R.layout.common_yes_no_dialog_layout, this, CHATTER_TRUNCATE_DIALOG_TAG);
+				chatterTruncateDialog.show(getFragmentManager(), "TruncateContentDialog");	
+				//commonMessageDialog.showContentTruncateDialog(this);
 			}
 			else
 			{
@@ -213,6 +218,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if(view == truncateDialogYesButton)
 		{
+			truncateContentDialog.dismiss();
 			publishString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 			String publishStringForWall;
 			if (publishString.length() > baseActivity.SELECTED_FIELD_LENGTH)
@@ -229,8 +235,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 					args.putStringArrayList("Attachment",selectedIds );
 					changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));
 				}
-			}
-			
+			}			
 		}
 		else if (view == truncateDialogNoButton)
 		{
@@ -238,6 +243,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if (view == chatterTruncateDialogYesButton)
 		{
+			chatterTruncateDialog.dismiss();
 			baseActivity.publishToChatterButton.showContextMenu();
 		}
 		else if (view == chatterTruncateDialogNoButton)
@@ -248,7 +254,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	
 	public void showImageDialog()
 	{
-		imageAttachDialog= new CommonCustomDialog(R.layout.attachimage_salesforce_object_diolog_layout, this);
+		imageAttachDialog= new CommonCustomDialog(R.layout.attachimage_salesforce_object_diolog_layout, this, SF_ATTACHMENTS_DIALOG_TAG);
 		imageAttachDialog.show(getFragmentManager(), "ImageAttachDialog");
 	}
 	
@@ -256,7 +262,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public void instantiateCustomDialog(View view) 
 	{
 		super.instantiateCustomDialog(view);
-		if (view.getTag() != null && ((Integer) view.getTag()) == R.layout.delete_note_dialog_layout)
+		if (view.getTag() != null && (String) view.getTag() == DELETE_DIALOG_TAG)
 		{
 			//Dialog is delete note dialog.
 			deleteDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
@@ -264,7 +270,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			deleteDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
 			deleteDialogNoButton.setOnClickListener(this);
 		}
-		else if((view.getTag() != null && ((Integer) view.getTag()) == R.layout.attachimage_salesforce_object_diolog_layout))				
+		else if((view.getTag() != null && (String) view.getTag() == SF_ATTACHMENTS_DIALOG_TAG))				
 		{
 			listView = (ListView)view.findViewById(R.id.notes_list_view);			
 			if (listItems != null && listItems.size() > 0)
@@ -278,17 +284,24 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			okayButton = (Button) view.findViewById(R.id.okay_button);
 			okayButton.setOnClickListener(this);					
 		}
-		else if (view.getTag() != null && ((Integer) view.getTag()) == R.layout.note_content_truncate_dialog)
+		else if (view.getTag() != null && (String) view.getTag() == SF_TRUNCATE_DIALOG_TAG)
 		{
 			truncateDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
 			truncateDialogYesButton.setOnClickListener(this);
 			truncateDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
 			truncateDialogNoButton.setOnClickListener(this);
 		}
-		/*else if (view != null && (String) view.getTag() == CHATTER_TRUNCATE_DIALOG_TAG)
+		else if (view != null && (String) view.getTag() == CHATTER_TRUNCATE_DIALOG_TAG)
 		{
-			
-		}*/
+			chatterTruncateDialogHeaderText = (TextView) view.findViewById(R.id.common_yes_no_dialog_header_text);
+			chatterTruncateDialogHeaderText.setText(getString(R.string.chatter_truncate_dialog_title));
+			chatterTruncateDialogMessage = (TextView) view.findViewById(R.id.common_yes_no_dialog_message_text);
+			chatterTruncateDialogMessage.setText(getString(R.string.chatter_truncate_dialog_message));
+			chatterTruncateDialogYesButton = (Button) view.findViewById(R.id.common_yes_no_dialog_yes_button);
+			chatterTruncateDialogYesButton.setOnClickListener(this);
+			chatterTruncateDialogNoButton = (Button) view.findViewById(R.id.common_yes_no_dialog_no_button);
+			chatterTruncateDialogNoButton.setOnClickListener(this);
+		}
 	}
 	
 	@Override
@@ -377,7 +390,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public void onResume() 
 	{
 		super.onResume();
-		baseActivity.createNewNoteButton.setVisibility(View.GONE);
 		baseActivity.deleteNoteButton.setVisibility(View.VISIBLE);
 		TASK = GET_NOTE_DATA;
 		showProgresIndicator();
@@ -391,7 +403,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		baseActivity.saveToSFButton.setVisibility(View.GONE);
 		baseActivity.editButton.setVisibility(View.GONE);
 		baseActivity.publishToChatterButton.setVisibility(View.GONE);
-		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
 		baseActivity.deleteNoteButton.setVisibility(View.GONE);
 	}
 	
@@ -542,7 +553,19 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				try 
 				{
-					NotepriseLogger.logMessage(publishResponse.asString());
+					String response = publishResponse.asString();
+					NotepriseLogger.logMessage(response);
+					if (response.contains("errorCode"))
+					{
+						JSONArray res = new JSONArray(response);
+						JSONObject obj = res.getJSONObject(0);
+						String message  = obj.getString("message");
+						showToastNotification(message);
+					}
+					else
+					{
+						showToastNotification(getString(R.string.salesforce_chatter_post_self_success_message));
+					}
 				} 
 				catch (ParseException e) 
 				{
@@ -551,8 +574,11 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				catch (IOException e) 
 				{
 					e.printStackTrace();
-				}
-				showToastNotification(getString(R.string.salesforce_chatter_post_self_success_message));
+				} 
+				catch (JSONException e) 
+				{
+					e.printStackTrace();
+				}				
 			}
 			else
 			{

@@ -230,7 +230,6 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			if (savedNote != null && savedNote.getGuid() != null)
 			{
 				showToastNotification(getString(R.string.note_created_success_message));
-				baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
 				baseActivity.previousScreenAction = Constants.CREATE_NOTE_ACTION;
 				finishScreen();
 			}

@@ -91,7 +91,7 @@
             <EditText
                 android:id="@+id/search_query_edit_text"
                 android:layout_width="fill_parent"
-                android:layout_height="35dp"
+                android:layout_height="@dimen/search_bar_height"
                 android:layout_centerVertical="true"
                 android:background="@drawable/search_bar"
                 android:hint="@string/search_field_hint_text"

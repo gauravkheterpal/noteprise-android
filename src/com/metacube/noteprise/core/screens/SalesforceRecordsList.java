@@ -55,6 +55,9 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	TextView noResultsTextView;
 	int totalRequests = 0;
 	ArrayList<String> imageids;
+	public static final Integer GET_NOTE_DATA = 1;
+	Integer TASK = -1;
+	
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -72,28 +75,12 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
         imageids = getArguments().getStringArrayList("Attachment");
         NotepriseLogger.logMessage("imageids" +imageids);
         authToken = evernoteSession.getAuthToken();
-    	try {
-			client = evernoteSession.createNoteStore();
-		} catch (TTransportException e) {
-			
-			e.printStackTrace();
-		}
-    	try {
-			note = client.getNote(authToken, noteGuid, true, true, true, true);
-		} catch (EDAMUserException e) {
-			
-			e.printStackTrace();
-		} catch (EDAMSystemException e) {
-			
-			e.printStackTrace();
-		} catch (EDAMNotFoundException e) {
-			
-			e.printStackTrace();
-		} catch (TException e) {
-			
-			e.printStackTrace();
-		}
-       
+        if (imageids != null)
+        {
+        	TASK = GET_NOTE_DATA;
+        	executeAsyncTask();
+        	showFullScreenProgresIndicator();
+        }
     }
     
     @Override
@@ -149,6 +136,44 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		}		
 	}
 	
+	@Override
+	public void doTaskInBackground() 
+	{
+		super.doTaskInBackground();
+		try 
+    	{
+			client = evernoteSession.createNoteStore();
+			note = client.getNote(authToken, noteGuid, true, true, true, true);
+    	}
+    	catch (TTransportException e) 
+    	{			
+			e.printStackTrace();
+		}
+    	catch (EDAMUserException e) 
+    	{			
+			e.printStackTrace();
+		} 
+    	catch (EDAMSystemException e) 
+    	{			
+			e.printStackTrace();
+		} 
+    	catch (EDAMNotFoundException e) 
+    	{			
+			e.printStackTrace();
+		} 
+    	catch (TException e) 
+    	{			
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onTaskFinished() 
+	{
+		super.onTaskFinished();
+		hideFullScreenProgresIndicator();
+	}
+	
 	public void sendUpdateRequest(String recordId)
 	{
 		Map<String, Object> fields = new LinkedHashMap<String, Object>();
@@ -173,7 +198,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	{
 		List<Resource> res = new ArrayList<Resource>();
 		res = note.getResources();
-		int i=0;
+		//int i=0;
 		Map<String, Object> fields = new LinkedHashMap<String, Object>();
 		String objectType = "Attachment";
 		fields.put("ParentID",recordId);
@@ -183,32 +208,29 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			for (Iterator<String> ids = imageids.iterator(); ids.hasNext();) 
 			{ 
 				String id = ids.next();
-		        if(id.equals(resource.getAttributes().getFileName()))
-		        	
+		        if(id.equals(resource.getAttributes().getFileName()))		        	
 		        {
-				encodedImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);						   
-			    fields.put("Body",encodedImage);
-		        fields.put("Name", resource.getAttributes().getFileName());
-		        fields.put("ContentType", resource.getMime());
-		        try 
-				{
-					createAttachment = RestRequest.getRequestForCreate(SF_API_VERSION, objectType, fields);
-					//updateRecordRequest = RestRequest.getRequestForUpdate(SF_API_VERSION, objectType, recordId, fields);
-				} 
-				catch (UnsupportedEncodingException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (IOException e) 
-				{
-					e.printStackTrace();
-				}
-				salesforceRestClient.sendAsync(createAttachment, this);
-			}					
-			}
-			
+		        	encodedImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);						   
+		        	fields.put("Body",encodedImage);
+		        	fields.put("Name", resource.getAttributes().getFileName());
+		        	fields.put("ContentType", resource.getMime());
+		        	try 
+		        	{
+		        		createAttachment = RestRequest.getRequestForCreate(SF_API_VERSION, objectType, fields);
+		        		//updateRecordRequest = RestRequest.getRequestForUpdate(SF_API_VERSION, objectType, recordId, fields);
+		        	} 
+		        	catch (UnsupportedEncodingException e) 
+		        	{
+		        		e.printStackTrace();
+		        	} 
+		        	catch (IOException e) 
+		        	{
+		        		e.printStackTrace();
+		        	}
+		        	salesforceRestClient.sendAsync(createAttachment, this);
+		        }					
+			}			
 		}		
-		
 	}
 
 	@Override
@@ -275,8 +297,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						hideFullScreenProgresIndicator();
 						clearScreen();
-					}
-					
+					}					
 				}
 				else if (response.asString().contains("errorCode"))
 				{
@@ -293,7 +314,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				e.printStackTrace();
 			}
 		}	
-		else if(request == createAttachment){
+		else if(request == createAttachment)
+		{
 			try 
 			{
 				NotepriseLogger.logMessage("In return message"+response.asString() + "response" +response.getStatusCode());
@@ -310,8 +332,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 						//showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						hideFullScreenProgresIndicator();
 						//clearScreen();
-					}
-					
+					}					
 				}
 				else if (response.asString().contains("errorCode"))
 				{

@@ -10,19 +10,21 @@
     <string name="dialog_neutral_button_text">OK</string>
     <string name="dialog_negative_button_text">No</string>
     <string name="some_error_ocurred_message">An error occurred. Please try again.</string>
-	<string name="no_results_found_message">No results found.</string>
-	<string name="note_title_hint_edit_text">Note Title</string>
-	<string name="note_content_hint_edit_text">Note Content</string>
-	<string name="radio_button_all_text">All</string>
-	<string name="radio_button_notebook_text">Notebook</string>
-	<string name="radio_button_tag_text">Tag</string>
-	<string name="radio_button_keyword_text">Keyword</string>
-	<string name="search_field_hint_text">Search</string>
-	<string name="list_item_default_text">Item Text</string>
-	
-	<!-- Dialog/Header Titles -->
-	<string name="dialog_note_delete_title">Delete Note?</string>
-    
+    <string name="no_results_found_message">No results found.</string>
+    <string name="note_title_hint_edit_text">Note Title</string>
+    <string name="note_content_hint_edit_text">Note Content</string>
+    <string name="radio_button_all_text">All</string>
+    <string name="radio_button_notebook_text">Notebook</string>
+    <string name="radio_button_tag_text">Tag</string>
+    <string name="radio_button_keyword_text">Keyword</string>
+    <string name="search_field_hint_text">Search</string>
+    <string name="list_item_default_text">Item Text</string>
+
+    <!-- Dialog/Header Titles -->
+    <string name="dialog_note_delete_title">Delete Note?</string>
+    <string name="chatter_truncate_dialog_title">Continue?</string>
+    <string name="chatter_truncate_dialog_message">Content length is more than allowed chatter post limit. Content will be truncated. Do you want to continue?</string>
+
     <!-- Note related Messages -->
     <string name="choose_notebook_prompt">Please select a Notebook</string>
     <string name="note_please_enter_text_for_search_message">Please enter the text to be searched</string>
@@ -51,10 +53,11 @@
     <string name="progress_dialog_salesforce_getting_record_list_message">Getting records list..</string>
     <string name="progress_dialog_salesforce_record_updating_message">Updating selected record(s)..</string>
     <string name="progress_dialog_salesforce_record_updated_success_message">Record(s) updated successfully.</string>
-	<string name="dialog_image_attach_title">Select Attachment</string>
-	<string name="note_content_truncate_message">Content length is more than allowed limit. Content will be truncated. Do you want to continue?</string>
-	<string name="salesforce_object_header_message">Save to Salesforce"</string>
-	<string name="salesforce_note_no_attachment">There is no attachment in the note</string>
+    <string name="dialog_image_attach_title">Select Attachment</string>
+    <string name="note_content_truncate_message">Content length is more than allowed limit. Content will be truncated. Do you want to continue?</string>
+    <string name="salesforce_object_header_message">Save to Salesforce"</string>
+    <string name="salesforce_note_no_attachment">There is no attachment in the note</string>
+
     <!-- Chatter Related messages -->
     <string name="chatter_menu_header_view_text">Publish To Chatter</string>
     <string name="salesforce_chatter_content_exceed_message">Note content exceeds the chatter post limit.</string>
@@ -68,12 +71,17 @@
     <string name="progress_dialog_chatter_getting_group_data_message">Getting list of Chatter groups..</string>
     <string name="progress_dialog_chatter_publish_to_user_self_feed_message">Publishing to your Chatter feed..</string>
     <string name="progress_dialog_chatter_publish_to_group_feed_message">Publishing to Chatter group feed..</string>
-    <!-- <string name="progress_dialog_chatter_failed_posting_to_wall_message">Failed to publish the selected note to your Chatter feed.</string>
+    <!--
+    <string name="progress_dialog_chatter_failed_posting_to_wall_message">Failed to publish the selected note to your Chatter feed.</string>
     <string name="progress_dialog_chatter_failed_getting_chatter_users_message">Error in getting list of Chatter Users</string>
     <string name="progress_dialog_chatter_failed_posting_to_selected_users_message">Failed to publish the selected note to chosen Chatter users.</string>
-    <string name="progress_dialog_chatter_failed_posting_to_group_feed_message">Failed to publish the selected note to chosen Chatter groups</string> -->
-    
- <!--    "No notebook exists with that name, try another keyword"
-"No note found with that keyword, please try another keyword" -->
+    <string name="progress_dialog_chatter_failed_posting_to_group_feed_message">Failed to publish the selected note to chosen Chatter groups</string>
+    -->
+
+
+    <!--
+"No notebook exists with that name, try another keyword"
+"No note found with that keyword, please try another keyword"
+    -->
 
 </resources>

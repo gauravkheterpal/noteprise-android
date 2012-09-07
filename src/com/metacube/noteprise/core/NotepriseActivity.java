@@ -1,7 +1,6 @@
 package com.metacube.noteprise.core;
 
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,9 +36,9 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
         FragmentManager.enableDebugLogging(Boolean.FALSE);    
         if (android.os.Build.VERSION.SDK_INT > 9) 
         {
-        	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
-            StrictMode.setThreadPolicy(policy);
-        }        
+        	android.os.StrictMode.ThreadPolicy policy = new android.os.StrictMode.ThreadPolicy.Builder().permitNetwork().build();
+        	android.os.StrictMode.setThreadPolicy(policy);
+        }      
         setUpWelcomeScreen();   
     }
     
@@ -84,8 +83,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     	checkButtons();    	
     	if (isEvernoteAuthenticationComplete() && authenticationStarted)
 		{
-    		//hideFullScreenProgresIndicator();
-    		
+    		//hideFullScreenProgresIndicator();    		
 			authenticationStarted = false;
 			noteprisePreferences.saveEvernoteAuthToken(evernoteSession.getAuthToken());						
 			AuthenticationResult authResult = evernoteSession.getAuthenticationResult();

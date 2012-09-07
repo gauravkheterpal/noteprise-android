@@ -68,7 +68,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
         searchCriteriaRadioGroup = (RadioGroup) contentView.findViewById(R.id.search_criteria_radio_group);
         searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
         searchQueryEditText = (EditText) contentView.findViewById(R.id.search_query_edit_text);
-        searchQueryEditText.setImeActionLabel(getString(R.string.search_field_hint_text), R.id.search_button);
+        //searchQueryEditText.setImeActionLabel(getString(R.string.search_field_hint_text), R.id.search_button);
         searchButton = (ImageButton) contentView.findViewById(R.id.search_button);
         searchButton.setOnClickListener(this);
     	return super.onCreateView(inflater, container, savedInstanceState);
@@ -123,9 +123,12 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 	public void onResume() 
 	{
 		super.onResume();
+		setHeaderTitle(null);
 		baseActivity.logoutButton.setVisibility(View.VISIBLE);
 		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
 		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
+		baseActivity.saveToSFButton.setVisibility(View.GONE);
+		baseActivity.publishToChatterButton.setVisibility(View.GONE);
 		if (isEvernoteAuthenticationComplete())
 		{
 			if (baseActivity.isDataSaved && checkPreviousScreenActionForNotRefresh())

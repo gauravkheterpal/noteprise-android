@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="account_type">com.metacube.noteprise.login</string>
-	<string name="oauth_callback_url">https://login.salesforce.com/services/oauth2/success</string>
-	<string name="oauth_client_id">3MVG9Y6d_Btp4xp7TYnbVJx2W7iPeWGju0BzaRrm4HDO0q32dR3xmWgh4DCGWOhPZ2SF2RHFQIPME.KaoCQcm</string>
+	<!-- Same as iOS app -->
+	<!-- <string name="oauth_callback_url">https://login.salesforce.com/services/oauth2/success</string> -->
+	<!-- <string name="oauth_client_id">3MVG9Y6d_Btp4xp7TYnbVJx2W7iPeWGju0BzaRrm4HDO0q32dR3xmWgh4DCGWOhPZ2SF2RHFQIPME.KaoCQcm</string> -->
+	<!-- Deve. Org. -->
+	<!-- <string name="oauth_callback_url">sfdc://noteprise-auth-success</string> -->
+	<!-- <string name="oauth_client_id">3MVG9Y6d_Btp4xp5BJRmijpKGhWNbQYJZoD0L7gzDcXgSoVAeak12S9oxvoSdP0iYbwDzgS_RUpbGnJGmt3I0</string> -->
+	<!-- New app on feedback@noteprise.com -->
+	<string name="oauth_callback_url">sfdc://noteprise-auth-success</string>
+	<string name="oauth_client_id">3MVG9Y6d_Btp4xp7TYnbVJx2W7kWxbvWz4l2BR7kVsTLVZLJVC8TZr3NxCz8RjvlgMnD686stagudKBB9Rizz</string>	
 	<string name="api_version">v25.0</string>
 </resources>
+

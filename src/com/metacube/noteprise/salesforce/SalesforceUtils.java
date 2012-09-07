@@ -123,7 +123,7 @@ public class SalesforceUtils
 				else
 				{
 					String encodedText = URLEncoder.encode(noteContent, "UTF-8");		
-					//publishResponse = salesforceRestClient.sendSync(RestMethod.POST, "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items?text=" + encodedText, null);
+					publishResponse = salesforceRestClient.sendSync(RestMethod.POST, "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items?text=" + encodedText, null);
 				}				
 			}
 			catch (UnsupportedEncodingException e) 
