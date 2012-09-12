@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/common_custom_dialog_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/base_background"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/common_list_item_layout_height"
+        android:background="@drawable/main_nav_bar_background"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="@dimen/common_list_item_left_image_width_height"
+            android:layout_height="@dimen/common_list_item_left_image_width_height"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/small_margin_padding"
+            android:scaleType="fitXY"
+            android:src="@drawable/record_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/normal_margin_padding"
+            android:text="@string/progress_dialog_chatter_attachment_message"
+            android:textColor="@color/text_color_for_dark_background"
+            android:textSize="@dimen/common_large_text_size"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/notes_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/segment_control_horizontal_border"
+        android:dividerHeight="@dimen/common_divider_width_height"
+        android:listSelector="@drawable/common_list_selector" >
+    </ListView>
+
+</LinearLayout>

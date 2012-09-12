@@ -35,8 +35,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.PopupWindow.OnDismissListener;
+import android.widget.TextView;
 
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
@@ -67,24 +67,26 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	WebView noteContentWebView;
 	String noteTitle, noteContent, noteGuid, mediaString, publishString,encodeImage;
 	Note note;
-	String fileName;
+	String fileName,attachmentName;
 	Bitmap bitmap;
-	ArrayList<CommonListItems> listItems=null;
-	CommonListAdapter listAdapter;
-	ListView listView;
+	int checkedItemPosition= -1,response;
+	ArrayList<CommonListItems> listItems=null,listitemsChatter=null,listitemsChatterImage=null;
+	CommonListAdapter listAdapter,listAdapterChatter,listAdapterChatterImage;
+	ListView listView,listViewChatter,listViewChatterImage;
 	byte[] byteimage;
 	ArrayList<String> selectedIds = null;
 	boolean mediaContent= false;
 	RestResponse publishResponse;
 	Integer GET_NOTE_DATA = 0, DELETE_NOTE = 1, PUBLISH_TO_MY_CHATTER_FEED = 2, TASK = 0, deletionId = null, TRUNCATE_NOTE = 3,TEXT_ONLY=4,ATTACHMENT_ONLY=5,TEXT_ATTACHMENT=6;
-	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath();
+	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath(),saveString=null;
 	protected String[] _options =null;
 	protected boolean[] selection=null;
-	Button deleteDialogYesButton, deleteDialogNoButton, okayButton,truncateDialogYesButton,truncateDialogNoButton, chatterTruncateDialogYesButton, chatterTruncateDialogNoButton;
-	CommonCustomDialog deleteDialog, imageAttachDialog, truncateContentDialog, chatterTruncateDialog;
+	Button deleteDialogYesButton, deleteDialogNoButton, okayButton,truncateDialogYesButton,truncateDialogNoButton, chatterTruncateDialogYesButton, chatterTruncateDialogNoButton,okayChatterButton;
+	CommonCustomDialog deleteDialog, imageAttachDialog, truncateContentDialog, chatterTruncateDialog,chatterImageDialog,chatterAttachmentListDialog;
 	TextView chatterTruncateDialogHeaderText, chatterTruncateDialogMessage; 
 	String CHATTER_TRUNCATE_DIALOG_TAG = "CHATTER_TRUNCATE_DIALOG_TAG", DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG", 
-			SF_TRUNCATE_DIALOG_TAG = "SF_TRUNCATE_DIALOG_TAG", SF_ATTACHMENTS_DIALOG_TAG = "SF_ATTACHMENTS_DIALOG_TAG";
+			SF_TRUNCATE_DIALOG_TAG = "SF_TRUNCATE_DIALOG_TAG", SF_ATTACHMENTS_DIALOG_TAG = "SF_ATTACHMENTS_DIALOG_TAG",CHATTER_ATTACHMENT_DIALOG_TAG="CHATTER_ATTACHMENT_DIALOG_TAG",
+			CHATTER_ATTACHMENT_LIST_DIALOG_TAG="CHATTER_ATTACHMENT_LIST_DIALOG_TAG";
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -216,6 +218,31 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			args.putStringArrayList("Attachment",selectedIds );
 			changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));	
 		}
+		else if (view == okayChatterButton)
+		{
+			
+			
+			attachmentName = listAdapterChatterImage.getCheckedItemsListName();
+			NotepriseLogger.logMessage("Slectes ids"+selectedIds);
+			if(attachmentName !=null)
+			{
+			chatterAttachmentListDialog.dismiss();				
+			if(TASK == ATTACHMENT_ONLY)
+			{
+				saveString=null;
+			}
+			else		
+			{
+				saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			}
+			executeAsyncTask();
+			}
+			else 
+			{
+				showToastNotification(getString(R.string.chatter_select_attachment_error_message));
+			}
+				
+		}
 		else if(view == truncateDialogYesButton)
 		{
 			truncateContentDialog.dismiss();
@@ -258,6 +285,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		imageAttachDialog.show(getFragmentManager(), "ImageAttachDialog");
 	}
 	
+	public void showChatterImageDialog()
+	{
+		NotepriseLogger.logMessage("In chatter image dialog only");
+		chatterAttachmentListDialog= new CommonCustomDialog(R.layout.attachimage_salesforce_object_diolog_layout, this, CHATTER_ATTACHMENT_LIST_DIALOG_TAG);
+		chatterAttachmentListDialog.show(getFragmentManager(), "chatterAttachmentListDialog");
+	}
+	
 	@Override
 	public void instantiateCustomDialog(View view) 
 	{
@@ -284,6 +318,46 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			okayButton = (Button) view.findViewById(R.id.okay_button);
 			okayButton.setOnClickListener(this);					
 		}
+		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_ATTACHMENT_DIALOG_TAG))				
+		{
+			listViewChatter = (ListView)view.findViewById(R.id.notes_list_view);
+			listitemsChatter = new ArrayList<CommonListItems>();
+			CommonListItems dialogItem = new CommonListItems();
+			dialogItem.setLabel("Text");
+			dialogItem.setId("Text");
+			listitemsChatter.add(dialogItem);
+			dialogItem = new CommonListItems();
+			dialogItem.setLabel("Attachment");
+			dialogItem.setId("Attachment");
+			listitemsChatter.add(dialogItem);
+			dialogItem = new CommonListItems();
+			dialogItem.setLabel("Text and Attachment");
+			dialogItem.setId("Text and Attachment");
+			listitemsChatter.add(dialogItem);
+			if (listitemsChatter != null && listitemsChatter.size() > 0)
+			{				
+				listAdapterChatter = new CommonListAdapter(this, inflater, listitemsChatter);				
+				listViewChatter.setAdapter(listAdapterChatter);
+				listViewChatter.setOnItemClickListener(this);
+				//listAdapter.showCheckList();
+			}					
+		}
+		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_ATTACHMENT_LIST_DIALOG_TAG))				
+		{
+			listViewChatterImage = (ListView)view.findViewById(R.id.notes_list_view);			
+			if (listItems != null && listItems.size() > 0)
+			{				
+				listAdapterChatterImage = new CommonListAdapter(this, inflater, listItems);				
+				listAdapterChatterImage.changeOrdering(Constants.SORT_BY_LABEL);
+				listViewChatterImage.setAdapter(listAdapterChatterImage);
+				listViewChatterImage.setOnItemClickListener(this);
+				listAdapterChatterImage.showCheckList();
+				
+			}				
+			okayChatterButton = (Button) view.findViewById(R.id.okay_button);
+			okayChatterButton.setOnClickListener(this);	
+		}
+		
 		else if (view.getTag() != null && (String) view.getTag() == SF_TRUNCATE_DIALOG_TAG)
 		{
 			truncateDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
@@ -325,7 +399,44 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
 	{
-		if (listAdapter.isCheckListMode())
+		
+		if(adapter.getAdapter() == listAdapterChatter)
+		{
+			if(position == 0)
+			{
+				TASK = PUBLISH_TO_MY_CHATTER_FEED;
+				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
+				executeAsyncTask();
+			}
+			else if (position ==1 ){
+				NotepriseLogger.logMessage("In Attachment only");
+				TASK= ATTACHMENT_ONLY;
+				showChatterImageDialog();
+				chatterImageDialog.dismiss();
+			}
+			else if(position == 2)
+			{
+				TASK= TEXT_ATTACHMENT;
+				showChatterImageDialog();
+				chatterImageDialog.dismiss();
+			}
+		}
+		else if(adapter.getAdapter() == listAdapterChatterImage)
+		{
+			NotepriseLogger.logMessage("filename from list"+listAdapterChatterImage.getListItemText(position));
+			if(listAdapterChatterImage.isCheckListMode())
+			{
+				if(checkedItemPosition != -1)
+				{
+					
+					listAdapterChatterImage.setUnChecedkItem(checkedItemPosition);
+				}
+				listAdapterChatterImage.setChecedkCurrentItem(position);
+				checkedItemPosition= position;
+			}	
+		}
+		else
+			if(listAdapter.isCheckListMode())
 		{
 			listAdapter.setChecedkCurrentItem(position);
 			selection[position]=true;
@@ -336,10 +447,18 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public boolean onContextItemSelected(MenuItem item) 
 	{
 		if (item.getItemId() == R.id.chatter_menu_post_my_feed)
-		{			
+		{	
+			if(note.getResources()!= null)
+			{
+				chatterImageDialog= new CommonCustomDialog(R.layout.note_chatter_wall, this, CHATTER_ATTACHMENT_DIALOG_TAG);
+				chatterImageDialog.show(getFragmentManager(), "chatterImageDialog");
+			}
+			else
+			{
 			TASK = PUBLISH_TO_MY_CHATTER_FEED;
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
 			executeAsyncTask();
+			}
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
 		{			
@@ -455,9 +574,16 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				publishStringForWall = publishString.substring(0, 999);
 			}			
 					
-			publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, null, null, null);			
-			//File file = new File("/mnt/sdcard/plus_icon.png");
-			//publishResponse = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, file, "image", "Chatter!");
+			publishResponse = SalesforceUtils.publishNoteContentToMyChatterFeed(salesforceRestClient, publishStringForWall, SF_API_VERSION, null, null, null);			
+			
+		}
+		
+		else if(TASK == ATTACHMENT_ONLY || TASK == TEXT_ATTACHMENT)
+		{
+			
+			final String filepath = SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" +attachmentName;			
+			File file = new File(filepath);
+			response = SalesforceUtils.publishNoteToMyChatterFeed(salesforceRestClient, saveString, SF_API_VERSION, file,attachmentName, "Chatter!");
 		}
 	}
 	
@@ -512,6 +638,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 						{
 							noteContent = noteContent.replace(mediaString, html);
 						}					
+					}else
+					{
+						saveFileToExternalStorage(resource.getData().getBody(), resource.getAttributes().getFileName(), noteTitle,resource.getMime());
 					}
 					index++;
 				}
@@ -585,6 +714,19 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				showToastNotification(getString(R.string.some_error_ocurred_message));
 			}
 		}
+		else if ( TASK == ATTACHMENT_ONLY || TASK == TEXT_ATTACHMENT)
+		{
+			TASK = GET_NOTE_DATA;
+			hideFullScreenProgresIndicator();
+			if (response !=0)
+			{
+				showToastNotification(getString(R.string.salesforce_chatter_post_self_success_message));		
+			}
+			else
+			{
+				showToastNotification(getString(R.string.some_error_ocurred_message));
+			}
+		}
 	}
 
 	public boolean saveImageToExternalStorage(Bitmap image, String imageName, String noteTitle,String type) 
@@ -624,6 +766,37 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			return false;
 		}
 	}
+	
+	public boolean saveFileToExternalStorage(byte[] fileData  , String imageName, String noteTitle,String type) 
+	{
+	
+		try 
+		{
+			File dir = new File(SD_CARD + Constants.IMAGE_PATH);
+			if (!dir.exists()) 
+			{
+				dir.mkdirs();
+			}
+			OutputStream fOut = null;
+			File file = new File(SD_CARD + Constants.IMAGE_PATH, noteTitle + "_" + imageName);
+			if (file.exists()) 
+			{
+				file.delete();				
+			}
+			file.createNewFile();
+			fOut = new FileOutputStream(file);
+			fOut.write(fileData);	
+			fOut.flush();
+			fOut.close();
+			return true;
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	@Override
 	public void onClick(DialogInterface dialog, int which) 

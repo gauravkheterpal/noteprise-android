@@ -223,6 +223,11 @@ public class CommonListAdapter extends BaseAdapter
 		}		
 		notifyDataSetChanged();
 	}
+	public void setUnChecedkItem(int position)
+	{				
+		listItems.get(position).setIsChecked(Boolean.FALSE);			
+		notifyDataSetChanged();
+	}
 	
 	public Boolean isCheckListMode()
 	{
@@ -237,6 +242,20 @@ public class CommonListAdapter extends BaseAdapter
 			if(listItems.get(i).getIsChecked())
 			{
 				checkedList.add(listItems.get(i).getId());
+				
+			}
+		}
+		return checkedList;
+	}
+	
+	public String getCheckedItemsListName()
+	{
+		String checkedList = null;
+		for (int i = 0; i < listItems.size(); i++)
+		{
+			if(listItems.get(i).getIsChecked())
+			{
+				checkedList=listItems.get(i).getLabel();
 				
 			}
 		}

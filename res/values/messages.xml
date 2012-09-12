@@ -71,6 +71,8 @@
     <string name="progress_dialog_chatter_getting_group_data_message">Getting list of Chatter groups..</string>
     <string name="progress_dialog_chatter_publish_to_user_self_feed_message">Publishing to your Chatter feed..</string>
     <string name="progress_dialog_chatter_publish_to_group_feed_message">Publishing to Chatter group feed..</string>
+    <string name="progress_dialog_chatter_attachment_message">Sending to Chatter..</string>
+    <string name="chatter_select_attachment_error_message">Please select one attachment..</string>
     <!--
     <string name="progress_dialog_chatter_failed_posting_to_wall_message">Failed to publish the selected note to your Chatter feed.</string>
     <string name="progress_dialog_chatter_failed_getting_chatter_users_message">Error in getting list of Chatter Users</string>
