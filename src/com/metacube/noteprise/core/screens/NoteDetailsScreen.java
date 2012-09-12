@@ -235,6 +235,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
 			}
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
 			executeAsyncTask();
 			}
 			else 
@@ -718,7 +719,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		{
 			TASK = GET_NOTE_DATA;
 			hideFullScreenProgresIndicator();
-			if (response !=0)
+			if (response == 201)
 			{
 				showToastNotification(getString(R.string.salesforce_chatter_post_self_success_message));		
 			}
