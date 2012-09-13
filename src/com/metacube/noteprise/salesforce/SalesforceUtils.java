@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -12,6 +13,10 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,30 +73,25 @@ public class SalesforceUtils
 					Part[] parts = { 
 										new StringPart("desc", "Description"),
 										new StringPart("fileName", fileName),
-										new StringPart("text", noteContent),
-										//new StringPart("json", generateJSONBodyForChatterFeed("sandeep", null, null, fileName,imageTitle)),										
+										new StringPart("text", noteContent),																				
 										new FilePart("feedItemFileUpload", imageFile),
 									};
-					postMethod = new PostMethod(url);
+					    postMethod = new PostMethod(url);
 						postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
 						}
 						else
 						{
 							Part[] parts = { 
 									new StringPart("desc", "Description"),
-									new StringPart("fileName", fileName),
-									//new StringPart("json", generateJSONBodyForChatterFeed("sandeep", null, null, fileName,imageTitle)),										
+									new StringPart("fileName", fileName),																
 									new FilePart("feedItemFileUpload", imageFile),
 								};
 							postMethod = new PostMethod(url);
 							postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
 						}
-					//String url = salesforceRestClient.getClientInfo().instanceUrl + "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items";
 					
-					postMethod.setRequestHeader("Authorization", "OAuth " + salesforceRestClient.getAuthToken());
-					//postMethod.setr(generateJSONBodyForChatterFeed(noteContent, null, null, null, null));
-					//postMethod.setRequestHeader("Content-type", "multipart/form-data");
-					//postMethod.addRequestHeader("X-PrettyPrint", "1");					
+					
+					postMethod.setRequestHeader("Authorization", "OAuth " + salesforceRestClient.getAuthToken());								
 					org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
 					publishResponse = client.executeMethod(postMethod);
 				}
@@ -120,13 +120,11 @@ public class SalesforceUtils
 		try {
 			encodedText = URLEncoder.encode(noteContent, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		try {
 			publishResponse = salesforceRestClient.sendSync(RestMethod.POST, "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items?text=" + encodedText, null);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {			
 			e.printStackTrace();
 		}
 		return publishResponse;
@@ -209,53 +207,8 @@ public class SalesforceUtils
 	
 	public static RestResponse publishNoteWithUserMentions(RestClient salesforceRestClient, String noteContent, String SF_API_VERSION, ArrayList<String> selectedIds, File imageFile, String fileName, String imageTitle)
 	{
+		
 		RestResponse publishResponse = null;
-		if (salesforceRestClient != null)
-		{
-			try 
-			{
-				if (imageFile != null && fileName != null && imageTitle != null)
-				{
-								
-					String url = salesforceRestClient.getClientInfo().instanceUrl + "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items";
-					Part[] parts = { 
-										//new StringPart("desc", "Description"),
-										new StringPart("fileName", fileName),
-										//new StringPart("text", noteContent),
-										//new StringPart("json", generateJSONBodyForChatterFeed(noteContent, selectedIds, null, fileName, imageTitle)),										
-										new FilePart("feedItemFileUpload", imageFile),
-									};
-					//String url = salesforceRestClient.getClientInfo().instanceUrl + "/services/data/" + SF_API_VERSION + "/chatter/feeds/news/me/feed-items";
-					NotepriseLogger.logMessage(url);
-					PostMethod postMethod = new PostMethod(url);
-					postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
-					postMethod.setRequestHeader("Authorization", "OAuth " + salesforceRestClient.getAuthToken());
-					//postMethod.setr(generateJSONBodyForChatterFeed(noteContent, null, null, null, null));
-					//postMethod.setRequestHeader("Content-type", "multipart/form-data");
-					//postMethod.addRequestHeader("X-PrettyPrint", "1");					
-					org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
-					client.executeMethod(postMethod);
-					String responseBody = postMethod.getResponseBodyAsString();
-					NotepriseLogger.logMessage(responseBody);
-				}
-				else
-				{
-					/*StringEntity stringEntity = new StringEntity(stringBody);
-					stringEntity.setContentType("application/json");
-					publishResponse = salesforceRestClient.sendSync(RestMethod.POST, url, stringEntity);*/
-				}				
-			}
-			catch (UnsupportedEncodingException e) 
-			{
-				NotepriseLogger.logError("UnsupportedEncodingException while publishing chatter feed.", NotepriseLogger.ERROR, e);
-			} 
-			catch (IOException e) 
-			{
-				NotepriseLogger.logError("IOException while publishing chatter feed.", NotepriseLogger.ERROR, e);
-			}		
-		}
-		return publishResponse;
-		/*RestResponse publishResponse = null;
 		if (salesforceRestClient != null)
 		{
 			try 
@@ -269,7 +222,7 @@ public class SalesforceUtils
 					multipartEntity.addPart("data", new StringBody(stringBody, "application/json", Charset.defaultCharset()));
 					multipartEntity.addPart("file", new FileBody(imageFile, fileName, "image/png", Charset.defaultCharset().toString()));
 					NotepriseLogger.logMessage(multipartEntity.toString());
-					//publishResponse = salesforceRestClient.sendSync(RestMethod.POST, url, multipartEntity);
+					
 				}
 				else
 				{
@@ -287,7 +240,7 @@ public class SalesforceUtils
 				NotepriseLogger.logError("IOException while publishing chatter feed.", NotepriseLogger.ERROR, e);
 			}	
 		}
-		return publishResponse;*/
+		return publishResponse;
 	}
 	
 	public static String generateJSONBodyForChatterFeed(String content, ArrayList<String> mentionIds, String imageDescription, String fileName, String imageTitle)
@@ -311,7 +264,7 @@ public class SalesforceUtils
 			{
 				JSONObject text = new JSONObject();
 				text.put("type", "text");
-				//content = URLEncoder.encode(content, "UTF-8");
+				
 				text.put("text", " " + content);
 				msg.put(text);
 			}	
@@ -336,10 +289,7 @@ public class SalesforceUtils
 		{
 			e.printStackTrace();
 		} 
-		/*catch (UnsupportedEncodingException e) 
-		{
-			e.printStackTrace();
-		}*/ 
+	
 		return bodyString;
 	}
 	

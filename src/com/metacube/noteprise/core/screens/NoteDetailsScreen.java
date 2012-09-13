@@ -181,7 +181,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				TASK = TRUNCATE_NOTE;
 				chatterTruncateDialog = new CommonCustomDialog(R.layout.common_yes_no_dialog_layout, this, CHATTER_TRUNCATE_DIALOG_TAG);
 				chatterTruncateDialog.show(getFragmentManager(), "TruncateContentDialog");	
-				//commonMessageDialog.showContentTruncateDialog(this);
 			}
 			else
 			{
@@ -299,7 +298,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		super.instantiateCustomDialog(view);
 		if (view.getTag() != null && (String) view.getTag() == DELETE_DIALOG_TAG)
 		{
-			//Dialog is delete note dialog.
 			deleteDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
 			deleteDialogYesButton.setOnClickListener(this);
 			deleteDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
@@ -340,7 +338,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				listAdapterChatter = new CommonListAdapter(this, inflater, listitemsChatter);				
 				listViewChatter.setAdapter(listAdapterChatter);
 				listViewChatter.setOnItemClickListener(this);
-				//listAdapter.showCheckList();
 			}					
 		}
 		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_ATTACHMENT_LIST_DIALOG_TAG))				

@@ -49,6 +49,7 @@
     <string name="choose_field_prompt">Choose a field</string>
     <string name="salesforce_no_records_selected_message">No record(s) selected!</string>
     <string name="salesforce_select_object_field_message">Please select an object and field first.</string>
+    <string name="salesforce_object_save_message">Successfully saved mapping</string>
     <string name="salesforce_record_saving_failed_message">Failed to save record(s).</string>
     <string name="progress_dialog_salesforce_getting_record_list_message">Getting records list..</string>
     <string name="progress_dialog_salesforce_record_updating_message">Updating selected record(s)..</string>
