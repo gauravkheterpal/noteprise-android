@@ -27,6 +27,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 {	
 	Button evernoteLoginButton;
 	Boolean authenticationStarted = false;
+	Boolean isGoMenuCalled=false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -69,8 +70,10 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     	{
     		loggedInEvernote = evernoteSession.isLoggedIn();
     	}    	
-    	if (loggedInEvernote && loggedInSalesforce)
+    	if (loggedInEvernote && loggedInSalesforce && isGoMenuCalled ==false)
     	{
+    		
+    		isGoMenuCalled=true;
     		gotoMainMenu();
     	}
     }
