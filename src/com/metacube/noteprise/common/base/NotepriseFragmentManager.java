@@ -68,6 +68,14 @@ public class NotepriseFragmentManager
 	
 	public void clearScreen()
 	{
-		while(onBackPressed());
+		FragmentTransaction ft = initFragmentTransaction();
+		while (screenStack.size() > 1)
+		{
+			ft.remove(screenStack.get(screenStack.size() - 1)._fragment);
+			screenStack.remove(screenStack.size() - 1);
+		}
+		ft.attach(screenStack.get(screenStack.size() - 1)._fragment);
+		ft.commit();
+		fragmentActivity.getSupportFragmentManager().executePendingTransactions();
 	}
 }
