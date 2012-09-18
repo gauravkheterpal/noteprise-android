@@ -47,7 +47,7 @@ import com.salesforce.androidsdk.rest.RestResponse;
 public class SalesforceRecordsList extends BaseFragment implements OnItemClickListener, AsyncRequestCallback, OnClickListener
 {
 	ListView listView;
-	String noteContent,filePath,encodedImage,noteGuid,authToken,name, contentType,id;
+	String noteContent,filePath,encodedImage,noteGuid,authToken,name, contentType,id,recordId;
 	Client client;
 	Note note;
 	RestRequest recordsRequest, updateRecordRequest,createAttachment;
@@ -75,12 +75,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
         imageids = getArguments().getStringArrayList("Attachment");
         NotepriseLogger.logMessage("imageids" +imageids);
         authToken = evernoteSession.getAuthToken();
-        if (imageids != null)
-        {
-        	TASK = GET_NOTE_DATA;
-        	executeAsyncTask();
-        	showFullScreenProgresIndicator();
-        }
+       
     }
     
     @Override
@@ -100,22 +95,23 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	public void onResume() 
 	{
 		super.onResume();
-		if (salesforceRestClient != null)
-		{
-			List<String> fieldList = new ArrayList<String>();
-			fieldList.add("id");
-			fieldList.add("name");
-			try 
+	
+		 if (salesforceRestClient != null)
 			{
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
-				recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName));				
-			} 
-			catch (UnsupportedEncodingException e) 
-			{
-				e.printStackTrace();
+				List<String> fieldList = new ArrayList<String>();
+				fieldList.add("id");
+				fieldList.add("name");
+				try 
+				{	
+					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
+					recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName));				
+				} 
+				catch (UnsupportedEncodingException e) 
+				{
+					e.printStackTrace();
+				}
+				salesforceRestClient.sendAsync(recordsRequest, this);			
 			}
-			salesforceRestClient.sendAsync(recordsRequest, this);			
-		}		
 	}
 
 	@Override
@@ -128,11 +124,12 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		else
 		{
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_record_updating_message));
-			String recordId = recordsAdapter.getListItemId(position);
+			recordId = recordsAdapter.getListItemId(position);
 			if(imageids != null)
 			sendCreateRequest(recordId);
-			if(noteContent != null)
-			sendUpdateRequest(recordId);
+			else 
+				sendUpdateRequest(recordId);
+			
 		}		
 	}
 	
@@ -253,13 +250,24 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					item.setLeftImage(R.drawable.record_icon);
 					items.add(item);
 				}
-				hideFullScreenProgresIndicator();
+				//hideFullScreenProgresIndicator();
+		 
 				if (items != null && items.size() > 0)
 				{
 					baseActivity.editButton.setVisibility(View.VISIBLE);
 					recordsAdapter = new CommonListAdapter(inflater, items);
 					listView.setAdapter(recordsAdapter);
 					listView.setOnItemClickListener(this);
+					 if (imageids != null)
+				        {
+				        	TASK = GET_NOTE_DATA;
+				        	//showFullScreenProgresIndicator();
+				        	executeAsyncTask();
+				        }
+					 else 
+					 {
+						 hideFullScreenProgresIndicator();
+					 }
 				}
 				else
 				{
@@ -288,15 +296,17 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				{
 					if (totalRequests > 0)
 					{
-						hideFullScreenProgresIndicator();
-						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
+						hideFullScreenProgresIndicator();	
+						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));						
 						clearScreen();
+						
 					}
 					else
 					{
-						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						hideFullScreenProgresIndicator();
+						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));												
 						clearScreen();
+						
 					}					
 				}
 				else if (response.asString().contains("errorCode"))
@@ -324,14 +334,28 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					if (totalRequests > 0)
 					{
 						hideFullScreenProgresIndicator();
-						showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
-												//clearScreen();
+						//showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
+						if(imageids !=null )
+						{													
+								showToastNotification(getString(R.string.progress_dialog_salesforce_record_created_success_message));
+							    if(noteContent != null)
+								sendUpdateRequest(recordId);
+							    else
+							    	clearScreen();
+						}
 					}
 					else
 					{
 						//showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						hideFullScreenProgresIndicator();
-						//clearScreen();
+						if(imageids !=null )
+						{													
+								showToastNotification(getString(R.string.progress_dialog_salesforce_record_created_success_message));
+							    if(noteContent != null)
+								sendUpdateRequest(recordId);
+							    else
+							    	clearScreen();
+						}
 					}					
 				}
 				else if (response.asString().contains("errorCode"))
@@ -385,7 +409,13 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				totalRequests = selectedRecords.size();
 				for (int i = 0; i < selectedRecords.size(); i++)
 				{
-					sendUpdateRequest(selectedRecords.get(i));
+					recordId=selectedRecords.get(i);
+					if(imageids!=null)
+					sendCreateRequest(selectedRecords.get(i));
+					else
+					sendUpdateRequest(recordId);
+					
+					
 				}
 			}
 			else

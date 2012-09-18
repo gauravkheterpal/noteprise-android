@@ -131,6 +131,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					}
 					else
 					{
+						groupId = selectedIds.get(0);
 						publishResponse = SalesforceUtils.publishNoteToUserGroup(salesforceRestClient, groupId, publishString, SF_API_VERSION);
 					}
 					break;

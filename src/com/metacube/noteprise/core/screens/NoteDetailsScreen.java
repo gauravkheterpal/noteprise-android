@@ -201,8 +201,15 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		else if (view == okayButton)
 		{
 			String saveString;
-			imageAttachDialog.dismiss();
 			selectedIds = listAdapter.getCheckedItemsList();
+			if(selectedIds.size()<1)
+			{
+				showToastNotification(getString(R.string.chatter_select_attachment_error_message));	
+			}
+			else
+			{
+				
+			imageAttachDialog.dismiss();
 			Bundle args = new Bundle();
 			if(TASK == ATTACHMENT_ONLY)
 			{
@@ -216,6 +223,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			args.putString("noteGuid", noteGuid);
 			args.putStringArrayList("Attachment",selectedIds );
 			changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));	
+			}
 		}
 		else if (view == okayChatterButton)
 		{
@@ -403,6 +411,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if(position == 0)
 			{
 				TASK = PUBLISH_TO_MY_CHATTER_FEED;
+				chatterImageDialog.dismiss();
 				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
 				executeAsyncTask();
 			}
@@ -478,8 +487,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			{
 				Bundle args = new Bundle();
 				selection=null;
-				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
-				
+				String saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);				
 				args.putString("noteContent", saveString);				
 				args.putBooleanArray("Attachment",selection );
 				changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));

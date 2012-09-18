@@ -54,6 +54,7 @@
     <string name="progress_dialog_salesforce_getting_record_list_message">Getting records list..</string>
     <string name="progress_dialog_salesforce_record_updating_message">Updating selected record(s)..</string>
     <string name="progress_dialog_salesforce_record_updated_success_message">Record(s) updated successfully.</string>
+    <string name="progress_dialog_salesforce_record_created_success_message">Record(s) created successfully.</string>
     <string name="dialog_image_attach_title">Select Attachment</string>
     <string name="note_content_truncate_message">Content length is more than allowed limit. Content will be truncated. Do you want to continue?</string>
     <string name="salesforce_object_header_message">Save to Salesforce"</string>
