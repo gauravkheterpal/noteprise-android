@@ -1,5 +1,6 @@
 package com.metacube.noteprise.core.screens;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -24,11 +25,11 @@ import com.salesforce.androidsdk.rest.RestResponse;
 
 public class PublishToChatterRecordsListScreen extends BaseFragment implements OnClickListener, OnItemClickListener
 {
-	String publishString, publishTask, groupId;
+	String publishString, publishTask, groupId,filePath;
 	RestResponse dataResponse = null, publishResponse;
 	public static final int GET_FOLLOWING_USER_LIST = 0, PUBLISH_TO_CHATTER_USER_WITH_MENTIONS = 1, GET_GROUPS_LIST = 2, PUBLISH_TO_CHATTER_GROUP = 3;
 	Integer TASK = -1, TASK_TYPE = -1;
-	int count = 0, numberOfResponse = 0;
+	int count = 0, numberOfResponse = 0,responseCode;
 	ArrayList<CommonListItems> listItems;
 	CommonListAdapter listAdapter;
 	ListView listView;
@@ -46,6 +47,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
         super.onCreate(savedInstanceState);        
         publishString = Utilities.getStringFromBundle(getArguments(), "publishString");    
         publishTask = Utilities.getStringFromBundle(getArguments(), "publishTask"); 
+        filePath =	Utilities.getStringFromBundle(getArguments(), "filePath");
         if (publishTask.equalsIgnoreCase("USER_FEED"))
         {
         	TASK_TYPE = GET_FOLLOWING_USER_LIST;
@@ -90,6 +92,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		super.doTaskInBackground();		
 		if (salesforceRestClient != null)
 		{
+			
 			switch(TASK)
 			{
 				case GET_FOLLOWING_USER_LIST:
@@ -99,11 +102,23 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 				case PUBLISH_TO_CHATTER_USER_WITH_MENTIONS:
 				{
+					if(publishString!=null)
+					{
 					if (publishString.length() > 950)
 					{
 						publishString = publishString.substring(0, 949);
 					}
-					publishResponse = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds, null, null, null);
+					}
+					if(filePath !=null)
+					{
+						File file = new File(filePath);
+						responseCode = SalesforceUtils.publishNoteWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds, file, "sandeep","sandeep");
+					}
+						
+					else
+					{
+						publishResponse = SalesforceUtils.publishNoteTextWithUserMentions(salesforceRestClient, publishString, SF_API_VERSION, selectedIds);
+					}
 					break;
 				}
 				case GET_GROUPS_LIST:
@@ -113,26 +128,50 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 				case PUBLISH_TO_CHATTER_GROUP:
 				{	
+					if(publishString!=null)
+					{
 					if (publishString.length() > 1000)
 					{
 						publishString = publishString.substring(0, 999);
+					}
 					}
 					if (selectedIds != null && selectedIds.size() > 1)
 					{
 						for (int i = 0; i < selectedIds.size(); i++)
 						{	
 							groupId = selectedIds.get(i);
+							NotepriseLogger.logMessage("Post successful for groupId=" + groupId + " at position=" + i);
+							if(filePath !=null)
+							{
+								File file = new File(filePath);
+								responseCode = SalesforceUtils.publishNoteToUserGroupWithImage(salesforceRestClient, groupId, publishString, SF_API_VERSION,file);
+							}
+								
+							else
+							{
 							publishResponse = SalesforceUtils.publishNoteToUserGroup(salesforceRestClient, groupId, publishString, SF_API_VERSION);
 							if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 							{
 								NotepriseLogger.logMessage("Post successful for groupId=" + groupId + " at position=" + i);
 							}
 						}
+							
+							
+						}
 					}
 					else
 					{
-						groupId = selectedIds.get(0);
+						if(filePath !=null)
+						{
+							NotepriseLogger.logMessage("single group"+filePath);
+							File file = new File(filePath);
+							responseCode = SalesforceUtils.publishNoteToUserGroupWithImage(salesforceRestClient, groupId, publishString, SF_API_VERSION,file);
+						}
+							
+						else
+						{
 						publishResponse = SalesforceUtils.publishNoteToUserGroup(salesforceRestClient, groupId, publishString, SF_API_VERSION);
+					}
 					}
 					break;
 				}
@@ -185,7 +224,16 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			TASK = -1;
 			try 
 			{	
-				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
+				if(filePath !=null)
+				{
+					if(responseCode == 201)
+					{
+						showToastNotification(getString(R.string.salesforce_chatter_post_user_with_mentions_success_message));
+						finishScreen();
+					}
+				}
+				
+				else if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
 					showToastNotification(getString(R.string.salesforce_chatter_post_user_with_mentions_success_message));
 					finishScreen();
@@ -207,7 +255,16 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			try 
 			{					
 				TASK = -1;
-				if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
+				if(filePath !=null)
+				{
+					if(responseCode == 201)
+					{
+						showToastNotification(getString(R.string.salesforce_chatter_post_group_success_message));
+						finishScreen();
+					}
+				}
+				
+				else if (publishResponse.getStatusCode() == 200 || publishResponse.getStatusCode() == 201)
 				{
 					showToastNotification(getString(R.string.salesforce_chatter_post_group_success_message));
 					finishScreen();
@@ -274,10 +331,13 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 			{
 				if (selectedIds.size() > 0)
 				{
+					if(publishString !=null)
+					{
 					if (publishString.length() > 1000)
 					{
 						publishString = publishString.substring(0, 999);
 					}					
+					}
 					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
 					TASK = PUBLISH_TO_CHATTER_GROUP;
 					executeAsyncTask();

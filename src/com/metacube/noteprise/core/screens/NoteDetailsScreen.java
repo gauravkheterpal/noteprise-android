@@ -70,9 +70,9 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	String fileName,attachmentName;
 	Bitmap bitmap;
 	int checkedItemPosition= -1,response;
-	ArrayList<CommonListItems> listItems=null,listitemsChatter=null,listitemsChatterImage=null;
-	CommonListAdapter listAdapter,listAdapterChatter,listAdapterChatterImage;
-	ListView listView,listViewChatter,listViewChatterImage;
+	ArrayList<CommonListItems> listItems=null,listitemsChatter=null,listitemsChatterImage=null,listitemsUserChatter=null,listitemsUserChatterImage=null,listitemsGroupChatter=null,listitemsGroupChatterImage=null;
+	CommonListAdapter listAdapter,listAdapterChatter,listAdapterChatterImage,listAdapterUserChatter,listAdapterUserChatterImage,listAdapterGroupChatter,listAdapterGroupChatterImage;
+	ListView listView,listViewChatter,listViewChatterImage,listViewUserChatter,listViewUserChatterImage,listViewGroupChatter,listViewGroupChatterImage;
 	byte[] byteimage;
 	ArrayList<String> selectedIds = null;
 	boolean mediaContent= false;
@@ -81,12 +81,13 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 	public String SD_CARD = Environment.getExternalStorageDirectory().getAbsolutePath(),saveString=null;
 	protected String[] _options =null;
 	protected boolean[] selection=null;
-	Button deleteDialogYesButton, deleteDialogNoButton, okayButton,truncateDialogYesButton,truncateDialogNoButton, chatterTruncateDialogYesButton, chatterTruncateDialogNoButton,okayChatterButton;
-	CommonCustomDialog deleteDialog, imageAttachDialog, truncateContentDialog, chatterTruncateDialog,chatterImageDialog,chatterAttachmentListDialog;
+	Button deleteDialogYesButton, deleteDialogNoButton, okayButton,truncateDialogYesButton,truncateDialogNoButton, chatterTruncateDialogYesButton, chatterTruncateDialogNoButton,okayChatterButton,okayUserChatterButton,okayGroupChatterButton;
+	CommonCustomDialog deleteDialog, imageAttachDialog, truncateContentDialog, chatterTruncateDialog,chatterImageDialog,chatterAttachmentListDialog,chatterUserImageDialog;
 	TextView chatterTruncateDialogHeaderText, chatterTruncateDialogMessage; 
 	String CHATTER_TRUNCATE_DIALOG_TAG = "CHATTER_TRUNCATE_DIALOG_TAG", DELETE_DIALOG_TAG = "DELETE_DIALOG_TAG", 
 			SF_TRUNCATE_DIALOG_TAG = "SF_TRUNCATE_DIALOG_TAG", SF_ATTACHMENTS_DIALOG_TAG = "SF_ATTACHMENTS_DIALOG_TAG",CHATTER_ATTACHMENT_DIALOG_TAG="CHATTER_ATTACHMENT_DIALOG_TAG",
-			CHATTER_ATTACHMENT_LIST_DIALOG_TAG="CHATTER_ATTACHMENT_LIST_DIALOG_TAG";
+			CHATTER_ATTACHMENT_LIST_DIALOG_TAG="CHATTER_ATTACHMENT_LIST_DIALOG_TAG",CHATTER_USER_ATTACHMENT_LIST_DIALOG_TAG="CHATTER_USER_ATTACHMENT_LIST_DIALOG_TAG",CHATTER_USER_ATTACHMENT_DIALOG_TAG="CHATTER_USER_ATTACHMENT_DIALOG_TAG",CHATTER_GROUP_ATTACHMENT_DIALOG_TAG="CHATTER_GROUP_ATTACHMENT_DIALOG_TAG",
+				CHATTER_GROUP_ATTACHMENT_LIST_DIALOG_TAG="CHATTER_GROUP_ATTACHMENT_LIST_DIALOG_TAG";
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -201,15 +202,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		else if (view == okayButton)
 		{
 			String saveString;
-			selectedIds = listAdapter.getCheckedItemsList();
-			if(selectedIds.size()<1)
-			{
-				showToastNotification(getString(R.string.chatter_select_attachment_error_message));	
-			}
-			else
-			{
-				
 			imageAttachDialog.dismiss();
+			selectedIds = listAdapter.getCheckedItemsList();
 			Bundle args = new Bundle();
 			if(TASK == ATTACHMENT_ONLY)
 			{
@@ -224,7 +218,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			args.putStringArrayList("Attachment",selectedIds );
 			changeScreen(new NotepriseFragment("RecordsList", SalesforceRecordsList.class, args));	
 			}
-		}
 		else if (view == okayChatterButton)
 		{
 			
@@ -244,6 +237,66 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
 			executeAsyncTask();
+			}
+			else 
+			{
+				showToastNotification(getString(R.string.chatter_select_attachment_error_message));
+			}
+				
+		}
+		else if (view == okayUserChatterButton)
+		{
+			
+			
+			attachmentName = listAdapterUserChatterImage.getCheckedItemsListName();
+			NotepriseLogger.logMessage("Slectes ids"+selectedIds);
+			if(attachmentName !=null)
+			{
+			chatterAttachmentListDialog.dismiss();				
+			if(TASK == ATTACHMENT_ONLY)
+			{
+				saveString=null;
+			}
+			else		
+			{
+				saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			}
+			final String filepath = SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" +attachmentName;	
+			Bundle args = new Bundle();			
+		    args.putString("publishString", saveString);
+		    args.putString("publishTask", "USER_FEED");
+		    args.putString("filePath", filepath);
+			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
+			}
+			else 
+			{
+				showToastNotification(getString(R.string.chatter_select_attachment_error_message));
+			}
+				
+		}
+		else if (view == okayGroupChatterButton)
+		{
+			
+			
+			attachmentName = listAdapterGroupChatterImage.getCheckedItemsListName();
+			NotepriseLogger.logMessage("Slectes ids"+selectedIds);
+			if(attachmentName !=null)
+			{
+			chatterAttachmentListDialog.dismiss();				
+			if(TASK == ATTACHMENT_ONLY)
+			{
+				saveString=null;
+			}
+			else		
+			{
+				saveString = EvernoteUtils.stripNoteHTMLContent(noteContent);
+			}
+			final String filepath = SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" +attachmentName;	
+			Bundle args = new Bundle();			
+		    args.putString("publishString", saveString);
+		    args.putString("publishTask", "GROUP_FEED");
+		    args.putString("filePath", filepath);
+			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
 			}
 			else 
 			{
@@ -300,6 +353,19 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		chatterAttachmentListDialog.show(getFragmentManager(), "chatterAttachmentListDialog");
 	}
 	
+	public void showUserChatterImageDialog()
+	{
+		NotepriseLogger.logMessage("In chatter image dialog only");
+		chatterAttachmentListDialog= new CommonCustomDialog(R.layout.attachimage_salesforce_object_diolog_layout, this, CHATTER_USER_ATTACHMENT_LIST_DIALOG_TAG);
+		chatterAttachmentListDialog.show(getFragmentManager(), "chatterAttachmentListDialog");
+	}
+	
+	public void showGroupChatterImageDialog()
+	{
+		NotepriseLogger.logMessage("In chatter image dialog only");
+		chatterAttachmentListDialog= new CommonCustomDialog(R.layout.attachimage_salesforce_object_diolog_layout, this, CHATTER_GROUP_ATTACHMENT_LIST_DIALOG_TAG);
+		chatterAttachmentListDialog.show(getFragmentManager(), "chatterAttachmentListDialog");
+	}
 	@Override
 	public void instantiateCustomDialog(View view) 
 	{
@@ -348,6 +414,53 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				listViewChatter.setOnItemClickListener(this);
 			}					
 		}
+		
+		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_USER_ATTACHMENT_DIALOG_TAG))				
+		{
+			listViewUserChatter = (ListView)view.findViewById(R.id.notes_list_view);
+			listitemsUserChatter = new ArrayList<CommonListItems>();
+			CommonListItems dialogItem = new CommonListItems();
+			dialogItem.setLabel("Text");
+			dialogItem.setId("Text");
+			listitemsUserChatter.add(dialogItem);
+			dialogItem = new CommonListItems();
+			dialogItem.setLabel("Attachment");
+			dialogItem.setId("Attachment");
+			listitemsUserChatter.add(dialogItem);
+			dialogItem = new CommonListItems();
+			dialogItem.setLabel("Text and Attachment");
+			dialogItem.setId("Text and Attachment");
+			listitemsUserChatter.add(dialogItem);
+			if (listitemsUserChatter != null && listitemsUserChatter.size() > 0)
+			{				
+				listAdapterUserChatter = new CommonListAdapter(this, inflater, listitemsUserChatter);				
+				listViewUserChatter.setAdapter(listAdapterUserChatter);
+				listViewUserChatter.setOnItemClickListener(this);
+			}					
+		}
+		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_GROUP_ATTACHMENT_DIALOG_TAG))				
+		{
+			listViewGroupChatter = (ListView)view.findViewById(R.id.notes_list_view);
+			listitemsGroupChatter = new ArrayList<CommonListItems>();
+			CommonListItems dialogItem = new CommonListItems();
+			dialogItem.setLabel("Text");
+			dialogItem.setId("Text");
+			listitemsGroupChatter.add(dialogItem);
+			dialogItem = new CommonListItems();
+			dialogItem.setLabel("Attachment");
+			dialogItem.setId("Attachment");
+			listitemsGroupChatter.add(dialogItem);
+			dialogItem = new CommonListItems();
+			dialogItem.setLabel("Text and Attachment");
+			dialogItem.setId("Text and Attachment");
+			listitemsGroupChatter.add(dialogItem);
+			if (listitemsGroupChatter != null && listitemsGroupChatter.size() > 0)
+			{				
+				listAdapterGroupChatter = new CommonListAdapter(this, inflater, listitemsGroupChatter);				
+				listViewGroupChatter.setAdapter(listAdapterGroupChatter);
+				listViewGroupChatter.setOnItemClickListener(this);
+			}					
+		}
 		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_ATTACHMENT_LIST_DIALOG_TAG))				
 		{
 			listViewChatterImage = (ListView)view.findViewById(R.id.notes_list_view);			
@@ -362,6 +475,38 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}				
 			okayChatterButton = (Button) view.findViewById(R.id.okay_button);
 			okayChatterButton.setOnClickListener(this);	
+		}
+		
+		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_USER_ATTACHMENT_LIST_DIALOG_TAG))				
+		{
+			listViewUserChatterImage = (ListView)view.findViewById(R.id.notes_list_view);			
+			if (listItems != null && listItems.size() > 0)
+			{				
+				listAdapterUserChatterImage = new CommonListAdapter(this, inflater, listItems);				
+				listAdapterUserChatterImage.changeOrdering(Constants.SORT_BY_LABEL);
+				listViewUserChatterImage.setAdapter(listAdapterUserChatterImage);
+				listViewUserChatterImage.setOnItemClickListener(this);
+				listAdapterUserChatterImage.showCheckList();
+				
+			}				
+			okayUserChatterButton = (Button) view.findViewById(R.id.okay_button);
+			okayUserChatterButton.setOnClickListener(this);	
+		}
+		
+		else if((view.getTag() != null && (String) view.getTag() ==  CHATTER_GROUP_ATTACHMENT_LIST_DIALOG_TAG))				
+		{
+			listViewGroupChatterImage = (ListView)view.findViewById(R.id.notes_list_view);			
+			if (listItems != null && listItems.size() > 0)
+			{				
+				listAdapterGroupChatterImage = new CommonListAdapter(this, inflater, listItems);				
+				listAdapterGroupChatterImage.changeOrdering(Constants.SORT_BY_LABEL);
+				listViewGroupChatterImage.setAdapter(listAdapterGroupChatterImage);
+				listViewGroupChatterImage.setOnItemClickListener(this);
+				listAdapterGroupChatterImage.showCheckList();
+				
+			}				
+			okayGroupChatterButton = (Button) view.findViewById(R.id.okay_button);
+			okayGroupChatterButton.setOnClickListener(this);	
 		}
 		
 		else if (view.getTag() != null && (String) view.getTag() == SF_TRUNCATE_DIALOG_TAG)
@@ -411,7 +556,6 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if(position == 0)
 			{
 				TASK = PUBLISH_TO_MY_CHATTER_FEED;
-				chatterImageDialog.dismiss();
 				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_message));
 				executeAsyncTask();
 			}
@@ -428,6 +572,54 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				chatterImageDialog.dismiss();
 			}
 		}
+		
+		else if(adapter.getAdapter() == listAdapterUserChatter)
+		{
+			if(position == 0)
+			{
+				chatterUserImageDialog.dismiss();
+				Bundle args = new Bundle();			
+			    args.putString("publishString", publishString);
+			    args.putString("publishTask", "USER_FEED");
+				changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
+			}
+			else if (position ==1 ){
+				NotepriseLogger.logMessage("In Attachment only");
+				TASK= ATTACHMENT_ONLY;
+				showUserChatterImageDialog();
+				chatterUserImageDialog.dismiss();
+			}
+			else if(position == 2)
+			{
+				TASK= TEXT_ATTACHMENT;
+				showUserChatterImageDialog();
+				chatterUserImageDialog.dismiss();
+			}
+		}
+		else if(adapter.getAdapter() == listAdapterGroupChatter)
+		{
+			if(position == 0)
+			{
+				chatterUserImageDialog.dismiss();
+				Bundle args = new Bundle();			
+			    args.putString("publishString", publishString);
+			    args.putString("publishTask", "GROUP_FEED");
+				changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
+			}
+			else if (position ==1 ){
+				NotepriseLogger.logMessage("In Attachment only");
+				TASK= ATTACHMENT_ONLY;
+				showGroupChatterImageDialog();
+				chatterUserImageDialog.dismiss();
+			}
+			else if(position == 2)
+			{
+				TASK= TEXT_ATTACHMENT;
+				showGroupChatterImageDialog();
+				chatterUserImageDialog.dismiss();
+			}
+		}
+		
 		else if(adapter.getAdapter() == listAdapterChatterImage)
 		{
 			NotepriseLogger.logMessage("filename from list"+listAdapterChatterImage.getListItemText(position));
@@ -439,6 +631,34 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 					listAdapterChatterImage.setUnChecedkItem(checkedItemPosition);
 				}
 				listAdapterChatterImage.setChecedkCurrentItem(position);
+				checkedItemPosition= position;
+			}	
+		}
+		else if(adapter.getAdapter() == listAdapterUserChatterImage)
+		{
+			NotepriseLogger.logMessage("filename from list"+listAdapterUserChatterImage.getListItemText(position));
+			if(listAdapterUserChatterImage.isCheckListMode())
+			{
+				if(checkedItemPosition != -1)
+				{
+					
+					listAdapterUserChatterImage.setUnChecedkItem(checkedItemPosition);
+				}
+				listAdapterUserChatterImage.setChecedkCurrentItem(position);
+				checkedItemPosition= position;
+			}	
+		}
+		else if(adapter.getAdapter() == listAdapterGroupChatterImage)
+		{
+			NotepriseLogger.logMessage("filename from list"+listAdapterGroupChatterImage.getListItemText(position));
+			if(listAdapterGroupChatterImage.isCheckListMode())
+			{
+				if(checkedItemPosition != -1)
+				{
+					
+					listAdapterGroupChatterImage.setUnChecedkItem(checkedItemPosition);
+				}
+				listAdapterGroupChatterImage.setChecedkCurrentItem(position);
 				checkedItemPosition= position;
 			}	
 		}
@@ -469,17 +689,35 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 		}
 		else if (item.getItemId() == R.id.chatter_menu_post_user_feed)
 		{			
+			if(note.getResources()!= null)
+			{
+				chatterUserImageDialog= new CommonCustomDialog(R.layout.note_chatter_wall, this, CHATTER_USER_ATTACHMENT_DIALOG_TAG);
+				chatterUserImageDialog.show(getFragmentManager(), "chatterUserImageDialog");
+			}
+			else
+			{
 			Bundle args = new Bundle();			
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "USER_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
 		}
+		
+		}
 		else if (item.getItemId() == R.id.chatter_menu_post_group_feed)
 		{			
+			if(note.getResources()!= null)
+			{
+				chatterUserImageDialog= new CommonCustomDialog(R.layout.note_chatter_wall, this, CHATTER_GROUP_ATTACHMENT_DIALOG_TAG);
+				chatterUserImageDialog.show(getFragmentManager(), "chatterUserImageDialog");
+			}
+			else
+			{
 			Bundle args = new Bundle();
 		    args.putString("publishString", publishString);
 		    args.putString("publishTask", "GROUP_FEED");
 			changeScreen(new NotepriseFragment("PublishToChatterRecordsList", PublishToChatterRecordsListScreen.class, args));
+		}		
+		
 		}		
 		else if (item.getItemId() == R.id.salesforce_menu_post_text)
 		{	
