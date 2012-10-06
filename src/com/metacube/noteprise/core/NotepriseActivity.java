@@ -1,5 +1,6 @@
 package com.metacube.noteprise.core;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
@@ -29,7 +30,8 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 	Boolean authenticationStarted = false;
 	Boolean isGoMenuCalled=false;
 
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
     	super.onCreate(savedInstanceState);
@@ -115,10 +117,10 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		{
 			changeScreen(new NotepriseFragment("CreateNewNote", CreateNewNoteScreen.class));
 		}
-		else if (view == logoutButton)
+		/*else if (view == logoutButton)
 		{
 			signOutFromEvernote();
-		}
+		}*/
 	}
 	
 	@Override
@@ -150,7 +152,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     	saveButton = (ImageView) findViewById(R.id.save_button);
     	saveButton.setOnClickListener(this);
     	logoutButton = (ImageView) findViewById(R.id.logout_button);
-    	logoutButton.setOnClickListener(this);
+    	//logoutButton.setOnClickListener(this);
 		notepriseFragmentManager = new NotepriseFragmentManager(this);
         notepriseFragmentManager.changeScreen(new NotepriseFragment("MainMenu", MainMenuScreen.class));
 	}

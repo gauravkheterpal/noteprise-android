@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -23,10 +24,13 @@ import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.NoteStore.Client;
 import com.evernote.edam.type.Notebook;
 import com.metacube.noteprise.R;
+import com.metacube.noteprise.common.BaseActivity;
 import com.metacube.noteprise.common.BaseFragment;
+import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListAdapter;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.base.NotepriseFragment;
+import com.metacube.noteprise.core.NotepriseActivity;
 import com.metacube.noteprise.evernote.EvernoteUtils;
 import com.metacube.noteprise.util.Utilities;
 
@@ -39,12 +43,14 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 	NoteList noteList;
 	ArrayList<CommonListItems> listItems;
 	CommonListAdapter noteListAdapter;
+	CommonCustomDialog logoutConfirmationDialog;
 	RadioGroup searchCriteriaRadioGroup;
 	ImageButton searchButton;
 	EditText searchQueryEditText;
 	String queryString;
 	Integer selectedRadioButtonId;
 	Boolean isDataRestored = Boolean.FALSE;
+	Button logoutConfirmationDialogYesButton,logoutConfirmationDialogNoButton;
 	Integer GET_ALL_NOTEBOOKS = 0, SEARCH_NOTEBOOK = 1, SEARCH_TAG = 2, SEARCH_KEYWORD = 3, TASK = 0;
 	
 	@Override
@@ -71,6 +77,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
         //searchQueryEditText.setImeActionLabel(getString(R.string.search_field_hint_text), R.id.search_button);
         searchButton = (ImageButton) contentView.findViewById(R.id.search_button);
         searchButton.setOnClickListener(this);
+        
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -117,6 +124,26 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 			}
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(searchMessage));
 		}
+		
+		else if (view == baseActivity.logoutButton)
+		{
+			
+			logoutConfirmationDialog = new CommonCustomDialog(R.layout.logout_confirmation_dialog_layout, this, null);
+			logoutConfirmationDialog.show(getFragmentManager(), "LogoutConfirmationDialog");
+			
+		}
+		
+		else if (view == logoutConfirmationDialogYesButton)
+		{
+			((NotepriseActivity)baseActivity).signOutFromEvernote();
+			logoutConfirmationDialog.dismiss();
+			
+		}
+		else if (view == logoutConfirmationDialogNoButton)
+		{
+			logoutConfirmationDialog.dismiss();
+			
+		}
 	}
 	
 	@Override
@@ -124,7 +151,11 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 	{
 		super.onResume();
 		setHeaderTitle(null);
+		listView.requestFocus();
+        listView.requestFocusFromTouch();
+     
 		baseActivity.logoutButton.setVisibility(View.VISIBLE);
+		baseActivity.logoutButton.setOnClickListener(MainMenuScreen.this);
 		baseActivity.createNewNoteButton.setVisibility(View.VISIBLE);
 		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 		baseActivity.saveToSFButton.setVisibility(View.GONE);
@@ -144,6 +175,18 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener, OnI
 		{
 			
 		}
+	}
+	
+	@Override
+	public void instantiateCustomDialog(View view) {
+		super.instantiateCustomDialog(view);
+		
+		
+		logoutConfirmationDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
+		logoutConfirmationDialogYesButton.setOnClickListener(this);
+		logoutConfirmationDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
+		logoutConfirmationDialogNoButton.setOnClickListener(this);
+		
 	}
 	
 	@Override

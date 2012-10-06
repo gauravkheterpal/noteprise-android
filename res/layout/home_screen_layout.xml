@@ -121,6 +121,7 @@
         android:id="@+id/notes_list_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+       	android:focusable="true"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@drawable/segment_control_horizontal_border"
         android:dividerHeight="@dimen/common_divider_width_height"
