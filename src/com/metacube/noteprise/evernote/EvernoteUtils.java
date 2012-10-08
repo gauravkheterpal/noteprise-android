@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.apache.thrift.transport.TTransportException;
 
+import android.util.Log;
+
+import com.evernote.client.oauth.android.EvernoteSession;
 import com.evernote.edam.error.EDAMNotFoundException;
 import com.evernote.edam.error.EDAMSystemException;
 import com.evernote.edam.error.EDAMUserException;
@@ -374,4 +378,43 @@ public class EvernoteUtils
 		}
 		return null;
 	}
+
+	public static Note getNotedata(EvernoteSession evernoteSession, String noteGuid)
+	{
+		
+			try 
+			{
+				String authToken = evernoteSession.getAuthToken();
+	        Client	client = evernoteSession.createNoteStore();
+	        Note note = client.getNote(authToken, noteGuid, true, true, true, true);
+	        return note;
+	           	     
+			} 
+			catch (TTransportException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (EDAMUserException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (EDAMSystemException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (TException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (EDAMNotFoundException e) 
+			{
+				e.printStackTrace();
+			}
+			
+	    
+		return null;
+	}
+
+
+
 }

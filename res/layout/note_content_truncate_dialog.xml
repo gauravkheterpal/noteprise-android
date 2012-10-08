@@ -16,24 +16,25 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/small_margin_padding"
             android:scaleType="fitXY"
-            android:src="@drawable/delete_button_normal" />
+            android:src="@drawable/info_icon" /> 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/dialog_note_delete_title"
+            android:text="@string/chatter_truncate_dialog_title"
             android:textColor="@color/text_color_for_dark_background"
             android:textSize="@dimen/common_large_text_size"
             android:textStyle="bold" />
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/commondialog_message_text"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_margin="@dimen/large_margin_padding"
         android:gravity="center_horizontal"
-        android:text="@string/note_content_truncate_message"
+     
         android:textColor="@color/common_text_color"
         android:textSize="@dimen/common_large_text_size" />
 

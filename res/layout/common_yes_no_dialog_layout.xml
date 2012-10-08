@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/large_margin_padding"
         android:gravity="center_horizontal"
-        android:text="@string/chatter_truncate_dialog_message"
+       
         android:textColor="@color/common_text_color"
         android:textSize="@dimen/common_large_text_size" />
 

@@ -11,20 +11,20 @@
         android:background="@drawable/main_nav_bar_background"
         android:orientation="horizontal" >
 
-         <ImageView
+        <ImageView
             android:layout_width="@dimen/common_list_item_left_image_width_height"
             android:layout_height="@dimen/common_list_item_left_image_width_height"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/small_margin_padding"
             android:scaleType="fitXY"
-            android:src="@drawable/logout_button_normal" /> 
+            android:src="@drawable/info_icon" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/normal_margin_padding"
-            android:text="@string/dialog_logout_title"
+            android:text="@string/read_only_dialog_title"
             android:textColor="@color/text_color_for_dark_background"
             android:textSize="@dimen/common_large_text_size"
             android:textStyle="bold" />
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/large_margin_padding"
         android:gravity="center_horizontal"
-        android:text="@string/logout_confirm_message"
+        android:text="@string/read_only_dialog_message"
         android:textColor="@color/common_text_color"
         android:textSize="@dimen/common_large_text_size" />
 
@@ -46,21 +46,14 @@
         android:padding="@dimen/small_margin_padding" >
 
         <Button
-            android:id="@+id/delete_note_yes_button"
-            android:layout_width="fill_parent"
+            android:id="@+id/read_only_ok_button"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/white_button_selector"
-            android:text="@string/dialog_positive_button_text" />
+            android:text="@string/dialog_neutral_button_text" />
 
-        <Button
-            android:id="@+id/delete_note_no_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/normal_margin_padding"
-            android:layout_weight="1"
-            android:background="@drawable/white_button_selector"
-            android:text="@string/dialog_negative_button_text" />
+       
     </LinearLayout>
 
 </LinearLayout>

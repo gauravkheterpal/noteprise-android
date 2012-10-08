@@ -21,18 +21,20 @@
     <string name="list_item_default_text">Item Text</string>
 
     <!-- Dialog/Header Titles -->
+     <string name="read_only_dialog_title">Read only</string>
     <string name="dialog_note_delete_title">Delete Note?</string>
-    <string name="dialog_logout_title">Logout form NotePrise?</string>
-    <string name="chatter_truncate_dialog_title">Continue?</string>
-    <string name="chatter_truncate_dialog_message">Content length is more than allowed chatter post limit. Content will be truncated. Do you want to continue?</string>
-
+    <string name="dialog_logout_title">Logout</string>
+    <string name="chatter_truncate_dialog_title">Truncate Note?</string>
+    <string name="chatter_truncate_dialog_message1">Content length is  </string>
+ 	<string name="chatter_truncate_dialog_message2"> more than allowed chatter post limit. Content will be truncated. Do you want to continue?</string>
     <!-- Note related Messages -->
+     <string name="read_only_dialog_message">Note is Read only</string>
     <string name="choose_notebook_prompt">Please select a Notebook</string>
     <string name="note_please_enter_text_for_search_message">Please enter the text to be searched</string>
     <string name="note_created_success_message">Note successfully created</string>
     <string name="note_creation_failed_message">Note creation failed!</string>
     <string name="note_creation_all_fields_required_message">All fields are required.</string>
-    <string name="logout_confirm_message">Are you sure you want to logout</string>
+    <string name="logout_confirm_message">Are you sure you want to logout ?</string>
     <string name="note_delete_confirm_message">Are you sure you want to delete this note?</string>
     <string name="note_delete_success_message">Note deleted successfully.</string>
     <string name="note_delete_failed_message">Note could not be deleted!</string>
@@ -45,6 +47,8 @@
     <string name="progress_dialog_note_delete_message">Deleting Note..</string>
     <string name="progress_dialog_note_update_message">Updating Note..</string>
     <string name="progress_dialog_getting_note_details_mesage">Getting note details..</string>
+    <string name="read_only_note_message">Read only Note</string>
+    
 
     <!-- Salesforce Related messages -->
     <string name="choose_object_prompt">Choose an object</string>
@@ -58,7 +62,8 @@
     <string name="progress_dialog_salesforce_record_updated_success_message">Record(s) updated successfully.</string>
     <string name="progress_dialog_salesforce_record_created_success_message">Record(s) created successfully.</string>
     <string name="dialog_image_attach_title">Select Attachment</string>
-    <string name="note_content_truncate_message">Content length is more than allowed limit. Content will be truncated. Do you want to continue?</string>
+    <string name="note_content_truncate_message1">Content length is  </string>
+    <string name="note_content_truncate_message2"> more than allowed limit. Content will be truncated. Do you want to continue?</string>
     <string name="salesforce_object_header_message">Save to Salesforce"</string>
     <string name="salesforce_note_no_attachment">There is no attachment in the note</string>
 
