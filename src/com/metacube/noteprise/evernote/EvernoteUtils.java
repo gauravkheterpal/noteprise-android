@@ -170,6 +170,7 @@ public class EvernoteUtils
 		{				
 			start = noteContent.indexOf("<en-media");
 			end = noteContent.indexOf("</en-media>");
+			
 			if(start == -1){
 				return null;
 			}
@@ -376,17 +377,22 @@ public class EvernoteUtils
 		{
 			e.printStackTrace();
 		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	public static Note getNotedata(EvernoteSession evernoteSession, String noteGuid)
+	public static Note getNotedata(EvernoteSession evernoteSession, String noteGuid,boolean getResources)
 	{
 		
 			try 
 			{
 				String authToken = evernoteSession.getAuthToken();
 	        Client	client = evernoteSession.createNoteStore();
-	        Note note = client.getNote(authToken, noteGuid, true, true, true, true);
+	        Note note = client.getNote(authToken, noteGuid, true, getResources, getResources, getResources);
+	      
 	        return note;
 	           	     
 			} 

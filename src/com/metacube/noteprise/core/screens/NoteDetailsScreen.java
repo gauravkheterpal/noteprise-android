@@ -175,10 +175,10 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 				changeScreen(new NotepriseFragment("NoteEditScreen", NoteEditScreen.class,args));				
 			}
 			else
-				//showToastNotification(getString(R.string.read_only_note_message));
+			{	//showToastNotification(getString(R.string.read_only_note_message));
 			readOnlyDialog = new CommonCustomDialog(R.layout.read_only_dialog_layout, this,READ_ONLY_DIALOG_TAG);
 			readOnlyDialog.show(getFragmentManager(), "ReadOnlyDialog");
-				
+			}	
 			
 			
 		}
@@ -537,7 +537,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			truncateDialogYesButton = (Button) view.findViewById(R.id.delete_note_yes_button);
 			truncateDialogYesButton.setOnClickListener(this);
 			sfTruncateDialogMessage = (TextView) view.findViewById(R.id.commondialog_message_text);
-			sfTruncateDialogMessage.setText(getString(R.string.note_content_truncate_message1) + String.valueOf(exceedFieldLength) +"char "+getString(R.string.note_content_truncate_message2));
+			sfTruncateDialogMessage.setText(getString(R.string.note_content_truncate_message1)+" "+ String.valueOf(exceedFieldLength) +" "+"char "+getString(R.string.note_content_truncate_message2));
 			truncateDialogNoButton = (Button) view.findViewById(R.id.delete_note_no_button);
 			truncateDialogNoButton.setOnClickListener(this);
 		}
@@ -547,7 +547,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			chatterTruncateDialogHeaderText = (TextView) view.findViewById(R.id.common_yes_no_dialog_header_text);
 			chatterTruncateDialogHeaderText.setText(getString(R.string.chatter_truncate_dialog_title));
 			chatterTruncateDialogMessage = (TextView) view.findViewById(R.id.common_yes_no_dialog_message_text);
-			chatterTruncateDialogMessage.setText(getString(R.string.chatter_truncate_dialog_message1)+ String.valueOf(exceedLength) +"char " + getString(R.string.chatter_truncate_dialog_message2));
+			chatterTruncateDialogMessage.setText(getString(R.string.chatter_truncate_dialog_message1)+" "+String.valueOf(exceedLength) +" "+"char " + getString(R.string.chatter_truncate_dialog_message2));
 			chatterTruncateDialogYesButton = (Button) view.findViewById(R.id.common_yes_no_dialog_yes_button);
 			chatterTruncateDialogYesButton.setOnClickListener(this);
 			chatterTruncateDialogNoButton = (Button) view.findViewById(R.id.common_yes_no_dialog_no_button);
@@ -805,7 +805,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			if (evernoteSession != null)
 		    {
 			
-			note =	EvernoteUtils.getNotedata(evernoteSession,noteGuid);
+			note =	EvernoteUtils.getNotedata(evernoteSession,noteGuid,true);
 			
 		    }
 			

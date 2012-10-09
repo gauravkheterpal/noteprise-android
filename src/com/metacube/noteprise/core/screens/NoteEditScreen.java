@@ -1,6 +1,5 @@
 package com.metacube.noteprise.core.screens;
 
-import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
 
 import android.app.Activity;
@@ -15,9 +14,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.EditText;
 
-import com.evernote.edam.error.EDAMNotFoundException;
-import com.evernote.edam.error.EDAMSystemException;
-import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteStore.Client;
 import com.evernote.edam.type.Note;
 import com.metacube.noteprise.R;
@@ -39,7 +35,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	EditText noteTitleEditText, noteContenteditText;
 	int GET_DATA = 0, SAVE_DATA = 1, CURRENT_TASK = 0;
 	Integer GET_NOTE_DATA = 0, UPDATE_NOTE = 1, TASK = 0, deletionId = null;
-	String saveString;
+	String saveString,saveTitleString;
 	RichTextEditor richTexteditor;
 	
 	@Override
@@ -62,6 +58,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		clearContainer(container);
 		View contentView = inflater.inflate(R.layout.note_edit_screen_layout, container);
 		noteContenteditText = (EditText) contentView.findViewById(R.id.content);
+		noteTitleEditText  = (EditText) contentView.findViewById(R.id.title);
 		baseActivity.saveButton.setOnClickListener(this);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
@@ -107,36 +104,30 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		{
 			if (evernoteSession != null)
 		    {
-				try 
-				{
-					authToken = evernoteSession.getAuthToken();
-		        	client = evernoteSession.createNoteStore();
-		        	note = client.getNote(authToken, noteGuid, true, false, false, false);
-				} 
-				catch (TTransportException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (EDAMUserException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (EDAMSystemException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (TException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (EDAMNotFoundException e) 
-				{
-					e.printStackTrace();
-				}
+				
+				note =	EvernoteUtils.getNotedata(evernoteSession,noteGuid,false);
+				
 		    }
 		}	
 		else if (TASK == UPDATE_NOTE)
 		{
+			authToken = evernoteSession.getAuthToken();
+        	try {
+				client = evernoteSession.createNoteStore();
+			} catch (TTransportException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			note.setContent(Constants.NOTE_PREFIX +Html.toHtml(noteContenteditText.getText())+Constants.NOTE_SUFFIX);			
+			note.setContent(note.getContent().replace("<br>", "<br />"));
+			note.setContent(note.getContent().replace("&#160;", ""));
+			
+		
+			note.setTitle(noteTitleEditText.getText().toString());
+			
+			NotepriseLogger.logMessage(note.getContent());
+			NotepriseLogger.logMessage(note.getTitle());
 			EvernoteUtils.updateNote(authToken, client, note);
 		}		
 	}
@@ -149,20 +140,22 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 		{
 			hideFullScreenProgresIndicator();	    	
 	    	noteContent = note.getContent();
+	    	noteTitle = note.getTitle();
 	    	NotepriseLogger.logMessage(noteContent);
+	    	saveTitleString = noteTitle.replace(Constants.NOTE_PREFIX, "");
+	    	saveTitleString = noteTitle.replace(Constants.NOTE_SUFFIX, "");
+	    	
 	    	saveString= noteContent.replace(Constants.NOTE_PREFIX, "");
 	    	saveString= noteContent.replace(Constants.NOTE_SUFFIX, "");
-	    	noteContenteditText.setText(Html.fromHtml(saveString));	  
+	    	noteContenteditText.setText(Html.fromHtml(saveString));	
+	    	noteTitleEditText.setText(Html.fromHtml(saveTitleString));
 	    	baseActivity.saveButton.setVisibility(View.VISIBLE);
 		}
 		else if (TASK == UPDATE_NOTE)
 		{			
-			note.setContent(Constants.NOTE_PREFIX +Html.toHtml(noteContenteditText.getText())+Constants.NOTE_SUFFIX);			
-			note.setContent(note.getContent().replace("<br>", "<br />"));
-			note.setContent(note.getContent().replace("&#160;", ""));
-			NotepriseLogger.logMessage(note.getContent());
+			
 			hideFullScreenProgresIndicator();
-			EvernoteUtils.updateNote(authToken, client, note);
+			//EvernoteUtils.updateNote(authToken, client, note);
 			finishScreen();
 		}
 	}

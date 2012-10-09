@@ -13,6 +13,7 @@
     <string name="no_results_found_message">No results found.</string>
     <string name="note_title_hint_edit_text">Note Title</string>
     <string name="note_content_hint_edit_text">Note Content</string>
+    <string name="note_header_hint_edit_text">Note Header</string>
     <string name="radio_button_all_text">All</string>
     <string name="radio_button_notebook_text">Notebook</string>
     <string name="radio_button_tag_text">Tag</string>
