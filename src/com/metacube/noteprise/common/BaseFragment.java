@@ -1,6 +1,7 @@
 package com.metacube.noteprise.common;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -39,6 +40,22 @@ public class BaseFragment extends Fragment
 	public void onAttach(Activity activity) 
 	{
 		super.onAttach(activity);
+		getFragment(activity);
+		/*this.baseActivity = (BaseActivity) activity;
+		this.noteprisePreferences = baseActivity.noteprisePreferences;
+		this.commonMessageDialog = baseActivity.commonMessageDialog;
+		this.evernoteSession = baseActivity.evernoteSession;
+		this.salesforceRestClient = baseActivity.salesforceRestClient;
+		this.SF_API_VERSION = baseActivity.getString(R.string.api_version);
+		this.baseHeaderLayout = baseActivity.baseHeaderLayout;
+		if (salesforceRestClient != null)
+		{
+			baseActivity.backgroundImageLoader = new ImageLoader(baseActivity, salesforceRestClient.getAuthToken());
+		}*/
+	}
+	
+	public void getFragment(Activity activity)
+	{
 		this.baseActivity = (BaseActivity) activity;
 		this.noteprisePreferences = baseActivity.noteprisePreferences;
 		this.commonMessageDialog = baseActivity.commonMessageDialog;
@@ -55,6 +72,7 @@ public class BaseFragment extends Fragment
 	public void initFragment(String screenTitle)
 	{
 		this.screenTitle = screenTitle;
+		
 	}
 	
 	@Override
@@ -87,6 +105,13 @@ public class BaseFragment extends Fragment
 			baseActivity.notepirseLogoImageView.setVisibility(View.VISIBLE);
 		}
 		updateData();
+	}
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		
+		getFragment(getActivity());
+		super.onConfigurationChanged(newConfig);
+		
 	}
 	
 	@Override

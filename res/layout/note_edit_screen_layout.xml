@@ -3,7 +3,17 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
+    
+ <EditText
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="@dimen/normal_margin_padding"
+        android:gravity="top"
+        android:hint="@string/note_header_hint_edit_text"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/large_margin_padding" />
+    
     <com.metacube.noteprise.util.richtexteditor.RichTextEditor
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/note_rich_text_editor"

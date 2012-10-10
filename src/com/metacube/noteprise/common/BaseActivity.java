@@ -1,6 +1,7 @@
 package com.metacube.noteprise.common;
 
 import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
@@ -97,6 +98,7 @@ public class BaseActivity extends FragmentActivity
 	protected void onResume() 
 	{
 		super.onResume();
+		
 		if (salesforceLoginUtility != null && !loggedInSalesforce)
 		{
 			salesforceLoginUtility.onAppResume();
@@ -107,10 +109,21 @@ public class BaseActivity extends FragmentActivity
 	public void onUserInteraction() 
 	{
 		super.onUserInteraction();
+		
 		if (salesforceLoginUtility != null && !loggedInSalesforce)
 		{
 			salesforceLoginUtility.onAppUserInteraction();
 		}
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+	
+		super.onConfigurationChanged(newConfig);
+	}
+	public void initializeViews()
+	{
+		return;
 	}
 
 	public void setupEvernoteSession() 

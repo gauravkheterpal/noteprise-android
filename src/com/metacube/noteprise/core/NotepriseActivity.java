@@ -1,12 +1,14 @@
 package com.metacube.noteprise.core;
 
 import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewStub.OnInflateListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -85,7 +87,8 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     {
     	super.onResume();    	
     	doSalesforceLoginCheck();
-    	checkButtons();    	
+    	initializeViews();
+    	/*checkButtons();    	
     	if (isEvernoteAuthenticationComplete() && authenticationStarted)
 		{
     		//hideFullScreenProgresIndicator();    		
@@ -97,7 +100,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 			noteprisePreferences.saveEvetnoteUserId(authResult.getUserId());
 			noteprisePreferences.saveSignedInToEvernote(evernoteSession.isLoggedIn());
 			handleEvernoteLoginComplete();
-		}
+		}*/
     }
 
 	@Override
@@ -248,4 +251,36 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	
+	public void initializeViews() 
+	{
+		
+		setUpWelcomeScreen();
+		checkButtons();    	
+    	if (isEvernoteAuthenticationComplete() && authenticationStarted)
+		{
+    		//hideFullScreenProgresIndicator();    		
+			authenticationStarted = false;
+			noteprisePreferences.saveEvernoteAuthToken(evernoteSession.getAuthToken());						
+			AuthenticationResult authResult = evernoteSession.getAuthenticationResult();
+			noteprisePreferences.saveEvetnoteNoteStoreUrl(authResult.getNoteStoreUrl());
+			noteprisePreferences.saveEvernoteWebApiPrefix(authResult.getWebApiUrlPrefix());
+			noteprisePreferences.saveEvetnoteUserId(authResult.getUserId());
+			noteprisePreferences.saveSignedInToEvernote(evernoteSession.isLoggedIn());
+			handleEvernoteLoginComplete();
+		}
+		
+		FragmentManager.enableDebugLogging(Boolean.FALSE);
+		
+		
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		initializeViews();
+	}
+
+
 }

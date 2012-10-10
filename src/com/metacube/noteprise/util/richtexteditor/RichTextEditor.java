@@ -17,14 +17,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView.BufferType;
 import android.widget.ToggleButton;
-import android.view.View.OnFocusChangeListener;
+
 
 import com.metacube.noteprise.R;
 //import android.text.Html;
 
-public class RichTextEditor extends LinearLayout implements OnFocusChangeListener,ColorPickerDialog.OnColorChangedListener, TextSizeDialog.OnSizeChangedListener
+public class RichTextEditor extends LinearLayout implements ColorPickerDialog.OnColorChangedListener, TextSizeDialog.OnSizeChangedListener
 {
-	EditText content,noteTitle,selectedEditText;
+	EditText content,selectedEditText;
 	LinearLayout toolbar;
 	
 	boolean showHtml = false;
@@ -55,9 +55,7 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
 		
 		//Get references to the child controls
 		content = (EditText)findViewById(R.id.content);
-		noteTitle= (EditText)findViewById(R.id.title);
-		content.setOnFocusChangeListener(this);
-		noteTitle.setOnFocusChangeListener(this);
+		//noteTitle= (EditText)findViewById(R.id.title);
 		toolbar = (LinearLayout)findViewById(R.id.toolbar);
 		
 		addListeners();
@@ -81,11 +79,11 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
 		boldButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
             	            	
-            	int selectionStart = selectedEditText.getSelectionStart();
+            	int selectionStart = content.getSelectionStart();
             	
             	styleStart = selectionStart;
             	
-            	int selectionEnd = selectedEditText.getSelectionEnd();
+            	int selectionEnd = content.getSelectionEnd();
             	
             	if (selectionStart > selectionEnd){
             		int temp = selectionEnd;
@@ -95,7 +93,7 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
             	
             	if (selectionEnd > selectionStart)
             	{
-            		Spannable str = selectedEditText.getText();
+            		Spannable str = content.getText();
             		StyleSpan[] ss = str.getSpans(selectionStart, selectionEnd, StyleSpan.class);
             		
             		boolean exists = false;
@@ -120,11 +118,11 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
 		italicButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
             	            	
-            	int selectionStart = selectedEditText.getSelectionStart();
+            	int selectionStart = content.getSelectionStart();
             	
             	styleStart = selectionStart;
             	
-            	int selectionEnd = selectedEditText.getSelectionEnd();
+            	int selectionEnd = content.getSelectionEnd();
             	
             	if (selectionStart > selectionEnd){
             		int temp = selectionEnd;
@@ -134,7 +132,7 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
             	
             	if (selectionEnd > selectionStart)
             	{
-            		Spannable str = selectedEditText.getText();
+            		Spannable str = content.getText();
             		StyleSpan[] ss = str.getSpans(selectionStart, selectionEnd, StyleSpan.class);
             		
             		boolean exists = false;
@@ -159,13 +157,13 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
         underlineButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
             	 
-            	//EditText contentText = (EditText) findViewById(R.id.content);
+            	EditText contentText = (EditText) findViewById(R.id.content);
 
-            	int selectionStart = selectedEditText.getSelectionStart();
+            	int selectionStart = contentText.getSelectionStart();
             	
             	styleStart = selectionStart;
             	
-            	int selectionEnd = selectedEditText.getSelectionEnd();
+            	int selectionEnd = contentText.getSelectionEnd();
             	
             	if (selectionStart > selectionEnd){
             		int temp = selectionEnd;
@@ -175,7 +173,7 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
             	
             	if (selectionEnd > selectionStart)
             	{
-            		Spannable str = selectedEditText.getText();
+            		Spannable str = contentText.getText();
             		UnderlineSpan[] ss = str.getSpans(selectionStart, selectionEnd, UnderlineSpan.class);
             		
             		boolean exists = false;
@@ -261,80 +259,6 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
                     //unused
             } 
         });
-        
-        
-        final EditText titleEdit = (EditText) findViewById(R.id.title);
-        
-        titleEdit.addTextChangedListener(new TextWatcher() { 
-            public void afterTextChanged(Editable s) { 
-            	
-            	//add style as the user types if a toggle button is enabled
-            	ToggleButton boldButton = (ToggleButton) findViewById(R.id.bold);
-            	ToggleButton emButton = (ToggleButton) findViewById(R.id.italic);
-            	ToggleButton underlineButton = (ToggleButton) findViewById(R.id.underline);
-            	
-            	int position = Selection.getSelectionStart(titleEdit.getText());
-            	
-        		if (position < 0){
-        			position = 0;
-        		}
-            	
-        		if (position > 0){
-        			
-        			if (styleStart > position || position > (cursorLoc + 1)){
-						//user changed cursor location, reset
-						if (position - cursorLoc > 1){
-							//user pasted text
-							styleStart = cursorLoc;
-						}
-						else{
-							styleStart = position - 1;
-						}
-					}
-        			
-                	if (boldButton.isChecked()){  
-                		StyleSpan[] ss = s.getSpans(styleStart, position, StyleSpan.class);
-
-                		for (int i = 0; i < ss.length; i++) {
-                			if (ss[i].getStyle() == android.graphics.Typeface.BOLD){
-                				s.removeSpan(ss[i]);
-                			}
-                        }
-                		s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), styleStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                	}
-                	if (emButton.isChecked()){
-                		StyleSpan[] ss = s.getSpans(styleStart, position, StyleSpan.class);
-                		
-                		for (int i = 0; i < ss.length; i++) {
-                			if (ss[i].getStyle() == android.graphics.Typeface.ITALIC){
-                				s.removeSpan(ss[i]);
-                			}
-                        }
-                		s.setSpan(new StyleSpan(android.graphics.Typeface.ITALIC), styleStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                	}
-                	if (underlineButton.isChecked()){
-                		UnderlineSpan[] ss = s.getSpans(styleStart, position, UnderlineSpan.class);
-
-                		for (int i = 0; i < ss.length; i++) {
-                				s.removeSpan(ss[i]);
-                        }
-                		s.setSpan(new UnderlineSpan(), styleStart, position, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                	}
-        		}
-        		
-        		cursorLoc = Selection.getSelectionStart(titleEdit.getText());
-            } 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { 
-                    //unused
-            } 
-            public void onTextChanged(CharSequence s, int start, int before, int count) { 
-                    //unused
-            } 
-        });
-        
-        
-        
-        
         
 		final ToggleButton htmlButton = (ToggleButton)findViewById(R.id.html);
 		
@@ -486,18 +410,5 @@ public class RichTextEditor extends LinearLayout implements OnFocusChangeListene
     	}
     }
 
-	
-	@Override
-	public void onFocusChange(View v, boolean hasFocus) {
-		switch (v.getId()) {
-        case R.id.content:
-        	selectedEditText =content;
-            break;
-        case R.id.title:
-        	selectedEditText =noteTitle;
-            break;
-              
-        }
-		
-	}
+
 }
