@@ -240,7 +240,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 				else
 				{
-					showToastNotification(getString(R.string.some_error_ocurred_message));
+					//showToastNotification(getString(R.string.some_error_ocurred_message));
+					showToastNotification("Error when publishing note on specific Chatter user feed");
 					String response = publishResponse.asString();
 					NotepriseLogger.logMessage(response);
 				}
@@ -271,7 +272,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 				else
 				{
-					showToastNotification(getString(R.string.some_error_ocurred_message));
+					//showToastNotification(getString(R.string.some_error_ocurred_message));
+					showToastNotification("Error when publishing note on Chatter Group");
 					NotepriseLogger.logMessage(publishResponse.asString());
 				}
 			}

@@ -29,7 +29,7 @@
     <string name="chatter_truncate_dialog_message1">Content length is  </string>
  	<string name="chatter_truncate_dialog_message2"> more than allowed chatter post limit. Content will be truncated. Do you want to continue?</string>
     <!-- Note related Messages -->
-     <string name="read_only_dialog_message">Note is Read only</string>
+     <string name="read_only_dialog_message">This Note is Read only</string>
     <string name="choose_notebook_prompt">Please select a Notebook</string>
     <string name="note_please_enter_text_for_search_message">Please enter the text to be searched</string>
     <string name="note_created_success_message">Note successfully created</string>

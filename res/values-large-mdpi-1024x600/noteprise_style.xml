@@ -27,5 +27,6 @@
     <dimen name="evernote_button_margin_bottom">100dp</dimen>
     <dimen name="common_custom_dialog_width">350dp</dimen>
 	<dimen name="search_bar_height">55dp</dimen>
+	<dimen name="header_bar_width">160dp</dimen>
     
 </resources>

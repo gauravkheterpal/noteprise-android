@@ -388,7 +388,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	{
 		hideFullScreenProgresIndicator();
 		NotepriseLogger.logError("Exception getting response for records list.", NotepriseLogger.ERROR, exception);	
-		commonMessageDialog.showMessageDialog(getString(R.string.some_error_ocurred_message));
+		//commonMessageDialog.showMessageDialog(getString(R.string.some_error_ocurred_message));
+		commonMessageDialog.showMessageDialog(exception.getMessage().toString());
 	}
 
 	@Override

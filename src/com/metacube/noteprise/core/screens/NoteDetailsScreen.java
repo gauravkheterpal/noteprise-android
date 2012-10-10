@@ -961,7 +961,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}
 			else
 			{
-				showToastNotification(getString(R.string.some_error_ocurred_message));
+				//showToastNotification(getString(R.string.some_error_ocurred_message));
+				showToastNotification("Error on publishing to chatter feed");
 			}
 		}
 		else if ( TASK == ATTACHMENT_ONLY || TASK == TEXT_ATTACHMENT)
@@ -974,7 +975,8 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			}
 			else
 			{
-				showToastNotification(getString(R.string.some_error_ocurred_message));
+				//showToastNotification(getString(R.string.some_error_ocurred_message));
+				showToastNotification("Error on Note publishing ");
 			}
 		}
 	}
