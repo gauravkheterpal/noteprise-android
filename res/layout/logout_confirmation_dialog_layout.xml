@@ -11,13 +11,13 @@
         android:background="@drawable/main_nav_bar_background"
         android:orientation="horizontal" >
 
-         <ImageView
+        <ImageView
             android:layout_width="@dimen/common_list_item_left_image_width_height"
             android:layout_height="@dimen/common_list_item_left_image_width_height"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/small_margin_padding"
             android:scaleType="fitXY"
-            android:src="@drawable/logout_button_normal" /> 
+            android:src="@drawable/logout_button_normal" />
 
         <TextView
             android:layout_width="wrap_content"

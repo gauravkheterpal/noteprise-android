@@ -17,7 +17,8 @@
     <application android:name=".salesforce.NotepriseApplication" android:icon="@drawable/ic_launcher_noteprise"
        
         android:label="@string/app_name" android:theme="@style/noteprise_base_style" >
-        <activity android:name=".core.NotepriseActivity" android:label="@string/app_name" >
+       
+        <activity android:name=".core.NotepriseActivity" android:label="@string/app_name"  >"
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
