@@ -116,11 +116,12 @@ public class BaseActivity extends FragmentActivity
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	
 		super.onConfigurationChanged(newConfig);
-	}
+		
+	}*/
 	public void initializeViews()
 	{
 		return;

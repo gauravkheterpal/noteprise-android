@@ -190,6 +190,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		if (salesforceLoginUtility != null && salesforceLoginUtility.salesforceRestClient != null)
 		{
 			loggedInSalesforce = Boolean.TRUE;
+			isGoMenuCalled = false;
 			salesforceRestClient = salesforceLoginUtility.salesforceRestClient;
 			checkButtons();
 		}
@@ -268,6 +269,7 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 			noteprisePreferences.saveEvernoteWebApiPrefix(authResult.getWebApiUrlPrefix());
 			noteprisePreferences.saveEvetnoteUserId(authResult.getUserId());
 			noteprisePreferences.saveSignedInToEvernote(evernoteSession.isLoggedIn());
+			//isGoMenuCalled=false;
 			handleEvernoteLoginComplete();
 		}
 		
@@ -276,11 +278,12 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
 		
 	}
 	
-	@Override
+/*	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+		//newConfig.orientation =Configuration.ORIENTATION_PORTRAIT;
 		initializeViews();
-	}
+	}*/
 
 
 }

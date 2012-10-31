@@ -106,13 +106,13 @@ public class BaseFragment extends Fragment
 		}
 		updateData();
 	}
-	@Override
+	/*@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		
 		getFragment(getActivity());
 		super.onConfigurationChanged(newConfig);
 		
-	}
+	}*/
 	
 	@Override
 	public void onDetach() 

@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/common_list_item_layout_height"
-        android:background="@drawable/main_nav_bar_background" >
+        android:background="@drawable/header_main_background" >
 
         <ImageView
             android:layout_width="@dimen/common_list_item_left_image_width_height"
