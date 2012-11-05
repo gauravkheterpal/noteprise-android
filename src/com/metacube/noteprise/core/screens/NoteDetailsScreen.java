@@ -891,6 +891,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 					{
 						saveFileToExternalStorage(resource.getData().getBody(), resource.getAttributes().getFileName(), noteTitle,resource.getMime());
 					}
+					
 					index++;
 				}
 			}

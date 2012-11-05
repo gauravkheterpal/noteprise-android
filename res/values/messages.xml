@@ -18,7 +18,7 @@
     <string name="radio_button_notebook_text">Notebook</string>
     <string name="radio_button_tag_text">Tag</string>
     <string name="radio_button_keyword_text">Keyword</string>
-    <string name="search_field_hint_text">Search</string>
+    <string name="search_field_hint_text">Search Notes</string>
     <string name="list_item_default_text">Item Text</string>
 
     <!-- Dialog/Header Titles -->
@@ -45,6 +45,8 @@
     <string name="progress_dialog_tag_search_message">Searching tag in notes..</string>
     <string name="progress_dialog_keyword_search_message">Searching keyword in notes..</string>
     <string name="progress_dialog_getting_all_notes_message">Getting all notes..</string>
+    <string name="progress_dialog_getting_all_notebook_message">Getting all Notebooks..</string>
+    <string name="progress_dialog_getting_all_tags_message">Getting all Tags..</string>
     <string name="progress_dialog_note_delete_message">Deleting Note..</string>
     <string name="progress_dialog_note_update_message">Updating Note..</string>
     <string name="progress_dialog_getting_note_details_mesage">Getting note details..</string>

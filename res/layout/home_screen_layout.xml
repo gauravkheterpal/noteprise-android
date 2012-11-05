@@ -16,7 +16,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="visible" >
+            android:visibility="visible"
+            
+          >
 
             <RadioButton
                 android:id="@+id/search_all_radio_button"
@@ -29,7 +31,8 @@
                 android:gravity="center"
                 android:text="@string/radio_button_all_text"
                 android:textSize="@dimen/common_small_text_size"
-                android:textStyle="bold" />
+                android:textStyle="bold" 
+                />
 
             <View
                 android:layout_width="1dp"
@@ -65,7 +68,7 @@
                 android:textSize="@dimen/common_small_text_size"
                 android:textStyle="bold" />
 
-            <View
+           <!--  <View
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
                 android:background="@drawable/segment_control_border" />
@@ -80,14 +83,14 @@
                 android:gravity="center"
                 android:text="@string/radio_button_keyword_text"
                 android:textSize="@dimen/common_small_text_size"
-                android:textStyle="bold" />
+                android:textStyle="bold" /> -->
         </RadioGroup>
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="@dimen/home_search_bar_height"
             android:layout_margin="@dimen/small_margin_padding" >
-            
+
             <EditText
                 android:id="@+id/search_query_edit_text"
                 android:layout_width="fill_parent"
@@ -109,6 +112,15 @@
                 android:background="@drawable/search_glass_button"
                 android:src="@drawable/common_view_selector" />
             
+             <ImageButton
+                android:id="@+id/cancel_button"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"              
+                android:layout_marginRight="@dimen/normal_margin_padding"
+                android:background="@drawable/search_glass_button"
+                android:src="@drawable/common_view_selector" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -121,11 +133,12 @@
         android:id="@+id/notes_list_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-       	android:focusable="true"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@drawable/segment_control_horizontal_border"
         android:dividerHeight="@dimen/common_divider_width_height"
-        android:listSelector="@drawable/common_list_selector" >
+        android:focusable="true"
+        android:listSelector="@drawable/common_list_selector"
+        android:textFilterEnabled="true" >
     </ListView>
 
 </LinearLayout>

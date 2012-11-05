@@ -155,6 +155,13 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     	saveButton = (ImageView) findViewById(R.id.save_button);
     	saveButton.setOnClickListener(this);
     	logoutButton = (ImageView) findViewById(R.id.logout_button);
+    	
+    	nextButton = (ImageView) findViewById(R.id.next_button); 
+    	//nextButton.setOnClickListener(this);
+    	
+    	previousButton = (ImageView) findViewById(R.id.prev_button); 
+    	//previousButton.setOnClickListener(this);
+    	
     	//logoutButton.setOnClickListener(this);
 		notepriseFragmentManager = new NotepriseFragmentManager(this);
         notepriseFragmentManager.changeScreen(new NotepriseFragment("MainMenu", MainMenuScreen.class));

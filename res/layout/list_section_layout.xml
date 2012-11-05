@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/common_list_section_layout_height"
+    android:background="@drawable/common_view_selector_background_transition_holo_dark"
+ >
+
+    <TextView
+        android:id="@+id/list_section_item_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/normal_margin_padding"
+        android:layout_marginRight="@dimen/normal_margin_padding"
+        android:textColor="@color/text_color_for_dark_background"
+        android:textSize="@dimen/common_small_text_size" />
+    
+     <ImageView
+        android:id="@+id/list_section_item_up_image"
+        android:layout_width="@dimen/common_list_item_left_image_width_height"
+        android:layout_height="@dimen/common_list_item_left_image_width_height"
+      	android:layout_marginRight="@dimen/small_margin_padding"
+      	android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/next_arrow"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        />
+    
+
+</RelativeLayout>
+
+
+
+
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/common_list_section_layout_height"
     android:background="@drawable/common_view_selector_background_transition_holo_dark"
@@ -7,11 +42,23 @@
 
     <TextView
         android:id="@+id/list_section_item_text_view"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/normal_margin_padding"
         android:textColor="@color/text_color_for_dark_background"
         android:textSize="@dimen/common_small_text_size" />
+    
+     <ImageView
+        android:id="@+id/list_section_item_up_image"
+        android:layout_width="@dimen/common_list_item_left_image_width_height"
+        android:layout_height="@dimen/common_list_item_left_image_width_height"
+      	android:layout_marginRight="10dp"
+      	
+        android:layout_centerVertical="true"
+        android:background="@drawable/next_arrow"
+        android:scaleType="fitCenter"
+        />
+    
 
-</LinearLayout>
+</LinearLayout> -->

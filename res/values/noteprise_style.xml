@@ -45,7 +45,7 @@
     <dimen name="common_spinner_height">55dp</dimen>
     <dimen name="home_search_bar_height">40dp</dimen>
     <dimen name="common_divider_width_height">1dp</dimen>
-    <dimen name="common_list_section_layout_height">20dp</dimen>
+    <dimen name="common_list_section_layout_height">22dp</dimen>
     <dimen name="evernote_login_button_width">160dp</dimen>
     <dimen name="evernote_login_button_height">40dp</dimen>
     <dimen name="evernote_button_margin_bottom">50dp</dimen>

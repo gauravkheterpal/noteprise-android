@@ -35,6 +35,7 @@ public class Constants
 		    "<en-note><div>";
 	public static final String NOTE_SUFFIX = "</div></en-note>";	
 	public static final Integer MAX_NOTES = 100;
+	public static final Integer RECORD_LIMIT = 5;
 	
 	public static final Integer USER_PAGE_BATCH_SIZE = 1000;
 	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;
@@ -48,6 +49,9 @@ public class Constants
 	
 	public static final String ITEM_TYPE_LIST_SECTION = "LIST_SECTION";
 	public static final String ITEM_TYPE_LIST_ITEM = "LIST_ITEM";
+	public static final String LIST_ITEM_TYPE_NOTE = "LIST_ITEM_TYPE_NOTE";
+	public static final String LIST_ITEM_TYPE_TAG = "LIST_ITEM_TYPE_TAG";
+	public static final String LIST_ITEM_TYPE_NOTEBOOK = "LIST_ITEM_TYPE_NOTEBOOK";
 	public static final String ITEM_TYPE_LIST_ATTACHMENT = "LIST_ITEM";
 	
 	public static final String CREATE_NOTE_ACTION = "CREATE_NOTE_ACTION";

@@ -3,14 +3,18 @@ package com.metacube.noteprise.salesforce;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import com.metacube.noteprise.common.Constants;
+
 public class CommonSOQL 
 {
 	public static final String SELECT_QUERY_PREFIX = "SELECT id, ";
 	public static final String DISPLAY_LABEL_FIELD = "name";
 	public static final String FROM = " from ";
 	public static final String ORDER_BY_SUFFIX = " ORDER BY ";
+	public static final String LIMIT = " LIMIT ";
+	public static final String OFFSET_VALUE = " OFFSET ";
 			
-	public static String getQueryForObject(String object)
+	public static String getQueryForObject(String object, String offsetValue)
 	{
 		HashMap<String, String> OBJECT_FIELD_MAP = new LinkedHashMap<String, String>();	   
 		OBJECT_FIELD_MAP.put("Case", "CaseNumber");
@@ -28,8 +32,15 @@ public class CommonSOQL
 		if (OBJECT_FIELD_MAP.get(object) != null)
 		{
 			displayField = OBJECT_FIELD_MAP.get(object);
-		}		
-		String query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField;
+		}
+		
+		String query="";
+		
+		if(offsetValue==null)
+			query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField + LIMIT + Constants.RECORD_LIMIT;
+		else
+			query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField + LIMIT + Constants.RECORD_LIMIT + OFFSET_VALUE + offsetValue;
+			
 		return query;
 	}
 	

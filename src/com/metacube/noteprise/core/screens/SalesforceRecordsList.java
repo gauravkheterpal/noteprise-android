@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.hardware.Camera.PreviewCallback;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
 import com.metacube.noteprise.common.CommonListAdapter;
 import com.metacube.noteprise.common.CommonListItems;
+import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.salesforce.CommonSOQL;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.Utilities;
@@ -57,6 +59,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	ArrayList<String> imageids;
 	public static final Integer GET_NOTE_DATA = 1;
 	Integer TASK = -1;
+	int selectedPageNo=1;
 
 
 	@Override
@@ -86,8 +89,15 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
     	listView = (ListView) contentView.findViewById(R.id.common_list_view);
     	baseActivity.editButton.setOnClickListener(this);
     	baseActivity.saveButton.setOnClickListener(this);
+    	baseActivity.nextButton.setVisibility(View.VISIBLE);
+    	baseActivity.previousButton.setVisibility(View.VISIBLE);
+    	baseActivity.nextButton.setOnClickListener(this);
+    	baseActivity.previousButton.setOnClickListener(this);
     	noResultsTextView = (TextView) contentView.findViewById(R.id.common_list_no_results);
     	noResultsTextView.setVisibility(View.GONE);
+    	if(selectedPageNo == 1)
+    		baseActivity.previousButton.setEnabled(false);
+    	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -95,23 +105,11 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	public void onResume() 
 	{
 		super.onResume();
-
-		 if (salesforceRestClient != null)
-			{
-				List<String> fieldList = new ArrayList<String>();
-				fieldList.add("id");
-				fieldList.add("name");
-				try 
-				{	
-					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
-					recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName));				
-				} 
-				catch (UnsupportedEncodingException e) 
-				{
-					e.printStackTrace();
-				}
-				salesforceRestClient.sendAsync(recordsRequest, this);			
-			}
+		queryForRecordList(null);
+		selectedPageNo=1;
+		baseActivity.previousButton.setEnabled(false);
+		baseActivity.nextButton.setEnabled(true);
+		
 	}
 
 	@Override
@@ -254,6 +252,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 
 				if (items != null && items.size() > 0)
 				{
+					noResultsTextView.setVisibility(View.INVISIBLE);
 					baseActivity.editButton.setVisibility(View.VISIBLE);
 					recordsAdapter = new CommonListAdapter(inflater, items);
 					listView.setAdapter(recordsAdapter);
@@ -271,9 +270,13 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				}
 				else
 				{
-					noResultsTextView.setVisibility(View.VISIBLE);
+					hideFullScreenProgresIndicator();
+					//listView.setAdapter(null);
+					//noResultsTextView.setVisibility(View.VISIBLE);
+					baseActivity.nextButton.setEnabled(false);
+					
 				}				
-			} 
+			}
 			catch (ParseException e) 
 			{
 				e.printStackTrace();
@@ -381,6 +384,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		super.onStop();
 		baseActivity.editButton.setVisibility(View.GONE);
 		baseActivity.saveButton.setVisibility(View.GONE);
+		baseActivity.nextButton.setVisibility(View.GONE);
+		baseActivity.previousButton.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -424,5 +429,52 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				showToastNotification(getString(R.string.salesforce_no_records_selected_message));
 			}
 		}
+		else if(view == baseActivity.nextButton)
+		{
+			selectedPageNo= selectedPageNo + 1;
+			if(selectedPageNo > 1)
+	    		baseActivity.previousButton.setEnabled(true);
+			
+			String offset = String.valueOf((selectedPageNo-1) * 5);
+			
+			queryForRecordList(offset);
+			
+		}
+		else if(view == baseActivity.previousButton)
+		{
+			selectedPageNo= selectedPageNo - 1;
+			
+			String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);			
+			queryForRecordList(offset);
+			
+			baseActivity.nextButton.setEnabled(true);
+			
+			if(selectedPageNo == 1)
+    		baseActivity.previousButton.setEnabled(false);
+		
+			
+		}
 	}
+
+	public void queryForRecordList(String offsetValue)
+	{
+		 if (salesforceRestClient != null)
+			{
+				List<String> fieldList = new ArrayList<String>();
+				fieldList.add("id");
+				fieldList.add("name");
+				try 
+				{	
+					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
+					recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName,offsetValue));				
+				} 
+				catch (UnsupportedEncodingException e) 
+				{
+					e.printStackTrace();
+				}
+				salesforceRestClient.sendAsync(recordsRequest, this);			
+			}
+	}
+	
+
 }

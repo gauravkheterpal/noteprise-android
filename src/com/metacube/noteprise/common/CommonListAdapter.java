@@ -5,25 +5,28 @@ import java.util.Collections;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.metacube.noteprise.R;
+import com.metacube.noteprise.core.screens.MainMenuScreen;
 import com.metacube.noteprise.util.CommonListComparator;
 import com.metacube.noteprise.util.NotepriseLogger;
 import com.metacube.noteprise.util.imageloader.ImageLoader;
 
-public class CommonListAdapter extends BaseAdapter 
+public class CommonListAdapter extends BaseAdapter implements OnClickListener
 {
 	public ArrayList<CommonListItems> listItems = null;
 	int count;
 	LayoutInflater inflater = null;
 	View listItemLayout = null;
 	TextView listItemMainTextView = null,listItemMainTextsize;
-	ImageView leftImageView = null, listArrowImageView = null, listItemCheckBox = null;
+	public	ImageView leftImageView = null, listArrowImageView = null, listItemCheckBox = null, listSectionUpButton;
 	Boolean isCheckListMode = Boolean.FALSE;
+	Boolean isInnerListMode = Boolean.FALSE;
 	BaseFragment baseFragment;
 
 	public CommonListAdapter(LayoutInflater inflater, ArrayList<CommonListItems> listItems) 
@@ -54,6 +57,14 @@ public class CommonListAdapter extends BaseAdapter
 			{
 				sectionTitle = sectionTitle + "   (" + item.getTotalContent() + ")";
 			}
+			if (isInnerListMode)
+			{
+				listSectionUpButton = (ImageView) listItemLayout.findViewById(R.id.list_section_item_up_image);
+				listSectionUpButton.setVisibility(View.VISIBLE);
+				listSectionUpButton.setOnClickListener(this);
+			}
+		
+				
 			listItemMainTextView.setText(sectionTitle);			
 		}
 		else if(item.getItemType().equalsIgnoreCase(Constants.ITEM_TYPE_LIST_ATTACHMENT)){
@@ -198,6 +209,12 @@ public class CommonListAdapter extends BaseAdapter
 		return true;
 	}
 	
+	
+	public void isInnerList(Boolean status)
+	{
+		isInnerListMode = status;
+	}
+	
 	public void showCheckList()
 	{
 		isCheckListMode = Boolean.TRUE;
@@ -298,5 +315,11 @@ public class CommonListAdapter extends BaseAdapter
 			Collections.sort(listItems, new CommonListComparator(CommonListComparator.COMPARE_BY_LABEL));
 		}
 		notifyDataSetChanged();
+	}
+
+	@Override
+	public void onClick(View v) 
+	{
+		((MainMenuScreen)baseFragment).loadPreviousList();	
 	}
 }

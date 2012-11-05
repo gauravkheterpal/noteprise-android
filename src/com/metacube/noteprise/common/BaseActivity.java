@@ -43,7 +43,7 @@ public class BaseActivity extends FragmentActivity
 	public CommonMessageDialog commonMessageDialog;
 	public ProgressBar headerProgressBar;
 	public CommonProgressDialog commonProgressDialog;
-	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton,
+	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton, nextButton, previousButton,
 						saveToSFButton, publishToChatterButton, editButton, saveButton, notepirseLogoImageView;
 	public TextView baseHeaderTitleTextView;
 	public RelativeLayout baseHeaderLayout;
