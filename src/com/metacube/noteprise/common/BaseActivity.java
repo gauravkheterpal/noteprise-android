@@ -1,5 +1,7 @@
 package com.metacube.noteprise.common;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -57,6 +59,7 @@ public class BaseActivity extends FragmentActivity
 	
 	//Main menu save data..
 	public CommonListAdapter savedListAdapter = null;
+	public ArrayList<CommonListItems> listItems = null;
 	public Integer savedCurrentTask = null;
 	public String savedQueryString = null;
 	public Integer savedSelectedRadioButtonId = null;

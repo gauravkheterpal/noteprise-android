@@ -45,6 +45,8 @@
     <string name="progress_dialog_tag_search_message">Searching tag in notes..</string>
     <string name="progress_dialog_keyword_search_message">Searching keyword in notes..</string>
     <string name="progress_dialog_getting_all_notes_message">Getting all notes..</string>
+    <string name="progress_dialog_getting_notes_for_Notebook_message">Getting notes for Notebook</string>
+    <string name="progress_dialog_getting_notes_for_tag_message">Getting notes for Tag</string>
     <string name="progress_dialog_getting_all_notebook_message">Getting all Notebooks..</string>
     <string name="progress_dialog_getting_all_tags_message">Getting all Tags..</string>
     <string name="progress_dialog_note_delete_message">Deleting Note..</string>

@@ -171,7 +171,7 @@
             android:layout_width="@dimen/common_button_icon_width_height"
             android:layout_height="@dimen/common_button_icon_width_height"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/normal_margin_padding"
+           
             android:layout_alignParentRight="true"
             android:scaleType="fitCenter"
             android:src="@drawable/next_arrow"
@@ -184,7 +184,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin_padding"
             android:scaleType="fitCenter"
-            android:src="@drawable/prev_arrow"
+            android:src="@drawable/previous_arrow"
            	android:visibility="gone" />
         
         

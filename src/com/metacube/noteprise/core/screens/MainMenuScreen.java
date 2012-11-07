@@ -47,8 +47,8 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	String authToken;
 	Client client;
 	NoteList noteList;
-	ArrayList<CommonListItems> listItems,previousList;
-	CommonListAdapter noteListAdapter, oldListAdapter;
+	ArrayList<CommonListItems> listItems, previousList, previousListForSearch;
+	CommonListAdapter noteListAdapter, oldListAdapter, oldListAdapterForSearch;
 	CommonCustomDialog logoutConfirmationDialog;
 	RadioGroup searchCriteriaRadioGroup;
 	ImageButton searchButton, cancelButton;
@@ -57,13 +57,15 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	EditText searchQueryEditText;
 	String queryString;
 	Integer selectedRadioButtonId;
-	Boolean isDataRestored = Boolean.FALSE ,isInnerList= Boolean.FALSE;
+	Boolean isDataRestored = Boolean.FALSE, isInnerList = Boolean.FALSE;
 	Button logoutConfirmationDialogYesButton, logoutConfirmationDialogNoButton;
-	Integer GET_ALL_NOTEBOOKS = 0, GET_NOTE_LIST_FOR_NOTEBOOK=1,
-			SEARCH_KEYWORD = 2, GET_NOTEBOOK = 3, CLEAR_LIST = 4, GET_TAGS = 5,GET_NOTE_LIST_FOR_TAG=6,
-			TASK = 0,PREVIOUS_TASK=0;
-	String selectedNotebookID = "" , selectedTagID="";
-	 //SEARCH_NOTEBOOK = 1, SEARCH_TAG = 2,
+	Integer GET_ALL_NOTEBOOKS = 0, GET_NOTE_LIST_FOR_NOTEBOOK = 1,
+			SEARCH_KEYWORD = 2, GET_NOTEBOOK = 3, CLEAR_LIST = 4, GET_TAGS = 5,
+			GET_NOTE_LIST_FOR_TAG = 6, TASK = 0, PREVIOUS_TASK = 0,
+			PREVIOUS_TASK_FOR_SEARCH = 0;
+	String selectedNotebookID = "", selectedTagID = "";
+
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -87,8 +89,8 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
 		searchQueryEditText = (EditText) contentView
 				.findViewById(R.id.search_query_edit_text);
-		//searchQueryEditText.addTextChangedListener(this);
-		//searchQueryEditText.setOnFocusChangeListener(this);
+		// searchQueryEditText.addTextChangedListener(this);
+		// searchQueryEditText.setOnFocusChangeListener(this);
 		searchQueryEditText.setOnClickListener(this);
 
 		allRadioButton = (RadioButton) contentView
@@ -107,10 +109,6 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				.findViewById(R.id.cancel_button);
 		cancelButton.setOnClickListener(this);
 		searchButton.setOnClickListener(this);
-		
-		
-		
-		
 
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
@@ -126,11 +124,11 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			}
 			Integer searchMessage = R.string.progress_dialog_note_search_message;
 			listView.setAdapter(null);
-			
+
 			TASK = SEARCH_KEYWORD;
 			searchMessage = R.string.progress_dialog_keyword_search_message;
 			executeAsyncTask();
-			
+
 			showFullScreenProgresIndicator(
 					getString(R.string.progress_dialog_title),
 					getString(searchMessage));
@@ -155,45 +153,30 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 		else if (view == searchQueryEditText) {
 			hideRadioGroup(Boolean.TRUE);
-			//saveCurrentState();
 			
-			 PREVIOUS_TASK= TASK ;
-			 previousList =listItems;
-			 oldListAdapter = noteListAdapter ;
-			// isInnerList = false;
-			
+			savePreviousList(true);
+
 			TASK = CLEAR_LIST;
 			executeAsyncTask();
 
 		} else if (view == cancelButton) {
-			if(searchCriteriaRadioGroup.getVisibility() != View.VISIBLE)
-			{
+			if (searchCriteriaRadioGroup.getVisibility() != View.VISIBLE) {
 
-			hideRadioGroup(Boolean.FALSE);
-			searchCriteriaRadioGroup.setEnabled(Boolean.TRUE);
-			searchQueryEditText.setText("");
-			
-			if(PREVIOUS_TASK == GET_NOTE_LIST_FOR_NOTEBOOK || PREVIOUS_TASK == GET_NOTE_LIST_FOR_TAG )
-				isInnerList = true;
-			else
-			 isInnerList = false;
-			
-			
-			
-			loadPreviousList();
+				hideRadioGroup(Boolean.FALSE);
+				searchCriteriaRadioGroup.setEnabled(Boolean.TRUE);
+				searchQueryEditText.setText("");
 
-			/*if (baseActivity.isDataSaved) 
-					loadPreviousState();
-			else 
-					getAllNotes();
-			}*/
+				if (PREVIOUS_TASK_FOR_SEARCH == GET_NOTE_LIST_FOR_NOTEBOOK
+						|| PREVIOUS_TASK_FOR_SEARCH == GET_NOTE_LIST_FOR_TAG)
+					isInnerList = true;
+				else
+					isInnerList = false;
+
+				loadPreviousList(true);
+
 			}
 		}
-		}
-			
-	
-			
-	
+	}
 
 	@Override
 	public void onResume() {
@@ -208,7 +191,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 		baseActivity.saveToSFButton.setVisibility(View.GONE);
 		baseActivity.publishToChatterButton.setVisibility(View.GONE);
-	
+
 		if (isEvernoteAuthenticationComplete()) {
 			if (baseActivity.isDataSaved
 					&& checkPreviousScreenActionForNotRefresh()) {
@@ -244,46 +227,39 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			queryString = searchQueryEditText.getText().toString().trim();
 
 			if (TASK == GET_ALL_NOTEBOOKS) {
-			
+
 				listItems = EvernoteUtils.getAllNotes(authToken, client);
 
 			}
-			
+
 			else if (TASK == SEARCH_KEYWORD) {
-			
+
 				listItems = EvernoteUtils.searchKeywords(authToken, client,
 						queryString);
-			} else if (TASK == GET_NOTEBOOK){
-			
+			} else if (TASK == GET_NOTEBOOK) {
 
 				listItems = (ArrayList<CommonListItems>) EvernoteUtils
 						.getNotebooksList(authToken, client);
-				previousList = listItems;
-				PREVIOUS_TASK = TASK;
 
 			} else if (TASK == GET_TAGS) {
-			
+
 				listItems = (ArrayList<CommonListItems>) EvernoteUtils
 						.getTagsList(authToken, client);
-				previousList = listItems;
-				PREVIOUS_TASK = TASK;
+
 			} else if (TASK == CLEAR_LIST) {
-				
 
 				listItems = new ArrayList<CommonListItems>();
 				// executeAsyncTask();
-			}
-			else if(TASK == GET_NOTE_LIST_FOR_NOTEBOOK)
-			{
-				
-				listItems = (ArrayList<CommonListItems>)EvernoteUtils.getNoteListFromNotebook(authToken,client,selectedNotebookID);
-			}
-			else if(TASK == GET_NOTE_LIST_FOR_TAG)
-			{
-				
-				listItems = EvernoteUtils.getNoteListForTag(evernoteSession,selectedTagID);
-				
-				
+			} else if (TASK == GET_NOTE_LIST_FOR_NOTEBOOK) {
+
+				listItems = (ArrayList<CommonListItems>) EvernoteUtils
+						.getNoteListFromNotebook(authToken, client,
+								selectedNotebookID);
+			} else if (TASK == GET_NOTE_LIST_FOR_TAG) {
+
+				listItems = EvernoteUtils.getNoteListForTag(evernoteSession,
+						selectedTagID);
+
 			}
 
 		} catch (TTransportException e) {
@@ -297,77 +273,75 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		super.onTaskFinished();
 		hideFullScreenProgresIndicator();
 		if (listItems != null) {
-			noteListAdapter = new CommonListAdapter(MainMenuScreen.this, inflater, listItems);
-			if (TASK == GET_NOTE_LIST_FOR_NOTEBOOK || TASK == GET_NOTE_LIST_FOR_TAG)
-			{
+			noteListAdapter = new CommonListAdapter(MainMenuScreen.this,
+					inflater, listItems);
+
+			if (TASK == GET_NOTE_LIST_FOR_NOTEBOOK
+					|| TASK == GET_NOTE_LIST_FOR_TAG) {
 				noteListAdapter.isInnerList(Boolean.TRUE);
 				isInnerList = true;
 				listView.setAdapter(noteListAdapter);
 
-			}
-			else
-			{
+			} else {
 				listView.setAdapter(noteListAdapter);
-			
+
 			}
-				
+
 			listView.setOnItemClickListener(this);
-			TASK = GET_ALL_NOTEBOOKS;
+			// TASK = GET_ALL_NOTEBOOKS;
 		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position,
 			long id) {
-		
-		if(listItems.get(position).getListItemType().equalsIgnoreCase(Constants.LIST_ITEM_TYPE_NOTE ))
-		{
-		if (noteListAdapter.isListItem(position)) {
-			
-			saveCurrentState();
-			
-			String noteGuid = noteListAdapter.getListItemId(position);
-			Bundle args = new Bundle();
-			args.putString("noteGuid", noteGuid);
-			changeScreen(new NotepriseFragment("NoteDetails",
-					NoteDetailsScreen.class, args));
-		}
-		}
-		else if(listItems.get(position).getListItemType().equalsIgnoreCase(Constants.LIST_ITEM_TYPE_NOTEBOOK))
-		{
-			
+
+		if (listItems.get(position).getListItemType()
+				.equalsIgnoreCase(Constants.LIST_ITEM_TYPE_NOTE)) {
 			if (noteListAdapter.isListItem(position)) {
-				 selectedNotebookID  = 	listItems.get(position).getId();
-				
+
+				saveCurrentState();
+
+				String noteGuid = noteListAdapter.getListItemId(position);
+				Bundle args = new Bundle();
+				args.putString("noteGuid", noteGuid);
+				changeScreen(new NotepriseFragment("NoteDetails",
+						NoteDetailsScreen.class, args));
+			}
+		} else if (listItems.get(position).getListItemType()
+				.equalsIgnoreCase(Constants.LIST_ITEM_TYPE_NOTEBOOK)) {
+
+			if (noteListAdapter.isListItem(position)) {
+				selectedNotebookID = listItems.get(position).getId();
+				savePreviousList(false);
+
 				TASK = GET_NOTE_LIST_FOR_NOTEBOOK;
 				showFullScreenProgresIndicator(
 						getString(R.string.progress_dialog_title),
-						getString(R.string.progress_dialog_getting_all_notes_message));
-				oldListAdapter = noteListAdapter;
+						getString(R.string.progress_dialog_getting_notes_for_Notebook_message));
+
 				executeAsyncTask();
-				
+
 			}
-			
-		}
-		else if(listItems.get(position).getListItemType().equalsIgnoreCase(Constants.LIST_ITEM_TYPE_TAG))
-		{
+
+		} else if (listItems.get(position).getListItemType()
+				.equalsIgnoreCase(Constants.LIST_ITEM_TYPE_TAG)) {
 			if (noteListAdapter.isListItem(position)) {
-				
-				selectedTagID  =  listItems.get(position).getId();
-				TASK           =   GET_NOTE_LIST_FOR_TAG ;
+
+				selectedTagID = listItems.get(position).getId();
+
+				savePreviousList(false);
+				TASK = GET_NOTE_LIST_FOR_TAG;
 				showFullScreenProgresIndicator(
 						getString(R.string.progress_dialog_title),
-						getString(R.string.progress_dialog_getting_all_notes_message));
-				
-				oldListAdapter = noteListAdapter;
+						getString(R.string.progress_dialog_getting_notes_for_tag_message));
+
 				executeAsyncTask();
-				
-		
-				
+
 			}
-		
+
 		}
-			
+
 	}
 
 	public void getAllNotes() {
@@ -391,6 +365,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 	public void saveCurrentState() {
 		baseActivity.savedListAdapter = noteListAdapter;
+		//baseActivity.listItems = listItems; 
 		baseActivity.savedCurrentTask = TASK;
 		baseActivity.savedQueryString = queryString;
 		baseActivity.savedSelectedRadioButtonId = searchCriteriaRadioGroup
@@ -401,6 +376,15 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	public void loadPreviousState() {
 		if (baseActivity.savedListAdapter != null) {
 			noteListAdapter = baseActivity.savedListAdapter;
+			//listItems = baseActivity.listItems;
+
+			if (isInnerList)
+				noteListAdapter.isInnerList(Boolean.TRUE);
+			else
+				noteListAdapter.isInnerList(Boolean.FALSE);
+
+			isInnerList = false;
+
 			listView.setAdapter(noteListAdapter);
 
 			listView.setOnItemClickListener(this);
@@ -422,7 +406,6 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			selectedRadioButtonId = baseActivity.savedSelectedRadioButtonId;
 			searchCriteriaRadioGroup.check(selectedRadioButtonId);
 
-		
 		}
 		if (noteListAdapter == null) {
 			getAllNotes();
@@ -444,22 +427,23 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
-		
+
 		isInnerList = false;
 
 		if (group == searchCriteriaRadioGroup
 				&& checkedId == R.id.search_all_radio_button) {
-			//setSearchBarEnabled(Boolean.TRUE);
+			// setSearchBarEnabled(Boolean.TRUE);
 			TASK = GET_ALL_NOTEBOOKS;
 			if (isDataRestored) {
 				isDataRestored = Boolean.FALSE;
-			} else {
-				getAllNotes();
 			}
+			// else {
+			getAllNotes();
+			// }
 		} else if (group == searchCriteriaRadioGroup
 				&& checkedId == R.id.search_notebook_radio_button) {
 
-			//setSearchBarEnabled(Boolean.TRUE);
+			// setSearchBarEnabled(Boolean.TRUE);
 			TASK = GET_NOTEBOOK;
 			showFullScreenProgresIndicator(
 					getString(R.string.progress_dialog_title),
@@ -468,39 +452,52 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 		} else if (group == searchCriteriaRadioGroup
 				&& checkedId == R.id.search_tag_radio_button) {
-			//setSearchBarEnabled(Boolean.TRUE);
+			// setSearchBarEnabled(Boolean.TRUE);
 			TASK = GET_TAGS;
 			showFullScreenProgresIndicator(
 					getString(R.string.progress_dialog_title),
 					getString(R.string.progress_dialog_getting_all_tags_message));
 			executeAsyncTask();
 
-		} 
+		}
 	}
 
-	
-	
-	public void loadPreviousList()
-	{
-		
-		TASK = PREVIOUS_TASK;
-		listItems = previousList;
-		//noteListAdapter = oldListAdapter;
-		
-	//	oldListAdapter = new CommonListAdapter(MainMenuScreen.this, inflater, listItems);	
-		
-		if(isInnerList)
-			oldListAdapter.isInnerList(Boolean.TRUE);
+	public void loadPreviousList(Boolean isSearch) {
+
+		if (isSearch) {
+			TASK = PREVIOUS_TASK_FOR_SEARCH;
+			listItems = previousListForSearch;
+			noteListAdapter = oldListAdapterForSearch;
+		} else {
+			TASK = PREVIOUS_TASK;
+			listItems = previousList;
+			noteListAdapter = oldListAdapter;
+
+		}
+
+		if (isInnerList)
+			noteListAdapter.isInnerList(Boolean.TRUE);
 		else
-			oldListAdapter.isInnerList(Boolean.FALSE);
-		
-		
-		noteListAdapter = oldListAdapter;
-		listView.setAdapter(oldListAdapter);
+			noteListAdapter.isInnerList(Boolean.FALSE);
+
+		listView.setAdapter(noteListAdapter);
 		listView.setOnItemClickListener(this);
-		
+
 		isInnerList = false;
-		
-	
+
 	}
+
+	public void savePreviousList(Boolean isSearch) {
+
+		if (isSearch) {
+			PREVIOUS_TASK_FOR_SEARCH = TASK;
+			previousListForSearch = listItems;
+			oldListAdapterForSearch = noteListAdapter;
+		} else {
+			PREVIOUS_TASK = TASK;
+			previousList = listItems;
+			oldListAdapter = noteListAdapter;
+		}
+	}
+
 }

@@ -320,6 +320,6 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 	@Override
 	public void onClick(View v) 
 	{
-		((MainMenuScreen)baseFragment).loadPreviousList();	
+		((MainMenuScreen)baseFragment).loadPreviousList(false);	
 	}
 }
