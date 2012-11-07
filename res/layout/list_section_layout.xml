@@ -18,8 +18,8 @@
     
      <ImageView
         android:id="@+id/list_section_item_up_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/common_list_item_left_image_width_height"
+        android:layout_height="@dimen/common_list_item_left_image_width_height"
       	android:layout_marginRight="@dimen/small_margin_padding"
       	android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

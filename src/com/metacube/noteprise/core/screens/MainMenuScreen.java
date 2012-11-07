@@ -404,7 +404,9 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				isDataRestored = Boolean.FALSE;
 			}
 			selectedRadioButtonId = baseActivity.savedSelectedRadioButtonId;
+			searchCriteriaRadioGroup.setOnCheckedChangeListener(null);
 			searchCriteriaRadioGroup.check(selectedRadioButtonId);
+			searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
 
 		}
 		if (noteListAdapter == null) {
@@ -429,7 +431,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 
 		isInnerList = false;
-
+		
 		if (group == searchCriteriaRadioGroup
 				&& checkedId == R.id.search_all_radio_button) {
 			// setSearchBarEnabled(Boolean.TRUE);
@@ -460,6 +462,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			executeAsyncTask();
 
 		}
+	  
 	}
 
 	public void loadPreviousList(Boolean isSearch) {

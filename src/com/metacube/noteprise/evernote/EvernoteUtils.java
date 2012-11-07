@@ -444,10 +444,16 @@ public class EvernoteUtils {
 
 	}
 
-	public static ArrayList<CommonListItems> getNoteListForTag(EvernoteSession evernoteSession, String tagGuid)throws TTransportException {
+	public static ArrayList<CommonListItems> getNoteListForTag(EvernoteSession evernoteSession, String tagGuid){
 		
 		String authToken = evernoteSession.getAuthToken();
-		Client client = evernoteSession.createNoteStore();
+		Client client = null;
+		try {
+			client = evernoteSession.createNoteStore();
+		} catch (TTransportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ArrayList<CommonListItems> noteListForTag = new ArrayList<CommonListItems>();
 
 		

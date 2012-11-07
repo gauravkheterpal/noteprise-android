@@ -5,30 +5,45 @@
     android:background="@drawable/base_background"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/common_list_item_layout_height"
         android:background="@drawable/main_nav_bar_background"
         android:orientation="horizontal" >
 
-        <ImageView
+        <!--
+             <ImageView
             android:layout_width="@dimen/common_list_item_left_image_width_height"
             android:layout_height="@dimen/common_list_item_left_image_width_height"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/small_margin_padding"
+              android:layout_paddingLeft="@dimen/normal_margin_padding"
+            android:layout_paddingRight="@dimen/normal_margin_padding"
             android:scaleType="fitXY"
-            android:src="@drawable/delete_button_normal" />
+            android:src="@drawable/delete_button_normal" />
+        -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/normal_margin_padding"
+            android:layout_margin="@dimen/small_margin_padding"
             android:text="@string/dialog_image_attach_title"
             android:textColor="@color/text_color_for_dark_background"
             android:textSize="@dimen/common_large_text_size"
             android:textStyle="bold" />
-    </LinearLayout>
+
+        <Button
+            android:id="@+id/okay_button"
+            android:layout_width="@dimen/common_list_item_left_image_width_height"
+            android:layout_height="@dimen/common_list_item_left_image_width_height"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/small_margin_padding"
+            android:background="@drawable/save_button_selector"
+            android:scaleType="fitXY" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/notes_list_view"

@@ -851,47 +851,48 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener, 
 			mediaString = noteContent;
 			if (res != null && noteContent.indexOf("<en-media") != -1) 
 			{   
-				int index=0;
+				int index = 0;
 				mediaContent=true;
 				listItems = new ArrayList<CommonListItems>();
 				_options = new String[res.size()];
 				selection = new boolean[res.size()];
 				for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
 				{
+					fileName = null;
 					Resource resource = iterator.next();				
 					CommonListItems resourceItem = new CommonListItems();
 					String resFileName = resource.getAttributes().getFileName();
+					fileName = resource.getAttributes().getFileName();
+					if (fileName == null)
+					{
+						fileName = note.getGuid() + "0" + index;
+					}
 					Integer length = 0;
 					if (resFileName != null)
 					{
 						length = resFileName.length();
 					}
-					resourceItem.setLabel(resource.getAttributes().getFileName());
-					_options[index]=resource.getAttributes().getFileName()+resource.getMime();
-					resourceItem.setId(resource.getAttributes().getFileName());
+					resourceItem.setLabel(fileName);
+					_options[index]=fileName+resource.getMime();
+					resourceItem.setId(fileName);
 					resourceItem.setAttachmentLength(length.toString());
 					resourceItem.setShowListArrow(false);
 					listItems.add(resourceItem);					
 					if(resource.getMime().equalsIgnoreCase("image/jpeg") || resource.getMime().equalsIgnoreCase("image/png"))
 					{
 						bitmap = BitmapFactory.decodeByteArray(resource.getData().getBody(), 0, resource.getData().getBody().length);	
-						if(resource.getAttributes().getFileName()!=null)
-						{
-							fileName=resource.getAttributes().getFileName();
-						}
-						saveImageToExternalStorage(bitmap, resource.getAttributes().getFileName(), noteTitle,resource.getMime());					
+						saveImageToExternalStorage(bitmap, fileName, noteTitle,resource.getMime());					
 						mediaString = EvernoteUtils.getMediaStringFromNote(noteContent,resource.getMime());
-						final String fileName = "file://" + SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" + resource.getAttributes().getFileName();
-						final String html = "<img src=\"" + fileName + "\">";
+						final String fileNameStr = "file://" + SD_CARD + Constants.IMAGE_PATH + noteTitle + "_" + fileName;
+						final String html = "<img src=\"" + fileNameStr + "\">";
 						if(mediaString != null)
 						{
 							noteContent = noteContent.replace(mediaString, html);
 						}					
 					}else
 					{
-						saveFileToExternalStorage(resource.getData().getBody(), resource.getAttributes().getFileName(), noteTitle,resource.getMime());
+						saveFileToExternalStorage(resource.getData().getBody(), fileName, noteTitle,resource.getMime());
 					}
-					
 					index++;
 				}
 			}
