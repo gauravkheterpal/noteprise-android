@@ -157,6 +157,9 @@ public class NotepriseActivity extends BaseActivity implements OnClickListener
     	logoutButton = (ImageView) findViewById(R.id.logout_button);
     	
     	nextButton = (ImageView) findViewById(R.id.next_button); 
+    	recordCountLayout = (RelativeLayout) findViewById(R.id.page_number_layout);
+    	recordCount  = (TextView) findViewById(R.id.record_count);
+    	
     	//nextButton.setOnClickListener(this);
     	
     	previousButton = (ImageView) findViewById(R.id.prev_button); 

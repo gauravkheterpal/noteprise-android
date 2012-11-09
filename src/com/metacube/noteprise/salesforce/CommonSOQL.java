@@ -14,7 +14,7 @@ public class CommonSOQL
 	public static final String LIMIT = " LIMIT ";
 	public static final String OFFSET_VALUE = " OFFSET ";
 			
-	public static String getQueryForObject(String object, String offsetValue)
+	public static String getQueryForObject(String object, String offsetValue,Boolean getObjectCount)
 	{
 		HashMap<String, String> OBJECT_FIELD_MAP = new LinkedHashMap<String, String>();	   
 		OBJECT_FIELD_MAP.put("Case", "CaseNumber");
@@ -36,11 +36,18 @@ public class CommonSOQL
 		
 		String query="";
 		
-		if(offsetValue==null)
-			query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField + LIMIT + Constants.RECORD_LIMIT;
+		if(getObjectCount)
+		{
+			query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField ;
+		}
 		else
-			query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField + LIMIT + Constants.RECORD_LIMIT + OFFSET_VALUE + offsetValue;
-			
+		{
+			if(offsetValue==null)
+				query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField + LIMIT + Constants.RECORD_LIMIT;
+			else
+				query = SELECT_QUERY_PREFIX + displayField + FROM + object + ORDER_BY_SUFFIX + displayField + LIMIT + Constants.RECORD_LIMIT + OFFSET_VALUE + offsetValue;
+		}
+		
 		return query;
 	}
 	

@@ -29,12 +29,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/app_name"
-            android:textColor="@color/text_color_for_dark_background"
-            android:textSize="@dimen/header_bar_title_text_size"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="70dp"
             android:singleLine="true"
+            android:text="@string/app_name"
+            android:textColor="@color/text_color_for_dark_background"
+            android:textSize="@dimen/header_bar_title_text_size"
             android:textStyle="bold"
             android:visibility="gone" />
 
@@ -165,8 +165,49 @@
             android:scaleType="fitCenter"
             android:src="@drawable/chatter_button_selector"
             android:visibility="gone" />
-        
-         <ImageView
+
+        <RelativeLayout
+            android:id="@+id/page_number_layout"
+            android:layout_width="@dimen/page_no_layout_width"
+            android:layout_height="@dimen/header_footer_bar_layout_height"
+            android:layout_alignParentRight="true"         
+            android:background="@drawable/main_nav_bar_background"        
+            android:visibility="gone" >
+            <ImageView
+                android:id="@+id/prev_button"
+                android:layout_width="@dimen/common_button_icon_width_height"
+                android:layout_height="@dimen/common_button_icon_width_height"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"               
+                android:background="@drawable/previous_arrow"
+                android:scaleType="fitCenter"
+                android:src="@drawable/common_view_selector" />
+            
+            <ImageView
+                android:id="@+id/next_button"
+                android:layout_width="@dimen/common_button_icon_width_height"
+                android:layout_height="@dimen/common_button_icon_width_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/next_arrow"
+                android:scaleType="fitCenter"
+                android:src="@drawable/common_view_selector" />
+
+            <TextView
+                android:id="@+id/record_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitCenter"
+                android:textColor="@color/text_color_for_dark_background"
+                android:textStyle="bold"
+                />
+           
+        </RelativeLayout>
+
+        <!--
+           <ImageView
             android:id="@+id/next_button"
             android:layout_width="@dimen/common_button_icon_width_height"
             android:layout_height="@dimen/common_button_icon_width_height"
@@ -174,7 +215,8 @@
            
             android:layout_alignParentRight="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/next_arrow"
+          	android:background="@drawable/next_arrow"
+            android:src="@drawable/common_view_selector" 
           	android:visibility="gone" />
          
            <ImageView
@@ -184,11 +226,10 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/normal_margin_padding"
             android:scaleType="fitCenter"
-            android:src="@drawable/previous_arrow"
-           	android:visibility="gone" />
-        
-        
-        
+            android:background="@drawable/previous_arrow"
+            android:src="@drawable/common_view_selector" 
+           	android:visibility="gone" />
+        -->
     </RelativeLayout>
 
 </LinearLayout>

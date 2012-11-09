@@ -47,8 +47,8 @@ public class BaseActivity extends FragmentActivity
 	public CommonProgressDialog commonProgressDialog;
 	public ImageView salesforceObjectsButton, createNewNoteButton, deleteNoteButton, logoutButton, nextButton, previousButton,
 						saveToSFButton, publishToChatterButton, editButton, saveButton, notepirseLogoImageView;
-	public TextView baseHeaderTitleTextView;
-	public RelativeLayout baseHeaderLayout;
+	public TextView baseHeaderTitleTextView,recordCount;
+	public RelativeLayout baseHeaderLayout, recordCountLayout;
 	
 	public Boolean loggedInSalesforce = Boolean.FALSE;
 	public Boolean loggedInEvernote = Boolean.FALSE;

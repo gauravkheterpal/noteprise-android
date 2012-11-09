@@ -26,6 +26,7 @@
         android:background="@drawable/up_arrow"
         android:scaleType="fitCenter"
         android:visibility="gone"
+      
         />
     
 

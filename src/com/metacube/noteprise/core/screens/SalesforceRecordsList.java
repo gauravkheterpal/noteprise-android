@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -49,10 +50,11 @@ import com.salesforce.androidsdk.rest.RestResponse;
 public class SalesforceRecordsList extends BaseFragment implements OnItemClickListener, AsyncRequestCallback, OnClickListener
 {
 	ListView listView;
+
 	String noteContent,filePath,encodedImage,noteGuid,authToken,name, contentType,id,recordId;
 	Client client;
 	Note note;
-	RestRequest recordsRequest, updateRecordRequest,createAttachment;
+	RestRequest recordsRequest, updateRecordRequest,createAttachment,recordsCountRequest;
 	CommonListAdapter recordsAdapter;
 	TextView noResultsTextView;
 	int totalRequests = 0;
@@ -60,6 +62,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	public static final Integer GET_NOTE_DATA = 1;
 	Integer TASK = -1;
 	int selectedPageNo=1;
+	int recordCount =0;
 
 
 	@Override
@@ -87,6 +90,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.common_list_layout, container);    	
     	listView = (ListView) contentView.findViewById(R.id.common_list_view);
+    	
     	baseActivity.editButton.setOnClickListener(this);
     	baseActivity.saveButton.setOnClickListener(this);
     	baseActivity.nextButton.setVisibility(View.VISIBLE);
@@ -95,8 +99,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
     	baseActivity.previousButton.setOnClickListener(this);
     	noResultsTextView = (TextView) contentView.findViewById(R.id.common_list_no_results);
     	noResultsTextView.setVisibility(View.GONE);
-    	if(selectedPageNo == 1)
-    		baseActivity.previousButton.setEnabled(false);
+    	
     	
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -105,10 +108,14 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	public void onResume() 
 	{
 		super.onResume();
+		getCountForRecord();
+	
 		queryForRecordList(null);
 		selectedPageNo=1;
-		baseActivity.previousButton.setEnabled(false);
-		baseActivity.nextButton.setEnabled(true);
+		
+		
+		//baseActivity.previousButton.setEnabled(false);
+		//baseActivity.nextButton.setEnabled(true);
 		
 	}
 
@@ -252,7 +259,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 
 				if (items != null && items.size() > 0)
 				{
-					noResultsTextView.setVisibility(View.INVISIBLE);
+					noResultsTextView.setVisibility(View.GONE);
 					baseActivity.editButton.setVisibility(View.VISIBLE);
 					recordsAdapter = new CommonListAdapter(inflater, items);
 					listView.setAdapter(recordsAdapter);
@@ -273,7 +280,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					hideFullScreenProgresIndicator();
 					//listView.setAdapter(null);
 					//noResultsTextView.setVisibility(View.VISIBLE);
-					baseActivity.nextButton.setEnabled(false);
+				//	baseActivity.nextButton.setEnabled(false);
 					
 				}				
 			}
@@ -290,6 +297,47 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				e.printStackTrace();
 			}
 		}
+		else if(request == recordsCountRequest)
+		{
+			
+				try {
+					NotepriseLogger.logMessage(response.asString());
+					JSONObject responseObject = response.asJSONObject();
+					JSONArray records = responseObject.getJSONArray("records");
+					recordCount =	records.length();
+					NotepriseLogger.logMessage("Record Count = "+recordCount);
+					if(recordCount>0)	
+					{
+						baseActivity.recordCountLayout .setVisibility(View.VISIBLE);
+						if(Constants.RECORD_LIMIT >= recordCount)
+						{
+							baseActivity.recordCount.setText("Showing "+"1 - "+ recordCount + " of "+ recordCount);
+							baseActivity.nextButton.setVisibility(View.GONE);
+						}
+						else
+						{
+							baseActivity.recordCount.setText("Showing "+"1 - "+ Constants.RECORD_LIMIT + " of "+ recordCount);
+							baseActivity.nextButton.setVisibility(View.VISIBLE);
+						}
+					}
+					baseActivity.previousButton.setVisibility(View.GONE);
+				}
+					
+				catch (ParseException e) 
+				{
+					e.printStackTrace();
+				} 
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				} 
+				catch (JSONException e) 
+				{
+					e.printStackTrace();
+				}
+		}
+				
+				
 		else if (request == updateRecordRequest)
 		{
 			try 
@@ -384,8 +432,9 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		super.onStop();
 		baseActivity.editButton.setVisibility(View.GONE);
 		baseActivity.saveButton.setVisibility(View.GONE);
-		baseActivity.nextButton.setVisibility(View.GONE);
-		baseActivity.previousButton.setVisibility(View.GONE);
+		//baseActivity.nextButton.setVisibility(View.GONE);
+		//baseActivity.previousButton.setVisibility(View.GONE);
+		baseActivity.recordCountLayout.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -432,41 +481,98 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		else if(view == baseActivity.nextButton)
 		{
 			selectedPageNo= selectedPageNo + 1;
-			if(selectedPageNo > 1)
-	    		baseActivity.previousButton.setEnabled(true);
 			
-			String offset = String.valueOf((selectedPageNo-1) * 5);
-			
-			queryForRecordList(offset);
+			showRecordCount(baseActivity.nextButton);
+			/*if(selectedPageNo > 1)
+	    		baseActivity.previousButton.setVisibility(View.VISIBLE);
+			*/
+			/*String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);
+			int firstRecordNo = (selectedPageNo-1) * Constants.RECORD_LIMIT;
+			int lastRecordNo = firstRecordNo + Constants.RECORD_LIMIT ;*/
+			/*if(recordCount<=lastRecordNo)
+			{
+				lastRecordNo = recordCount;
+				baseActivity.nextButton.setVisibility(View.GONE);
+			}*/
+							
+			//queryForRecordList(offset);
+		//	baseActivity.recordCount.setText(firstRecordNo +" - "+ lastRecordNo+ " from "+ recordCount);
 			
 		}
 		else if(view == baseActivity.previousButton)
 		{
 			selectedPageNo= selectedPageNo - 1;
+			showRecordCount(baseActivity.previousButton);
 			
-			String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);			
+			/*String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);			
 			queryForRecordList(offset);
+			*/
+		//	baseActivity.nextButton.setVisibility(View.VISIBLE);
 			
-			baseActivity.nextButton.setEnabled(true);
+		/*	if(selectedPageNo == 1)
+				baseActivity.previousButton.setVisibility(View.GONE);
+			*/
+			/*int firstRecordNo = (selectedPageNo-1) * Constants.RECORD_LIMIT;
+			int lastRecordNo = firstRecordNo + Constants.RECORD_LIMIT ;*/
 			
-			if(selectedPageNo == 1)
-    		baseActivity.previousButton.setEnabled(false);
+			/*if(firstRecordNo==0)
+				firstRecordNo=1;*/
+			
+		
+			//baseActivity.recordCount.setText(firstRecordNo +" - "+ lastRecordNo+ " from "+ recordCount);
+			
 		
 			
 		}
 	}
 
+	public void	showRecordCount(View view)
+	{
+		
+		
+		String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);
+		int firstRecordNo = (selectedPageNo-1) * Constants.RECORD_LIMIT;
+		int lastRecordNo = firstRecordNo + Constants.RECORD_LIMIT ;
+		queryForRecordList(offset);
+		
+		if(view==baseActivity.previousButton)
+		{
+			baseActivity.nextButton.setVisibility(View.VISIBLE);
+			if(selectedPageNo == 1)
+				baseActivity.previousButton.setVisibility(View.GONE);
+			
+			if(firstRecordNo==0)
+				firstRecordNo=1;
+		}
+		else 
+		{
+			
+			if(selectedPageNo > 1)
+	    		baseActivity.previousButton.setVisibility(View.VISIBLE);
+			
+			if(recordCount<=lastRecordNo)
+			{
+				lastRecordNo = recordCount;
+				baseActivity.nextButton.setVisibility(View.GONE);
+			}
+		}
+		
+		baseActivity.recordCount.setText("Showing " + firstRecordNo +" - "+ lastRecordNo+ " of "+ recordCount);
+			
+			
+		
+	}
 	public void queryForRecordList(String offsetValue)
 	{
 		 if (salesforceRestClient != null)
 			{
-				List<String> fieldList = new ArrayList<String>();
+				/*List<String> fieldList = new ArrayList<String>();
 				fieldList.add("id");
-				fieldList.add("name");
+				fieldList.add("name");*/
 				try 
 				{	
 					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
-					recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName,offsetValue));				
+					recordsRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName,offsetValue,false));				
 				} 
 				catch (UnsupportedEncodingException e) 
 				{
@@ -474,6 +580,24 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				}
 				salesforceRestClient.sendAsync(recordsRequest, this);			
 			}
+	}
+	
+	public void getCountForRecord()
+	{
+		if (salesforceRestClient != null)
+		{
+			
+			try 
+			{	
+				//showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
+				recordsCountRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName,null,true));				
+			} 
+			catch (UnsupportedEncodingException e) 
+			{
+				e.printStackTrace();
+			}
+			salesforceRestClient.sendAsync(recordsCountRequest, this);			
+		}
 	}
 	
 

@@ -56,8 +56,8 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	RadioButton allRadioButton, notebookRadioButton, tagRadioButton;
 	EditText searchQueryEditText;
 	String queryString;
-	Integer selectedRadioButtonId;
-	Boolean isDataRestored = Boolean.FALSE, isInnerList = Boolean.FALSE;
+	Integer selectedRadioButtonId,	previousRadioButtonForSearch , selectedRadioButtonForSearch;
+	Boolean isDataRestored = Boolean.FALSE, isInnerList = Boolean.FALSE,	isFirstClick = Boolean.TRUE;
 	Button logoutConfirmationDialogYesButton, logoutConfirmationDialogNoButton;
 	Integer GET_ALL_NOTEBOOKS = 0, GET_NOTE_LIST_FOR_NOTEBOOK = 1,
 			SEARCH_KEYWORD = 2, GET_NOTEBOOK = 3, CLEAR_LIST = 4, GET_TAGS = 5,
@@ -154,6 +154,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		else if (view == searchQueryEditText) {
 			hideRadioGroup(Boolean.TRUE);
 			
+			
 			savePreviousList(true);
 
 			TASK = CLEAR_LIST;
@@ -161,6 +162,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 		} else if (view == cancelButton) {
 			if (searchCriteriaRadioGroup.getVisibility() != View.VISIBLE) {
+				isFirstClick = true;
 
 				hideRadioGroup(Boolean.FALSE);
 				searchCriteriaRadioGroup.setEnabled(Boolean.TRUE);
@@ -377,12 +379,21 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		if (baseActivity.savedListAdapter != null) {
 			noteListAdapter = baseActivity.savedListAdapter;
 			//listItems = baseActivity.listItems;
+			
+			if (baseActivity.savedCurrentTask != null) {
+				TASK = baseActivity.savedCurrentTask;
+			}
 
-			if (isInnerList)
+			/*if (isInnerList)
 				noteListAdapter.isInnerList(Boolean.TRUE);
 			else
 				noteListAdapter.isInnerList(Boolean.FALSE);
-
+*/
+			if(TASK == GET_NOTE_LIST_FOR_NOTEBOOK || TASK ==GET_NOTE_LIST_FOR_TAG)
+				noteListAdapter.isInnerList(Boolean.TRUE);
+			else
+				noteListAdapter.isInnerList(Boolean.FALSE);
+			
 			isInnerList = false;
 
 			listView.setAdapter(noteListAdapter);
@@ -394,9 +405,9 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			queryString = baseActivity.savedQueryString;
 			searchQueryEditText.setText(queryString);
 		}
-		if (baseActivity.savedCurrentTask != null) {
+		/*if (baseActivity.savedCurrentTask != null) {
 			TASK = baseActivity.savedCurrentTask;
-		}
+		}*/
 		if (baseActivity.savedSelectedRadioButtonId != null) {
 			if (baseActivity.savedSelectedRadioButtonId != R.id.search_all_radio_button) {
 				isDataRestored = Boolean.TRUE;
@@ -404,9 +415,16 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				isDataRestored = Boolean.FALSE;
 			}
 			selectedRadioButtonId = baseActivity.savedSelectedRadioButtonId;
+			if(TASK!=SEARCH_KEYWORD)
+			{
 			searchCriteriaRadioGroup.setOnCheckedChangeListener(null);
 			searchCriteriaRadioGroup.check(selectedRadioButtonId);
 			searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
+			}
+			else
+			{
+				hideRadioGroup(true);
+			}
 
 		}
 		if (noteListAdapter == null) {
@@ -471,10 +489,19 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			TASK = PREVIOUS_TASK_FOR_SEARCH;
 			listItems = previousListForSearch;
 			noteListAdapter = oldListAdapterForSearch;
+			selectedRadioButtonForSearch = previousRadioButtonForSearch ; 		
+			searchCriteriaRadioGroup.setOnCheckedChangeListener(null);
+			searchCriteriaRadioGroup.check(selectedRadioButtonForSearch);
+			searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
+			
+			
 		} else {
 			TASK = PREVIOUS_TASK;
 			listItems = previousList;
 			noteListAdapter = oldListAdapter;
+			
+			
+			
 
 		}
 
@@ -493,9 +520,14 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	public void savePreviousList(Boolean isSearch) {
 
 		if (isSearch) {
+			if(isFirstClick)
+			{
 			PREVIOUS_TASK_FOR_SEARCH = TASK;
 			previousListForSearch = listItems;
 			oldListAdapterForSearch = noteListAdapter;
+			previousRadioButtonForSearch = searchCriteriaRadioGroup.getCheckedRadioButtonId();
+			isFirstClick = false;
+			}
 		} else {
 			PREVIOUS_TASK = TASK;
 			previousList = listItems;

@@ -35,7 +35,7 @@ public class Constants
 		    "<en-note><div>";
 	public static final String NOTE_SUFFIX = "</div></en-note>";	
 	public static final Integer MAX_NOTES = 100;
-	public static final Integer RECORD_LIMIT = 5;
+	public static final Integer RECORD_LIMIT = 25;
 	
 	public static final Integer USER_PAGE_BATCH_SIZE = 1000;
 	public static final Integer GROUP_PAGE_BATCH_SIZE = 250;
