@@ -112,11 +112,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	
 		queryForRecordList(null);
 		selectedPageNo=1;
-		
-		
-		//baseActivity.previousButton.setEnabled(false);
-		//baseActivity.nextButton.setEnabled(true);
-		
 	}
 
 	@Override
@@ -219,7 +214,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		        	try 
 		        	{
 		        		createAttachment = RestRequest.getRequestForCreate(SF_API_VERSION, objectType, fields);
-		        		//updateRecordRequest = RestRequest.getRequestForUpdate(SF_API_VERSION, objectType, recordId, fields);
+		        		
 		        	} 
 		        	catch (UnsupportedEncodingException e) 
 		        	{
@@ -255,7 +250,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					item.setLeftImage(R.drawable.record_icon);
 					items.add(item);
 				}
-				//hideFullScreenProgresIndicator();
+				
 
 				if (items != null && items.size() > 0)
 				{
@@ -267,7 +262,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					 if (imageids != null)
 				        {
 				        	TASK = GET_NOTE_DATA;
-				        	//showFullScreenProgresIndicator();
+				        	
 				        	executeAsyncTask();
 				        }
 					 else 
@@ -278,9 +273,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				else
 				{
 					hideFullScreenProgresIndicator();
-					//listView.setAdapter(null);
-					//noResultsTextView.setVisibility(View.VISIBLE);
-				//	baseActivity.nextButton.setEnabled(false);
+					
 					
 				}				
 			}
@@ -385,7 +378,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					if (totalRequests > 0)
 					{
 						hideFullScreenProgresIndicator();
-						//showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
 						if(imageids !=null )
 						{													
 								showToastNotification(getString(R.string.progress_dialog_salesforce_record_created_success_message));
@@ -397,7 +389,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					}
 					else
 					{
-						//showToastNotification(getString(R.string.progress_dialog_salesforce_record_updated_success_message));
+						
 						hideFullScreenProgresIndicator();
 						if(imageids !=null )
 						{													
@@ -432,8 +424,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		super.onStop();
 		baseActivity.editButton.setVisibility(View.GONE);
 		baseActivity.saveButton.setVisibility(View.GONE);
-		//baseActivity.nextButton.setVisibility(View.GONE);
-		//baseActivity.previousButton.setVisibility(View.GONE);
 		baseActivity.recordCountLayout.setVisibility(View.GONE);
 	}
 
@@ -442,7 +432,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	{
 		hideFullScreenProgresIndicator();
 		NotepriseLogger.logError("Exception getting response for records list.", NotepriseLogger.ERROR, exception);	
-		//commonMessageDialog.showMessageDialog(getString(R.string.some_error_ocurred_message));
 		commonMessageDialog.showMessageDialog(exception.getMessage().toString());
 	}
 
@@ -483,43 +472,13 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			selectedPageNo= selectedPageNo + 1;
 			
 			showRecordCount(baseActivity.nextButton);
-			/*if(selectedPageNo > 1)
-	    		baseActivity.previousButton.setVisibility(View.VISIBLE);
-			*/
-			/*String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);
-			int firstRecordNo = (selectedPageNo-1) * Constants.RECORD_LIMIT;
-			int lastRecordNo = firstRecordNo + Constants.RECORD_LIMIT ;*/
-			/*if(recordCount<=lastRecordNo)
-			{
-				lastRecordNo = recordCount;
-				baseActivity.nextButton.setVisibility(View.GONE);
-			}*/
-							
-			//queryForRecordList(offset);
-		//	baseActivity.recordCount.setText(firstRecordNo +" - "+ lastRecordNo+ " from "+ recordCount);
+			
 			
 		}
 		else if(view == baseActivity.previousButton)
 		{
 			selectedPageNo= selectedPageNo - 1;
 			showRecordCount(baseActivity.previousButton);
-			
-			/*String offset = String.valueOf((selectedPageNo-1) * Constants.RECORD_LIMIT);			
-			queryForRecordList(offset);
-			*/
-		//	baseActivity.nextButton.setVisibility(View.VISIBLE);
-			
-		/*	if(selectedPageNo == 1)
-				baseActivity.previousButton.setVisibility(View.GONE);
-			*/
-			/*int firstRecordNo = (selectedPageNo-1) * Constants.RECORD_LIMIT;
-			int lastRecordNo = firstRecordNo + Constants.RECORD_LIMIT ;*/
-			
-			/*if(firstRecordNo==0)
-				firstRecordNo=1;*/
-			
-		
-			//baseActivity.recordCount.setText(firstRecordNo +" - "+ lastRecordNo+ " from "+ recordCount);
 			
 		
 			
@@ -566,9 +525,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	{
 		 if (salesforceRestClient != null)
 			{
-				/*List<String> fieldList = new ArrayList<String>();
-				fieldList.add("id");
-				fieldList.add("name");*/
 				try 
 				{	
 					showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
@@ -589,7 +545,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			
 			try 
 			{	
-				//showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_getting_record_list_message));
+				
 				recordsCountRequest = RestRequest.getRequestForQuery(SF_API_VERSION, CommonSOQL.getQueryForObject(selectedObjectName,null,true));				
 			} 
 			catch (UnsupportedEncodingException e) 

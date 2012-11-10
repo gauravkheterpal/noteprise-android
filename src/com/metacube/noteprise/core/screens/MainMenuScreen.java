@@ -89,8 +89,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
 		searchQueryEditText = (EditText) contentView
 				.findViewById(R.id.search_query_edit_text);
-		// searchQueryEditText.addTextChangedListener(this);
-		// searchQueryEditText.setOnFocusChangeListener(this);
+		
 		searchQueryEditText.setOnClickListener(this);
 
 		allRadioButton = (RadioButton) contentView
@@ -99,10 +98,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				.findViewById(R.id.search_tag_radio_button);
 		notebookRadioButton = (RadioButton) contentView
 				.findViewById(R.id.search_notebook_radio_button);
-
-		// searchQueryEditText.setImeActionLabel(getString(R.string.search_field_hint_text),
-		// R.id.search_button);
-
+	
 		searchButton = (ImageButton) contentView
 				.findViewById(R.id.search_button);
 		cancelButton = (ImageButton) contentView
