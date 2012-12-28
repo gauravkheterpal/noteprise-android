@@ -121,6 +121,8 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 			
 			note.setContent(Constants.NOTE_PREFIX +Html.toHtml(noteContenteditText.getText())+Constants.NOTE_SUFFIX);			
 			note.setContent(note.getContent().replace("<br>", "<br />"));
+			note.setContent(note.getContent().replace("[EverNote_ImageStart]", "<en-media"));
+			note.setContent(note.getContent().replace("[EverNote_ImageEnd]", "></en-media>"));
 			note.setContent(note.getContent().replace("&#160;", ""));
 			
 		
@@ -147,7 +149,7 @@ public class NoteEditScreen extends BaseFragment implements OnClickListener, and
 	    	
 	    	saveString= noteContent.replace(Constants.NOTE_PREFIX, "");
 	    	saveString= noteContent.replace(Constants.NOTE_SUFFIX, "");
-	    	noteContenteditText.setText(Html.fromHtml(saveString));	
+	    	noteContenteditText.setText(Html.fromHtml(saveString.replaceAll("<en-media", "[EverNote_ImageStart]").replaceAll("></en-media>", "[EverNote_ImageEnd]")));	
 	    	noteTitleEditText.setText(Html.fromHtml(saveTitleString));
 	    	baseActivity.saveButton.setVisibility(View.VISIBLE);
 		}

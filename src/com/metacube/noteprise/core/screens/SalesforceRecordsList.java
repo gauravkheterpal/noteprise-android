@@ -201,10 +201,12 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		fields.put("ParentID",recordId);
 		for (Iterator<Resource> iterator = res.iterator(); iterator.hasNext();) 
 		{  
+			
 			Resource resource = iterator.next();
 			for (Iterator<String> ids = imageids.iterator(); ids.hasNext();) 
 			{ 
-				String id = ids.next();
+				
+				String id = ids.next();													
 		        if(id.equals(resource.getAttributes().getFileName()))		        	
 		        {
 		        	encodedImage = Base64.encodeToString( resource.getData().getBody(), Base64.DEFAULT);						   

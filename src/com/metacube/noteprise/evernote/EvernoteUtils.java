@@ -25,7 +25,8 @@ import com.metacube.noteprise.util.NotepriseLogger;
 public class EvernoteUtils {
 	public static String stripNoteHTMLContent(String noteContent) {
 		NotepriseLogger.logMessage(noteContent);
-		noteContent = noteContent.replaceAll("\\<.*?>", "");
+		//noteContent = noteContent.replaceAll("\\<.*?>", "");
+		noteContent = noteContent.replaceAll("(?i)<(?!(/?(img|en-media)))[^>]*>", "");
 		return noteContent;
 	}
 
