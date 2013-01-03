@@ -9,10 +9,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -24,6 +26,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.NoteStore.Client;
@@ -41,7 +44,7 @@ import com.metacube.noteprise.evernote.EvernoteUtils;
 import com.metacube.noteprise.util.Utilities;
 
 public class MainMenuScreen extends BaseFragment implements OnClickListener,
-		OnItemClickListener, OnCheckedChangeListener {
+		OnItemClickListener, OnCheckedChangeListener ,TextWatcher{
 	List<Notebook> notebookList;
 	ListView listView;
 	String authToken;
@@ -84,6 +87,10 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		View contentView = inflater.inflate(R.layout.home_screen_layout,
 				container);
 		listView = (ListView) contentView.findViewById(R.id.notes_list_view);
+	
+		listView.requestFocus();
+		listView.requestFocusFromTouch();
+		
 		searchCriteriaRadioGroup = (RadioGroup) contentView
 				.findViewById(R.id.search_criteria_radio_group);
 		searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
@@ -91,6 +98,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				.findViewById(R.id.search_query_edit_text);
 		
 		searchQueryEditText.setOnClickListener(this);
+		searchQueryEditText.addTextChangedListener(this);
 
 		allRadioButton = (RadioButton) contentView
 				.findViewById(R.id.search_all_radio_button);
@@ -162,7 +170,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 				hideRadioGroup(Boolean.FALSE);
 				searchCriteriaRadioGroup.setEnabled(Boolean.TRUE);
-				searchQueryEditText.setText("");
+				
 
 				if (PREVIOUS_TASK_FOR_SEARCH == GET_NOTE_LIST_FOR_NOTEBOOK
 						|| PREVIOUS_TASK_FOR_SEARCH == GET_NOTE_LIST_FOR_TAG)
@@ -171,6 +179,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 					isInnerList = false;
 
 				loadPreviousList(true);
+				searchQueryEditText.setText("");
 
 			}
 		}
@@ -189,6 +198,11 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		baseActivity.salesforceObjectsButton.setVisibility(View.VISIBLE);
 		baseActivity.saveToSFButton.setVisibility(View.GONE);
 		baseActivity.publishToChatterButton.setVisibility(View.GONE);
+		baseActivity.deleteNoteButton.setVisibility(View.GONE);
+		baseActivity.editButton.setVisibility(View.GONE);
+		baseActivity.nextButton.setVisibility(View.GONE);
+		baseActivity.previousButton.setVisibility(View.GONE);
+		baseActivity.recordCountLayout.setVisibility(View.GONE);
 
 		if (isEvernoteAuthenticationComplete()) {
 			if (baseActivity.isDataSaved
@@ -284,6 +298,9 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				listView.setAdapter(noteListAdapter);
 
 			}
+			listView.requestFocus();
+			listView.requestFocusFromTouch();
+
 
 			listView.setOnItemClickListener(this);
 			// TASK = GET_ALL_NOTEBOOKS;
@@ -397,6 +414,11 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			listView.setOnItemClickListener(this);
 
 		}
+		else if (baseActivity.savedCurrentTask != null) {
+			TASK = baseActivity.savedCurrentTask;
+			noteListAdapter  = baseActivity.savedListAdapter;
+		}
+			
 		if (baseActivity.savedQueryString != null) {
 			queryString = baseActivity.savedQueryString;
 			searchQueryEditText.setText(queryString);
@@ -529,6 +551,36 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			previousList = listItems;
 			oldListAdapter = noteListAdapter;
 		}
+	}
+
+	
+
+	@Override
+	public void afterTextChanged(Editable s) {
+		
+		
+	}
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after) {
+		
+		
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		
+		String txt = searchQueryEditText.getText().toString();
+		if(!searchQueryEditText.getText().toString().equalsIgnoreCase("") )
+		{
+		hideRadioGroup(Boolean.TRUE);
+		savePreviousList(true);
+		TASK = CLEAR_LIST;
+		executeAsyncTask();
+		}
+		
+		
 	}
 
 }

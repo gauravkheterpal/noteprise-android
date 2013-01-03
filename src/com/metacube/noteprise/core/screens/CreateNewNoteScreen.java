@@ -31,6 +31,7 @@ import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.CommonSpinnerAdapter;
 import com.metacube.noteprise.common.Constants;
+import com.metacube.noteprise.common.base.NotepriseFragment;
 import com.metacube.noteprise.util.Utilities;
 import com.metacube.noteprise.util.richtexteditor.Html;
 
@@ -231,7 +232,17 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			{
 				showToastNotification(getString(R.string.note_created_success_message));
 				baseActivity.previousScreenAction = Constants.CREATE_NOTE_ACTION;
-				finishScreen();
+				
+			baseActivity.savedCurrentTask = 0;
+			baseActivity.savedListAdapter = null;
+			baseActivity.savedQueryString = "";
+			baseActivity.isDataSaved = true;
+			baseActivity.savedSelectedRadioButtonId= R.id.search_all_radio_button;
+			finishScreen();
+			
+				//changeScreen(new NotepriseFragment("MainMenuScreen", MainMenuScreen.class));
+				
+				
 			}
 			else
 			{

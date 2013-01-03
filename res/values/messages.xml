@@ -35,7 +35,7 @@
     <string name="note_created_success_message">Note successfully created</string>
     <string name="note_creation_failed_message">Note creation failed!</string>
     <string name="note_creation_all_fields_required_message">All fields are required.</string>
-    <string name="logout_confirm_message">Are you sure you want to logout ?</string>
+    <string name="logout_confirm_message">Do you want to logout?</string>
     <string name="note_delete_confirm_message">Are you sure you want to delete this note?</string>
     <string name="note_delete_success_message">Note deleted successfully.</string>
     <string name="note_delete_failed_message">Note could not be deleted!</string>

@@ -144,7 +144,7 @@ public class BaseFragment extends Fragment
 		{
 			if (baseActivity.previousScreenAction.equalsIgnoreCase(Constants.CREATE_NOTE_ACTION) || baseActivity.previousScreenAction.equalsIgnoreCase(Constants.DELETE_NOTE_ACTION))
 			{
-				status = Boolean.FALSE;
+				status = Boolean.TRUE;
 				baseActivity.previousScreenAction = null;
 			}
 		}
