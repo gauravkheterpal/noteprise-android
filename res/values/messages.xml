@@ -20,6 +20,7 @@
     <string name="radio_button_keyword_text">Keyword</string>
     <string name="search_field_hint_text">Search Notes</string>
     <string name="list_item_default_text">Item Text</string>
+<string name="confirm_title">Confirm to save</string>
 
     <!-- Dialog/Header Titles -->
      <string name="read_only_dialog_title">Read only</string>
@@ -28,6 +29,7 @@
     <string name="chatter_truncate_dialog_title">Truncate Note?</string>
     <string name="chatter_truncate_dialog_message1">Content length is  </string>
  	<string name="chatter_truncate_dialog_message2"> more than allowed chatter post limit. Content will be truncated. Do you want to continue?</string>
+     
     <!-- Note related Messages -->
      <string name="read_only_dialog_message">This Note is Read only</string>
     <string name="choose_notebook_prompt">Please select a Notebook</string>
@@ -45,6 +47,11 @@
     <string name="progress_dialog_tag_search_message">Searching tag in notes..</string>
     <string name="progress_dialog_keyword_search_message">Searching keyword in notes..</string>
     <string name="progress_dialog_getting_all_notes_message">Getting all notes..</string>
+    
+    <string name="progress_dialog_updating_all_notes_and_note_deleted_message">Updating all notes and note Deleted successfully</string>
+    <string name="progress_dialog_updating_all_notes_and_note_uptated_message">Updating all notes and note Updated successfully</string>
+    <string name="progress_dialog_updating_all_notes_and_note_created_message">Updating all notes and note Created successfully</string>
+    
     <string name="progress_dialog_getting_notes_for_Notebook_message">Getting notes for Notebook</string>
     <string name="progress_dialog_getting_notes_for_tag_message">Getting notes for Tag</string>
     <string name="progress_dialog_getting_all_notebook_message">Getting all Notebooks..</string>
@@ -71,15 +78,16 @@
     <string name="note_content_truncate_message2"> more than allowed limit. Content will be truncated. Do you want to continue?</string>
     <string name="salesforce_object_header_message">Save to Salesforce"</string>
     <string name="salesforce_note_no_attachment">There is no attachment in the note</string>
+<string name="savetosf_confirm_message">Are you sure you want to update the field with note contents?</string>
 
     <!-- Chatter Related messages -->
     <string name="chatter_menu_header_view_text">Publish To Chatter</string>
     <string name="salesforce_chatter_content_exceed_message">Note content exceeds the chatter post limit.</string>
     <string name="salesforce_select_object_field_length_message">Note content exceeds the field max. allowed length.</string>
     <string name="salesforce_selected_user_exceed_message">Error. You can only mention up to 25 users in a post.</string>
-    <string name="salesforce_chatter_post_self_success_message">The selected note has been succesfully posted to your Chatter feed.</string>
-    <string name="salesforce_chatter_post_user_with_mentions_success_message">The selected note has been succesfully posted to the chosen Chatter user feeds.</string>
-    <string name="salesforce_chatter_post_group_success_message">The selected note has been succesfully posted to the chosen Chatter group feed.</string>
+    <string name="salesforce_chatter_post_self_success_message">The selected note has been successfully posted to your Chatter feed.</string>
+    <string name="salesforce_chatter_post_user_with_mentions_success_message">The selected note has been successfully posted to the chosen Chatter user feeds.</string>
+    <string name="salesforce_chatter_post_group_success_message">The selected note has been successfully posted to the chosen Chatter group feed.</string>
     <string name="progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message">Publishing to your Chatter feed..</string>
     <string name="progress_dialog_chatter_getting_following_data_message">Getting list of Chatter users..</string>
     <string name="progress_dialog_chatter_getting_group_data_message">Getting list of Chatter groups..</string>
@@ -87,6 +95,8 @@
     <string name="progress_dialog_chatter_publish_to_group_feed_message">Publishing to Chatter group feed..</string>
     <string name="progress_dialog_chatter_attachment_message">Sending to Chatter..</string>
     <string name="chatter_select_attachment_error_message">Please select one attachment..</string>
+    <string name="note_post_confirm_message">Are you sure to post note to chatter user</string>
+   <string name="posttochattergroup_confirm_message">Are you sure you want to post the note contents to the chatter group?</string>
     <!--
     <string name="progress_dialog_chatter_failed_posting_to_wall_message">Failed to publish the selected note to your Chatter feed.</string>
     <string name="progress_dialog_chatter_failed_getting_chatter_users_message">Error in getting list of Chatter Users</string>
@@ -100,4 +110,12 @@
 "No note found with that keyword, please try another keyword"
     -->
 
+<!-- No result found messages -->
+
+<string name="no_note_in_notebook">No note under this notebook</string>
+<string name="no_note_in_tag">No note under this tag</string>
+<string name="no_tag">There is no tag added</string>
+<string name="no_record">No record found</string>
+<string name="no_chatter_user">No chatter user added</string>
+<string name="no_chatter_group">No chatter group added</string>
 </resources>

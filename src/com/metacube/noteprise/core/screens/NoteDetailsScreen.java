@@ -198,6 +198,7 @@ public class NoteDetailsScreen extends BaseFragment implements OnClickListener,
 					|| note.getAttributes().getContentClass().equals("")) {
 				Bundle args = new Bundle();
 				args.putString("noteGuid", noteGuid);
+				baseActivity.previousScreenAction=Constants.UPDATE_NOTE_ACTION;
 				changeScreen(new NotepriseFragment("NoteEditScreen",
 						NoteEditScreen.class, args));
 			} else { // showToastNotification(getString(R.string.read_only_note_message));

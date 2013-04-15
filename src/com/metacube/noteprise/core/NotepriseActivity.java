@@ -1,14 +1,12 @@
 package com.metacube.noteprise.core;
 
 import android.annotation.SuppressLint;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewStub.OnInflateListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;

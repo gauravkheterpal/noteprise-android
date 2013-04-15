@@ -56,4 +56,5 @@ public class Constants
 	
 	public static final String CREATE_NOTE_ACTION = "CREATE_NOTE_ACTION";
 	public static final String DELETE_NOTE_ACTION = "DELETE_NOTE_ACTION";	
+	public static final String UPDATE_NOTE_ACTION = "UPDATE_NOTE_ACTION";	
 }

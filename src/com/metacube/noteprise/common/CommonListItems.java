@@ -8,6 +8,14 @@ public class CommonListItems
 	private String sortData = null;
 	private String tag = null;
 	private Boolean isChecked = Boolean.FALSE;
+	private Boolean isSelected = Boolean.FALSE;
+	public Boolean getIsSelected() {
+		return isSelected;
+	}
+	public void setIsSelected(Boolean isSelected) {
+		this.isSelected = isSelected;
+		
+	}
 	private Integer leftImage = null;
 	private String leftUserImageURL = null;
 	private String itemType = Constants.ITEM_TYPE_LIST_ITEM;

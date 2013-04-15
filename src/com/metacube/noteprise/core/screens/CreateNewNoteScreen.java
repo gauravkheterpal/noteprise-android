@@ -31,7 +31,7 @@ import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.CommonSpinnerAdapter;
 import com.metacube.noteprise.common.Constants;
-import com.metacube.noteprise.common.base.NotepriseFragment;
+
 import com.metacube.noteprise.util.Utilities;
 import com.metacube.noteprise.util.richtexteditor.Html;
 
@@ -50,6 +50,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 	TextView notebookSpinnerDialogPromptText;
 	ListView notebookSpinnerListView;
 	String selectedNotebookGuid = null;
+	
 	
 	@Override
 	public void onAttach(Activity activity) 
@@ -231,6 +232,7 @@ public class CreateNewNoteScreen extends BaseFragment implements OnClickListener
 			if (savedNote != null && savedNote.getGuid() != null)
 			{
 				showToastNotification(getString(R.string.note_created_success_message));
+				
 				baseActivity.previousScreenAction = Constants.CREATE_NOTE_ACTION;
 				
 			baseActivity.savedCurrentTask = 0;

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.metacube.noteprise.R;
+import com.metacube.noteprise.R.drawable;
 import com.metacube.noteprise.common.BaseFragment;
+import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListAdapter;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.salesforce.SalesforceUtils;
@@ -33,8 +39,12 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 	ArrayList<CommonListItems> listItems;
 	CommonListAdapter listAdapter;
 	ListView listView;
+	TextView textView;
+	int pos;
 	ArrayList<String> selectedIds = null;
-	
+	CommonCustomDialog postToUser,postToGroup;
+	Button   postToUserYes,postToUserNo, postToGroupNo, postToGroupYes;
+	BaseFragment baseFragment;
 	@Override
 	public void onAttach(Activity activity) 
 	{
@@ -66,8 +76,11 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
     	clearContainer(container);
     	View contentView = inflater.inflate(R.layout.common_list_layout, container);
     	listView = (ListView) contentView.findViewById(R.id.common_list_view);
+    	textView=(TextView)contentView.findViewById(R.id.common_list_no_results);
     	baseActivity.editButton.setOnClickListener(this);
     	baseActivity.saveButton.setOnClickListener(this);
+    	baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.edit_button_normal));
+       
     	return super.onCreateView(inflater, container, savedInstanceState);
     }
 	
@@ -77,6 +90,7 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		super.onResume();
 		if (TASK_TYPE == GET_FOLLOWING_USER_LIST)
 		{
+			
 			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_getting_following_data_message));
 		}
 		else if (TASK_TYPE == GET_GROUPS_LIST)
@@ -202,6 +216,11 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					listView.setAdapter(listAdapter);
 					listView.setOnItemClickListener(this);
 					baseActivity.editButton.setVisibility(View.VISIBLE);
+					
+				}
+				else{
+					textView.setText(R.string.no_chatter_user);
+					textView.setVisibility(View.VISIBLE);
 				}
 			}
 		}
@@ -216,7 +235,14 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					listView.setAdapter(listAdapter);
 					listView.setOnItemClickListener(this);
 					baseActivity.editButton.setVisibility(View.VISIBLE);
-				}
+				    hideFullScreenProgresIndicator();
+				    }
+				  else{
+				        
+				      hideFullScreenProgresIndicator();
+				      textView.setText(R.string.no_chatter_group);
+				      textView.setVisibility(View.VISIBLE);
+				        }
 			}
 		}
 		else if (TASK == PUBLISH_TO_CHATTER_USER_WITH_MENTIONS)
@@ -290,19 +316,55 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		super.onStop();
 		baseActivity.editButton.setVisibility(View.GONE);
 		baseActivity.saveButton.setVisibility(View.GONE);
+		baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.edit_button_normal));
+
 	}
 
+	public void instantiateCustomDialog(View view) {
+		  super.instantiateCustomDialog(view);
+		  if(TASK_TYPE == GET_GROUPS_LIST){
+			   postToGroupYes = (Button) view.findViewById(R.id.confirm_note_yes_button);//"done by me"
+			  postToGroupYes.setOnClickListener(this);
+			   postToGroupNo = (Button) view.findViewById(R.id.confirm_note_no_button);
+			   postToGroupNo.setOnClickListener(this);
+			  }
+			   else if(TASK_TYPE == GET_FOLLOWING_USER_LIST)
+			   {
+		   postToUserYes = (Button) view//"done by me"
+		     .findViewById(R.id.post_note_yes_button);
+		  postToUserYes.setOnClickListener(this);
+		   postToUserNo = (Button) view
+		     .findViewById(R.id.post_note_no_button);
+		   postToUserNo.setOnClickListener(this);}
+		  
+		}
 	@Override
 	public void onClick(View view) 
 	{
-		if (view == baseActivity.editButton)
+		
+		 if (view == baseActivity.editButton)
 		{
-			baseActivity.editButton.setVisibility(View.GONE);
+			
 			baseActivity.saveButton.setVisibility(View.VISIBLE);
-			listAdapter.showCheckList();
+				if (listAdapter.isCheckListMode())
+					{
+					baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.edit_button_normal));
+					listAdapter.clearCheckedItems(listItems);
+					listAdapter.hideCheckList();
+					baseActivity.saveButton.setVisibility(View.GONE);
+					}
+					else{
+		
+						baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.cancel_button_normal));
+						baseActivity.saveButton.setVisibility(View.VISIBLE);
+						listAdapter.showCheckList();
+					}
 		}
 		else if (view == baseActivity.saveButton)
-		{			
+		{	
+		/*	if (listAdapter.isCheckListMode())
+		{
+		*/	
 			selectedIds = listAdapter.getCheckedItemsList();
 			if (TASK_TYPE == GET_FOLLOWING_USER_LIST)
 			{
@@ -314,6 +376,8 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 					}
 					else 
 					{
+						 
+					     
 						Integer calculatedLimit = 1000 - listAdapter.getCheckedItemsUserNameLength() - selectedIds.size() * 12;
 						if (publishString.length() > calculatedLimit)
 						{
@@ -322,6 +386,9 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 						TASK = PUBLISH_TO_CHATTER_USER_WITH_MENTIONS;
 						showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
 						executeAsyncTask();
+					
+					     
+					
 					}
 				}
 				else
@@ -350,11 +417,31 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 				}
 			}
 		}
+		
+		
+		else if(view==postToUserYes)
+		{
+			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
+			executeAsyncTask();
+			postToUser.dismiss();
+		}
+		else if(view==postToUserNo)
+			postToUser.dismiss();
+		else if (view == postToGroupYes) {
+			   groupId = listItems.get(pos).getId();
+			   showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
+			      executeAsyncTask();
+			      postToGroup.dismiss();
+			             
+			     }else if(view==postToGroupNo){
+			   postToGroup.dismiss();
+			    }//done by me
 	}
-
+	
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) 
 	{
+		 pos=position;
 		if (listAdapter.isCheckListMode())
 		{
 			if (TASK_TYPE == GET_FOLLOWING_USER_LIST && !(listAdapter.getCheckedItemsList().size() < 25) && !listAdapter.isItemChecked(position))
@@ -366,21 +453,40 @@ public class PublishToChatterRecordsListScreen extends BaseFragment implements O
 		}
 		else if (listItems != null)
 		{
+		
 			if (TASK_TYPE == GET_FOLLOWING_USER_LIST)
 			{
+				
+			
 				String recordId = listItems.get(position).getId();
+				
+	
+				
+				
+			
 				selectedIds = new ArrayList<String>();
 				selectedIds.add(recordId);
+				
+		
+				
 				TASK = PUBLISH_TO_CHATTER_USER_WITH_MENTIONS;
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
-				executeAsyncTask();
+				postToUser=new CommonCustomDialog(R.layout.post_to_user_confirm_dialog, this);
+				postToUser.show(getFragmentManager(), "CONFIRM_POST_TO_USER");
+				//showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_user_self_feed_with_mentions_message));
+				//executeAsyncTask();
+				
+				
+				
 			}
 			else if (TASK_TYPE == GET_GROUPS_LIST)
 			{
 				groupId = listItems.get(position).getId();
 				TASK = PUBLISH_TO_CHATTER_GROUP;
-				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
-				executeAsyncTask();
+				postToGroup = new CommonCustomDialog(R.layout.post_to_group_confirm_dialog, this);//to confirm post to group
+		          postToGroup.show(getFragmentManager(), "CONFIRM_POST_TO_GROUP");
+		    
+				/*showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_chatter_publish_to_group_feed_message));
+				executeAsyncTask();*/
 			}			
 		}
 	}

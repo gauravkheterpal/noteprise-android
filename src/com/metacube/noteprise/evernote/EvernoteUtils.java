@@ -1,12 +1,11 @@
 package com.metacube.noteprise.evernote;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.transport.TTransportException;
-
-import android.util.Log;
 
 import com.evernote.client.oauth.android.EvernoteSession;
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -21,6 +20,7 @@ import com.evernote.edam.type.Tag;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.Constants;
 import com.metacube.noteprise.util.NotepriseLogger;
+import com.metacube.noteprise.util.CustomComparator;
 
 public class EvernoteUtils {
 	public static String stripNoteHTMLContent(String noteContent) {
@@ -66,6 +66,7 @@ public class EvernoteUtils {
 					Constants.MAX_NOTES);
 
 			notes = noteList.getNotes();
+		
 		} catch (EDAMUserException e) {
 			e.printStackTrace();
 		} catch (EDAMSystemException e) {
@@ -109,6 +110,7 @@ public class EvernoteUtils {
 			section.setId(notebook.getGuid());
 			listItems.add(section);
 		}
+		Collections.sort(notes,new CustomComparator());//to sort notes in a notebook
 		for (int j = 0; j < notes.size(); j++) {
 			CommonListItems item = new CommonListItems();
 			Note note = notes.get(j);
@@ -132,8 +134,8 @@ public class EvernoteUtils {
 							.size()) + ")");
 			item.setId(nb.getGuid());
 			item.setListItemType(Constants.LIST_ITEM_TYPE_NOTEBOOK);
-			// item.setTotalContent(getNotesForNotebook(authToken,
-			// client,nb.getGuid()).size());
+			item.setTotalContent(getNotesForNotebook(authToken,
+			 client,nb.getGuid()).size());
 			listItems.add(item);
 		}
 		return listItems;
@@ -285,8 +287,11 @@ public class EvernoteUtils {
 			item.setLabel(tg.getName());
 			item.setId(tg.getGuid());
 			item.setListItemType(Constants.LIST_ITEM_TYPE_TAG);
-			// item.setTotalContent(getNotesForNotebook(authToken,
-			// client,nb.getGuid()).size());
+			NoteFilter tagFilter = new NoteFilter();
+			ArrayList<String> tagGuids = new ArrayList<String>();
+			tagGuids.add(tg.getGuid());
+			tagFilter.setTagGuids(tagGuids);
+			 item.setTotalContent(getNotesForCustomNoteFilter(authToken, client,tagFilter ).size());//for number of the notes in a tag
 			listItems.add(item);
 		}
 		return listItems;
@@ -421,7 +426,7 @@ public class EvernoteUtils {
 		List<CommonListItems> temp = getTagsList(authToken, client);
 
 		for (int i = 0; i < temp.size(); i++) {
-			String tgName = temp.get(i).getLabel();
+			//String tgName = temp.get(i).getLabel();
 			if (temp.get(i).getLabel().toLowerCase()
 					.contains(queryString.toLowerCase()))
 				searchResultItems.add(temp.get(i));
@@ -463,7 +468,7 @@ public class EvernoteUtils {
 		listSectionitem.setLabel(tag.getName());
 		listSectionitem.setId(tag.getGuid());
 		listSectionitem.setItemType(Constants.ITEM_TYPE_LIST_SECTION);
-
+	
 		noteListForTag.add(listSectionitem);
 
 		
@@ -472,6 +477,7 @@ public class EvernoteUtils {
 		tagGuids.add(tagGuid);
 		tagFilter.setTagGuids(tagGuids);
 		List<Note> notes = getNotesForCustomNoteFilter(authToken, client,tagFilter);
+	
 		for (int i = 0; i < notes.size(); i++) {
 			CommonListItems item = new CommonListItems();
 
@@ -482,9 +488,10 @@ public class EvernoteUtils {
 			noteListForTag.add(item);
 
 		}
-
 		return noteListForTag;
 
 	}
 
 }
+
+

@@ -10,6 +10,7 @@
         android:cacheColorHint="@android:color/transparent"
         android:divider="@drawable/segment_control_horizontal_border"
         android:dividerHeight="@dimen/common_divider_width_height"
+      
         android:listSelector="@drawable/common_list_selector" >
     </ListView>
 
@@ -19,9 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/large_margin_padding"
-        android:text="@string/no_results_found_message"
-        android:textColor="@color/common_text_color"
-        android:textSize="@dimen/common_large_text_size"
+       
+        android:textColor="@color/translucent_gray"
+        android:textSize="@dimen/common_text_size"
         android:visibility="gone" />
 
 </RelativeLayout>

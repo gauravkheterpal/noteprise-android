@@ -9,12 +9,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -26,7 +23,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.TextView.OnEditorActionListener;
+import android.widget.TextView;
 
 import com.evernote.edam.notestore.NoteList;
 import com.evernote.edam.notestore.NoteStore.Client;
@@ -56,6 +53,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	RadioGroup searchCriteriaRadioGroup;
 	ImageButton searchButton, cancelButton;
 	ImageView listSectionUpButton;
+	TextView noResult;
 	RadioButton allRadioButton, notebookRadioButton, tagRadioButton;
 	EditText searchQueryEditText;
 	String queryString;
@@ -90,7 +88,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	
 		listView.requestFocus();
 		listView.requestFocusFromTouch();
-		
+		noResult=(TextView)contentView.findViewById(R.id.common_list_no_results);
 		searchCriteriaRadioGroup = (RadioGroup) contentView
 				.findViewById(R.id.search_criteria_radio_group);
 		searchCriteriaRadioGroup.setOnCheckedChangeListener(this);
@@ -119,6 +117,8 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 	@Override
 	public void onClick(View view) {
+		noResult.setVisibility(View.GONE);
+	
 		if (view == searchButton) {
 			String queryString = searchQueryEditText.getText().toString()
 					.trim();
@@ -183,8 +183,8 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 			}
 		}
+	
 	}
-
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -208,6 +208,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			if (baseActivity.isDataSaved
 					&& checkPreviousScreenActionForNotRefresh()) {
 				loadPreviousState();
+				
 			} else {
 				getAllNotes();
 
@@ -258,6 +259,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				listItems = (ArrayList<CommonListItems>) EvernoteUtils
 						.getTagsList(authToken, client);
 
+				
 			} else if (TASK == CLEAR_LIST) {
 
 				listItems = new ArrayList<CommonListItems>();
@@ -267,11 +269,12 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 				listItems = (ArrayList<CommonListItems>) EvernoteUtils
 						.getNoteListFromNotebook(authToken, client,
 								selectedNotebookID);
+			
 			} else if (TASK == GET_NOTE_LIST_FOR_TAG) {
 
 				listItems = EvernoteUtils.getNoteListForTag(evernoteSession,
 						selectedTagID);
-
+				
 			}
 
 		} catch (TTransportException e) {
@@ -285,6 +288,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 		super.onTaskFinished();
 		hideFullScreenProgresIndicator();
 		if (listItems != null) {
+			
 			noteListAdapter = new CommonListAdapter(MainMenuScreen.this,
 					inflater, listItems);
 
@@ -296,6 +300,11 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 			} else {
 				listView.setAdapter(noteListAdapter);
+				if(noteListAdapter.isEmpty())//when no tags are added
+				{
+					noResult.setText(R.string.no_tag);
+					noResult.setVisibility(View.VISIBLE);
+				}
 
 			}
 			listView.requestFocus();
@@ -305,12 +314,16 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			listView.setOnItemClickListener(this);
 			// TASK = GET_ALL_NOTEBOOKS;
 		}
-	}
+	
+		}
+		
+	
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position,
 			long id) {
-
+		
+		
 		if (listItems.get(position).getListItemType()
 				.equalsIgnoreCase(Constants.LIST_ITEM_TYPE_NOTE)) {
 			if (noteListAdapter.isListItem(position)) {
@@ -329,13 +342,21 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			if (noteListAdapter.isListItem(position)) {
 				selectedNotebookID = listItems.get(position).getId();
 				savePreviousList(false);
-
 				TASK = GET_NOTE_LIST_FOR_NOTEBOOK;
+				
+			if(listItems.get(position).getTotalContent()==0 )	//if no notes are present in a notebook
+					{
+				noResult.setText(R.string.no_note_in_notebook);
+				noResult.setVisibility(View.VISIBLE);
+					
+					}
+				
 				showFullScreenProgresIndicator(
 						getString(R.string.progress_dialog_title),
 						getString(R.string.progress_dialog_getting_notes_for_Notebook_message));
 
 				executeAsyncTask();
+				
 
 			}
 
@@ -347,26 +368,34 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 
 				savePreviousList(false);
 				TASK = GET_NOTE_LIST_FOR_TAG;
+				if(listItems.get(position).getTotalContent()==0 )	//if no notes are present in a tag
+				{
+					noResult.setText(R.string.no_note_in_tag);
+					noResult.setVisibility(View.VISIBLE);
+			
+				}
+			
 				showFullScreenProgresIndicator(
 						getString(R.string.progress_dialog_title),
 						getString(R.string.progress_dialog_getting_notes_for_tag_message));
 
-				executeAsyncTask();
+				executeAsyncTask();}
 
-			}
+			
 
 		}
+		}
+	
 
-	}
 
 	public void getAllNotes() {
 		if (evernoteSession != null) {
-			// setSearchBarEnabled(Boolean.FALSE);
-			showFullScreenProgresIndicator(
+			// setSearchBarEnabled(Boolean.FALSE);	
+		showFullScreenProgresIndicator(
 					getString(R.string.progress_dialog_title),
-					getString(R.string.progress_dialog_getting_all_notes_message));
+				getString(R.string.progress_dialog_getting_all_notes_message));
 			executeAsyncTask();
-		}
+			}
 	}
 
 	@Override
@@ -467,7 +496,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 
 		isInnerList = false;
-		
+		noResult.setVisibility(View.GONE);
 		if (group == searchCriteriaRadioGroup
 				&& checkedId == R.id.search_all_radio_button) {
 			// setSearchBarEnabled(Boolean.TRUE);
@@ -495,7 +524,10 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			showFullScreenProgresIndicator(
 					getString(R.string.progress_dialog_title),
 					getString(R.string.progress_dialog_getting_all_tags_message));
+			
 			executeAsyncTask();
+		
+
 
 		}
 	  
@@ -517,7 +549,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 			TASK = PREVIOUS_TASK;
 			listItems = previousList;
 			noteListAdapter = oldListAdapter;
-			
+			noResult.setVisibility(View.GONE);//to hide message
 			
 			
 
@@ -571,7 +603,7 @@ public class MainMenuScreen extends BaseFragment implements OnClickListener,
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
 		
-		String txt = searchQueryEditText.getText().toString();
+		//String txt = searchQueryEditText.getText().toString();
 		if(!searchQueryEditText.getText().toString().equalsIgnoreCase("") )
 		{
 		hideRadioGroup(Boolean.TRUE);

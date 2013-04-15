@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.hardware.Camera.PreviewCallback;
+import android.content.ClipData.Item;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -25,8 +25,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.evernote.edam.error.EDAMNotFoundException;
@@ -37,6 +37,7 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Resource;
 import com.metacube.noteprise.R;
 import com.metacube.noteprise.common.BaseFragment;
+import com.metacube.noteprise.common.CommonCustomDialog;
 import com.metacube.noteprise.common.CommonListAdapter;
 import com.metacube.noteprise.common.CommonListItems;
 import com.metacube.noteprise.common.Constants;
@@ -57,14 +58,16 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	RestRequest recordsRequest, updateRecordRequest,createAttachment,recordsCountRequest;
 	CommonListAdapter recordsAdapter;
 	TextView noResultsTextView;
-	int totalRequests = 0;
+	int totalRequests = 0,pos;
 	ArrayList<String> imageids;
 	public static final Integer GET_NOTE_DATA = 1;
 	Integer TASK = -1;
 	int selectedPageNo=1;
 	int recordCount =0;
-
-
+	Boolean checklist=false;
+	ArrayList<String> checkedItems;// for preserving selected records
+	CommonCustomDialog saveToSf;
+	 Button saveToSfYes,saveToSfNo;
 	@Override
 	public void onAttach(Activity activity) 
 	{
@@ -93,6 +96,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
     	
     	baseActivity.editButton.setOnClickListener(this);
     	baseActivity.saveButton.setOnClickListener(this);
+    	baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.edit_button_normal));
     	baseActivity.nextButton.setVisibility(View.VISIBLE);
     	baseActivity.previousButton.setVisibility(View.VISIBLE);
     	baseActivity.nextButton.setOnClickListener(this);
@@ -112,6 +116,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 	
 		queryForRecordList(null);
 		selectedPageNo=1;
+		checkedItems=new ArrayList<String>();// instantiate
 	}
 
 	@Override
@@ -120,17 +125,27 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		if (recordsAdapter.isCheckListMode())
 		{
 			recordsAdapter.setChecedkCurrentItem(position);
+			
+			if(checkedItems.contains(recordsAdapter.getListItemId(position)))//to show preserved records selected
+					checkedItems.remove(recordsAdapter.getListItemId(position));
+			else
+			checkedItems.add(recordsAdapter.getListItemId(position));
 		}
 		else
 		{
-			showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_record_updating_message));
+			/*showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_record_updating_message));
 			recordId = recordsAdapter.getListItemId(position);
 			if(imageids != null)
 			sendCreateRequest(recordId);
 			else 
-				sendUpdateRequest(recordId);
+				sendUpdateRequest(recordId);*/
+			     recordId = recordsAdapter.getListItemId(position);
+			   
+			     saveToSf = new CommonCustomDialog(R.layout.salesforce_save_confirm_dialog, this);//dialog for confirmation to save to sf
+			     saveToSf.show(getFragmentManager(), "saveDialogBox");
 
-		}		
+		}	
+		pos=position;
 	}
 
 	@Override
@@ -251,6 +266,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					item.setId(object.optString("Id"));
 					item.setLeftImage(R.drawable.record_icon);
 					items.add(item);
+					
 				}
 				
 
@@ -261,6 +277,15 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					recordsAdapter = new CommonListAdapter(inflater, items);
 					listView.setAdapter(recordsAdapter);
 					listView.setOnItemClickListener(this);
+					
+					if(checklist)//to show checked items
+						{
+						recordsAdapter.showCheckList();
+						for(int i=0;i<recordsAdapter.getCount();i++)
+						if(checkedItems.contains(recordsAdapter.getListItemId(i)))
+							recordsAdapter.setChecedkCurrentItem(i);
+						}
+					
 					 if (imageids != null)
 				        {
 				        	TASK = GET_NOTE_DATA;
@@ -275,7 +300,8 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 				else
 				{
 					hideFullScreenProgresIndicator();
-					
+					noResultsTextView.setText(R.string.no_record);
+					 noResultsTextView.setVisibility(View.VISIBLE);
 					
 				}				
 			}
@@ -436,15 +462,47 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		NotepriseLogger.logError("Exception getting response for records list.", NotepriseLogger.ERROR, exception);	
 		commonMessageDialog.showMessageDialog(exception.getMessage().toString());
 	}
-
+	public void instantiateCustomDialog(View view) {
+		  super.instantiateCustomDialog(view);
+		  
+		   saveToSfYes = (Button) view//"done by me"
+		     .findViewById(R.id.confirm_note_yes_button);
+		   saveToSfYes.setOnClickListener(this);
+		   saveToSfNo = (Button) view
+		     .findViewById(R.id.confirm_note_no_button);
+		   saveToSfNo.setOnClickListener(this);
+		  
+		 }
 	@Override
 	public void onClick(View view) 
 	{
 		if (view == baseActivity.editButton)
 		{
-			baseActivity.editButton.setVisibility(View.GONE);
+			/*baseActivity.editButton.setVisibility(View.GONE);
 			baseActivity.saveButton.setVisibility(View.VISIBLE);
 			recordsAdapter.showCheckList();
+			checklist=true;*/
+			 
+			      
+			          if (recordsAdapter.isCheckListMode())
+			           {
+			        
+			            baseActivity.editButton.setVisibility(View.VISIBLE);
+			           baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.edit_button_normal));
+			           recordsAdapter.clearCheckedItem();
+			           recordsAdapter.hideCheckList();
+			           checklist=false;
+			           baseActivity.saveButton.setVisibility(View.GONE);
+			           }
+			           else{
+			        
+			            baseActivity.editButton.setImageDrawable(getResources().getDrawable(R.drawable.cancel_button_normal));
+			            recordsAdapter.showCheckList();
+			             checklist=true;
+			           
+			            baseActivity.saveButton.setVisibility(View.VISIBLE);
+			           
+			  }
 		}
 		else if (view == baseActivity.saveButton)
 		{			
@@ -452,7 +510,7 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 			if (selectedRecords.size() > 0)
 			{
 				showFullScreenProgresIndicator(getString(R.string.progress_dialog_title),getString(R.string.progress_dialog_salesforce_record_updating_message));
-				totalRequests = selectedRecords.size();
+				//totalRequests = selectedRecords.size();
 				for (int i = 0; i < selectedRecords.size(); i++)
 				{
 					recordId=selectedRecords.get(i);
@@ -460,8 +518,6 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 					sendCreateRequest(selectedRecords.get(i));
 					else
 					sendUpdateRequest(recordId);
-
-
 				}
 			}
 			else
@@ -471,20 +527,35 @@ public class SalesforceRecordsList extends BaseFragment implements OnItemClickLi
 		}
 		else if(view == baseActivity.nextButton)
 		{
+			
 			selectedPageNo= selectedPageNo + 1;
 			
 			showRecordCount(baseActivity.nextButton);
-			
+		
 			
 		}
 		else if(view == baseActivity.previousButton)
 		{
+			
 			selectedPageNo= selectedPageNo - 1;
 			showRecordCount(baseActivity.previousButton);
 			
 		
 			
 		}
+		else if (view == saveToSfYes) {
+
+		      showFullScreenProgresIndicator(getString(R.string.progress_dialog_title), getString(R.string.progress_dialog_salesforce_record_updating_message));
+		      recordId = recordsAdapter.getListItemId(pos);
+		      saveToSf.dismiss();
+		      if(imageids != null)
+		       sendCreateRequest(recordId);
+		      else 
+		       sendUpdateRequest(recordId);
+		                        
+		     }else if(view==saveToSfNo){
+		      saveToSf.dismiss();
+		    }//done by me
 	}
 
 	public void	showRecordCount(View view)

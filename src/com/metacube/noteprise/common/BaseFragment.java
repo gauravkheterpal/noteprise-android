@@ -1,7 +1,6 @@
 package com.metacube.noteprise.common;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -142,9 +141,9 @@ public class BaseFragment extends Fragment
 		Boolean status = Boolean.TRUE;
 		if (baseActivity.previousScreenAction != null)
 		{
-			if (baseActivity.previousScreenAction.equalsIgnoreCase(Constants.CREATE_NOTE_ACTION) || baseActivity.previousScreenAction.equalsIgnoreCase(Constants.DELETE_NOTE_ACTION))
+			if (baseActivity.previousScreenAction.equalsIgnoreCase(Constants.CREATE_NOTE_ACTION) || baseActivity.previousScreenAction.equalsIgnoreCase(Constants.DELETE_NOTE_ACTION)||baseActivity.previousScreenAction.equalsIgnoreCase(Constants.UPDATE_NOTE_ACTION))
 			{
-				status = Boolean.TRUE;
+				status = Boolean.FALSE;//to load changes
 				baseActivity.previousScreenAction = null;
 			}
 		}
@@ -268,7 +267,7 @@ public class BaseFragment extends Fragment
 	
 	public void onTaskFinished()
 	{
-		//hideProgresIndicator();
+		hideProgresIndicator();
 	}
 	
 	public void onTaskUpdate()

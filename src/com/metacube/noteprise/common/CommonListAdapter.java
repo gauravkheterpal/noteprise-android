@@ -3,6 +3,8 @@ package com.metacube.noteprise.common;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import android.R.string;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +25,7 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 	int count;
 	LayoutInflater inflater = null;
 	View listItemLayout = null;
+	
 	TextView listItemMainTextView = null,listItemMainTextsize;
 	public	ImageView leftImageView = null, listArrowImageView = null, listItemCheckBox = null, listSectionUpButton;
 	Boolean isCheckListMode = Boolean.FALSE;
@@ -43,6 +46,11 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 		this.inflater = inflater;
 		this.baseFragment = baseFragment;
 	}
+	public void clearCheckedItem()
+	 {
+	  for (int i = 0; i < listItems.size(); i++)
+	   listItems.get(i).setIsChecked(false);
+	 }
 	
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) 
@@ -135,6 +143,8 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 				}			
 				listItemCheckBox.setVisibility(View.VISIBLE);
 			}
+	
+		
 			if (item.getLeftUserImageURL() != null)
 			{
 				leftImageView.setVisibility(View.VISIBLE);
@@ -208,7 +218,7 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 		}
 		return true;
 	}
-	
+
 	
 	public void isInnerList(Boolean status)
 	{
@@ -220,7 +230,11 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 		isCheckListMode = Boolean.TRUE;
 		notifyDataSetChanged();
 	}
-	
+	public void hideCheckList()
+	{
+		isCheckListMode = Boolean.FALSE;
+		notifyDataSetChanged();
+	}
 	public Boolean isItemChecked(int position)
 	{
 		return listItems.get(position).getIsChecked();
@@ -291,7 +305,16 @@ public class CommonListAdapter extends BaseAdapter implements OnClickListener
 		}
 		return length;
 	}
-	
+	public void clearCheckedItems(ArrayList<CommonListItems> listItems)//to clear checked items
+	{
+		for (int i = 0; i < listItems.size(); i++)
+		{
+			if(listItems.get(i).getIsChecked())
+			{				
+				listItems.get(i).setIsChecked(false);
+			}
+		}
+	}
 	public void changeOrdering(String orderType)
 	{
 		// Sort By Name

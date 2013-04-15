@@ -128,11 +128,12 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/common_divider_width_height"
         android:background="@drawable/segment_control_horizontal_border" />
-
+ 
+    
     <ListView
         android:id="@+id/notes_list_view"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@drawable/segment_control_horizontal_border"
         android:dividerHeight="@dimen/common_divider_width_height"
@@ -140,5 +141,14 @@
         android:listSelector="@drawable/common_list_selector"
         android:textFilterEnabled="true" >
     </ListView>
-
+    <TextView
+        android:id="@+id/common_list_no_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/large_margin_padding"
+      
+        android:textColor="@color/translucent_gray"
+        android:textSize="@dimen/common_text_size"
+        android:visibility="gone" /> 
 </LinearLayout>

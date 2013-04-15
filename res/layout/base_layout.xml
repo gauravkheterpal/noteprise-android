@@ -228,8 +228,7 @@
             android:scaleType="fitCenter"
             android:background="@drawable/previous_arrow"
             android:src="@drawable/common_view_selector" 
-           	android:visibility="gone" />
-        -->
+           	android:visibility="gone" /> -->
     </RelativeLayout>
 
 </LinearLayout>
